@@ -72,6 +72,7 @@ public class Common {
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new CrateContainerMenu(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos())).setRegistryName("crate"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeContainerMenu(FluxPylonsContainerMenus.PIPE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos())).setRegistryName("pipe"));
     }
     
  

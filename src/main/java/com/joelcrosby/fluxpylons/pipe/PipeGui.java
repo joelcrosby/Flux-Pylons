@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.crate;
+package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -8,21 +8,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class CrateGui extends AbstractContainerScreen<CrateContainerMenu> {
+public class PipeGui extends AbstractContainerScreen<PipeContainerMenu> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(FluxPylons.ID, "textures/gui/crate.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(FluxPylons.ID, "textures/gui/pipe.png");
 
-    public CrateGui(CrateContainerMenu container, Inventory inv, Component titleIn) {
+    public PipeGui(PipeContainerMenu container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
         
         this.imageWidth = 176;
-        this.imageHeight = 222;
+        this.imageHeight = 153;
     }
-
+    
     @Override
     protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
         renderBackground(poseStack);
-
+        
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
 

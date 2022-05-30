@@ -8,5 +8,6 @@
   "item.fluxpylons.upgrade_extract": "Extract Upgrade",
   "item.fluxpylons.upgrade_filter": "Filter Upgrade",
   
-  "container.fluxpylons.crate": "Crate"
+  "container.fluxpylons.crate": "Crate",
+  "container.fluxpylons.pipe": "Pipe"
 }
