@@ -85,7 +85,7 @@ public class GraphNode {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GraphNode node = (GraphNode) o;
+        var node = (GraphNode) o;
         return level.equals(node.level) &&
                 pos.equals(node.pos);
     }

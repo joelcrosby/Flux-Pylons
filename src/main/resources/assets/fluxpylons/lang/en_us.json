@@ -5,6 +5,8 @@
   "block.fluxpylons.pipe": "Pipe",
   "block.fluxpylons.adv_pipe": "Advanced Pipe",
   "item.fluxpylons.wrench": "Wrench",
+  "item.fluxpylons.upgrade_extract": "Extract Upgrade",
+  "item.fluxpylons.upgrade_filter": "Filter Upgrade",
   
   "container.fluxpylons.crate": "Crate"
 }

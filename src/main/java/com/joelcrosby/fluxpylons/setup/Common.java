@@ -7,6 +7,8 @@ import com.joelcrosby.fluxpylons.FluxPylonsItems;
 import com.joelcrosby.fluxpylons.crate.CrateBlock;
 import com.joelcrosby.fluxpylons.crate.CrateBlockEntity;
 import com.joelcrosby.fluxpylons.crate.CrateContainerMenu;
+import com.joelcrosby.fluxpylons.item.UpgradeExtractItem;
+import com.joelcrosby.fluxpylons.item.UpgradeFilterItem;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
 import com.joelcrosby.fluxpylons.pipe.*;
 import net.minecraft.world.inventory.MenuType;
@@ -50,6 +52,8 @@ public class Common {
 
 
         registry.register(new WrenchItem().setRegistryName("wrench"));
+        registry.register(new UpgradeExtractItem().setRegistryName("upgrade_extract"));
+        registry.register(new UpgradeFilterItem().setRegistryName("upgrade_filter"));
         
         ForgeRegistries.BLOCKS.getValues().stream()
                 .filter(b -> b.getRegistryName().getNamespace().equals(FluxPylons.ID))
@@ -59,17 +63,9 @@ public class Common {
     @SubscribeEvent
     public static void registerBlockEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
         event.getRegistry().registerAll(
-                BlockEntityType.Builder.of(CrateBlockEntity::new, FluxPylonsBlocks.CRATE)
-                                .build(null)
-                                .setRegistryName("crate"),
-
-                BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.BASIC), FluxPylonsBlocks.BASIC_PIPE)
-                                .build(null)
-                                .setRegistryName("pipe"),      
-                
-                BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.ADVANCED), FluxPylonsBlocks.ADV_PIPE)
-                                .build(null)
-                                .setRegistryName("adv_pipe")
+                BlockEntityType.Builder.of(CrateBlockEntity::new, FluxPylonsBlocks.CRATE).build(null).setRegistryName("crate"),
+                BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.BASIC), FluxPylonsBlocks.BASIC_PIPE).build(null).setRegistryName("pipe"),
+                BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.ADVANCED), FluxPylonsBlocks.ADV_PIPE).build(null).setRegistryName("adv_pipe")
         );
     }
 
