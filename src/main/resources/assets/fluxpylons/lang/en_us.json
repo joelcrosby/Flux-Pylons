@@ -1,0 +1,10 @@
+{
+  "itemGroup.fluxpylons": "Flux Pylons",
+  
+  "block.fluxpylons.crate": "Crate",
+  "block.fluxpylons.pipe": "Pipe",
+  "block.fluxpylons.adv_pipe": "Advanced Pipe",
+  "item.fluxpylons.wrench": "Wrench",
+  
+  "container.fluxpylons.crate": "Crate"
+}
