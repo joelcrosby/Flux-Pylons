@@ -59,6 +59,15 @@ public class PipeBlock extends BaseEntityBlock {
             .put(Direction.WEST, box(0, 5, 5, 6, 11, 11))
             .build();
 
+    public static final Map<Direction, VoxelShape> DIR_SHAPES_END = ImmutableMap.<Direction, VoxelShape>builder()
+            .put(Direction.UP, box(4, 11, 4, 12, 16, 12))
+            .put(Direction.DOWN, box(4, 0, 4, 12, 5, 12))
+            .put(Direction.NORTH, box(4, 4, 0, 12, 12, 5))
+            .put(Direction.SOUTH, box(4, 4, 11, 12, 12, 16))
+            .put(Direction.EAST, box(12, 4, 4, 16, 12, 12))
+            .put(Direction.WEST, box(0, 4, 4, 5, 12, 12))
+            .build();
+
     static {
         for (var dir : Direction.values())
             DIRECTIONS.put(dir, EnumProperty.create(dir.getName(), ConnectionType.class));
@@ -181,6 +190,8 @@ public class PipeBlock extends BaseEntityBlock {
             for (var entry : DIRECTIONS.entrySet()) {
                 if (state.getValue(entry.getValue()).isConnected())
                     shape = Shapes.or(shape, DIR_SHAPES.get(entry.getKey()));
+                if (state.getValue(entry.getValue()).isEnd())
+                    shape = Shapes.or(shape, DIR_SHAPES_END.get(entry.getKey()));
             }
             if (shapeModifier != null)
                 shape = shapeModifier.apply(shape);
