@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.pipe;
+package com.joelcrosby.fluxpylons.item;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -8,11 +8,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class PipeGui extends AbstractContainerScreen<PipeContainerMenu> {
+public class UpgradeGui extends AbstractContainerScreen<UpgradeContainerMenu> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(FluxPylons.ID, "textures/gui/pipe.png");
 
-    public PipeGui(PipeContainerMenu container, Inventory inv, Component titleIn) {
+    public UpgradeGui(UpgradeContainerMenu container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
         
         this.imageWidth = 176;

@@ -27,10 +27,16 @@ public class GraphScanner {
         this.removedNodes.addAll(currentNodes);
     }
 
+    private void addRequest(GraphScannerRequest request) {
+        requests.add(request);
+        allRequests.add(request);
+    }
+    
     public GraphScannerResult scanAt(Level level, BlockPos pos) {
         addRequest(new GraphScannerRequest(level, pos, null, null));
 
         GraphScannerRequest request;
+        
         while ((request = requests.poll()) != null) {
             singleScanAt(request);
         }
@@ -100,10 +106,5 @@ public class GraphScanner {
                     }
                 });
         }
-    }
-
-    private void addRequest(GraphScannerRequest request) {
-        requests.add(request);
-        allRequests.add(request);
     }
 }

@@ -9,5 +9,6 @@
   "item.fluxpylons.upgrade_filter": "Filter Upgrade",
   
   "container.fluxpylons.crate": "Crate",
-  "container.fluxpylons.pipe": "Pipe"
+  "container.fluxpylons.pipe": "Pipe",
+  "container.fluxpylons.adv_pipe": "Advanced Pipe"
 }

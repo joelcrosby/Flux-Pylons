@@ -1,7 +1,6 @@
 package com.joelcrosby.fluxpylons.pipe;
 
-import com.joelcrosby.fluxpylons.FluxPylons;
-import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
+import com.joelcrosby.fluxpylons.item.UpgradeManager;
 import com.joelcrosby.fluxpylons.setup.Common;
 import com.joelcrosby.fluxpylons.network.NetworkManager;
 import com.joelcrosby.fluxpylons.network.graph.GraphNode;
@@ -9,28 +8,21 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class PipeBlockEntity extends BlockEntity implements IPipeConnectable, MenuProvider {
+public class PipeBlockEntity extends BlockEntity implements IPipeConnectable {
     private boolean unloaded;
     private final PipeType pipeType;
 
-    public final ItemStackHandler items = new ItemStackHandler(10);
+    
     private final LazyOptional<PipeBlockEntity> lazyThis = LazyOptional.of(() -> this);
     
     public PipeBlockEntity(BlockPos pos, BlockState state, PipeType pipeType) {
@@ -42,8 +34,17 @@ public class PipeBlockEntity extends BlockEntity implements IPipeConnectable, Me
     public PipeType getPipeType() { 
         return this.pipeType;
     }
+
+    public UpgradeManager getUpgradeManager(Direction dir) {
+        var node = NetworkManager.get(level).getNode(worldPosition);
+        
+        if (node == null) {
+            throw new RuntimeException("PipeBlockEntity has node attached node");
+        } 
+        
+        return node.getUpgradeManager(dir);
+    }
     
-    @Override
     public ConnectionType getConnectionType(BlockPos pipePos, Direction direction) {
         var state = this.level.getBlockState(pipePos.relative(direction));
         
@@ -112,7 +113,7 @@ public class PipeBlockEntity extends BlockEntity implements IPipeConnectable, Me
             manager.addNode(new GraphNode(level, worldPosition, pipeType.getNodeType()));
         }
     }
-
+    
     @Override
     public final CompoundTag getUpdateTag() {
         return writeUpdate(super.getUpdateTag());
@@ -141,13 +142,5 @@ public class PipeBlockEntity extends BlockEntity implements IPipeConnectable, Me
     public void readUpdate(@Nullable CompoundTag tag) {
     }
 
-    @Override
-    public Component getDisplayName() {
-        return new TranslatableComponent("container." + FluxPylons.ID + ".pipe");
-    }
-
-    @Override
-    public AbstractContainerMenu createMenu(int window, Inventory inventory, Player player) {
-        return new PipeContainerMenu(FluxPylonsContainerMenus.PIPE_CONTAINER_MENU, window, player, worldPosition);
-    }
+    
 }

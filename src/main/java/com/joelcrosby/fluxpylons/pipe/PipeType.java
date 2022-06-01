@@ -7,6 +7,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 public enum PipeType {
     BASIC,
     ADVANCED;
+
+    public String getId() {
+        return switch (this) {
+            case BASIC -> "pipe";
+            case ADVANCED -> "adv_pipe";
+        };
+    }
     
     public BlockEntityType<PipeBlockEntity> getEntityType() {
         return switch (this) {

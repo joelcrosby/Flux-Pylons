@@ -7,9 +7,7 @@ import com.joelcrosby.fluxpylons.FluxPylonsItems;
 import com.joelcrosby.fluxpylons.crate.CrateBlock;
 import com.joelcrosby.fluxpylons.crate.CrateBlockEntity;
 import com.joelcrosby.fluxpylons.crate.CrateContainerMenu;
-import com.joelcrosby.fluxpylons.item.UpgradeExtractItem;
-import com.joelcrosby.fluxpylons.item.UpgradeFilterItem;
-import com.joelcrosby.fluxpylons.item.WrenchItem;
+import com.joelcrosby.fluxpylons.item.*;
 import com.joelcrosby.fluxpylons.pipe.*;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
@@ -34,8 +32,8 @@ public class Common {
         }
     };
     
-    public static Capability<IPipeConnectable> pipeConnectableCapability = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static Capability<IPipeConnectable> pipeConnectableCapability = CapabilityManager.get(
+            new CapabilityToken<>() {});
     
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -49,7 +47,6 @@ public class Common {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         var registry = event.getRegistry();
-
 
         registry.register(new WrenchItem().setRegistryName("wrench"));
         registry.register(new UpgradeExtractItem().setRegistryName("upgrade_extract"));
@@ -72,7 +69,7 @@ public class Common {
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new CrateContainerMenu(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos())).setRegistryName("crate"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeContainerMenu(FluxPylonsContainerMenus.PIPE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos())).setRegistryName("pipe"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new UpgradeContainerMenu(FluxPylonsContainerMenus.UPGRADE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos(), UpgradeContainer.createItemFilterInventory(inv.player.level))).setRegistryName("upgrade"));
     }
     
  

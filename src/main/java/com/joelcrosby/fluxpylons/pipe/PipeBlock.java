@@ -1,16 +1,16 @@
 package com.joelcrosby.fluxpylons.pipe;
 
 import com.google.common.collect.ImmutableMap;
+import com.joelcrosby.fluxpylons.item.UpgradeManager;
 import com.joelcrosby.fluxpylons.setup.Common;
 import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.network.NetworkManager;
+import com.joelcrosby.fluxpylons.util.Raytracer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -29,12 +29,12 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.network.NetworkHooks;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
@@ -64,7 +64,7 @@ public class PipeBlock extends BaseEntityBlock {
             .put(Direction.DOWN, box(4, 0, 4, 12, 5, 12))
             .put(Direction.NORTH, box(4, 4, 0, 12, 12, 5))
             .put(Direction.SOUTH, box(4, 4, 11, 12, 12, 16))
-            .put(Direction.EAST, box(12, 4, 4, 16, 12, 12))
+            .put(Direction.EAST, box(11, 4, 4, 16, 12, 12))
             .put(Direction.WEST, box(0, 4, 4, 5, 12, 12))
             .build();
 
@@ -88,7 +88,7 @@ public class PipeBlock extends BaseEntityBlock {
             
         this.registerDefaultState(state);
     }
-
+    
     @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
@@ -96,16 +96,37 @@ public class PipeBlock extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         }
 
+        var dir = getPipeEndDirectionClicked(pos, result.getLocation());
         var entity = world.getBlockEntity(pos);
 
         if (entity == null)
-            return InteractionResult.PASS;
+            return InteractionResult.FAIL;
 
-        if (entity instanceof PipeBlockEntity) {
-            NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) entity, entity.getBlockPos());
+        if (!state.getValue(DIRECTIONS.get(dir)).isEnd()) {
+            return InteractionResult.FAIL; 
+        }
+        
+        if (entity instanceof PipeBlockEntity && player instanceof ServerPlayer) {
+            ((PipeBlockEntity) entity).getUpgradeManager(dir).OpenContainerMenu((ServerPlayer) player);
         }
 
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            var entity = level.getBlockEntity(pos);
+
+            if (entity instanceof PipeBlockEntity) {
+                for (var dir : Direction.values()) {
+                    ((PipeBlockEntity)entity).getUpgradeManager(dir).dropContents(level, pos);
+                }
+            }
+
+            super.onRemove(state, level, pos, newState, isMoving);
+        }
     }
     
     @Override
@@ -187,14 +208,21 @@ public class PipeBlock extends BaseEntityBlock {
         
         if (shape == null) {
             shape = CENTER_SHAPE;
+            
             for (var entry : DIRECTIONS.entrySet()) {
-                if (state.getValue(entry.getValue()).isConnected())
-                    shape = Shapes.or(shape, DIR_SHAPES.get(entry.getKey()));
-                if (state.getValue(entry.getValue()).isEnd())
+                var connectionType = state.getValue(entry.getValue());
+                
+                if (connectionType.isEnd()) {
                     shape = Shapes.or(shape, DIR_SHAPES_END.get(entry.getKey()));
+                } else if (connectionType.isConnected()) {
+                    shape = Shapes.or(shape, DIR_SHAPES.get(entry.getKey()));
+                }
             }
-            if (shapeModifier != null)
+            
+            if (shapeModifier != null) {
                 shape = shapeModifier.apply(shape);
+            }
+                
             cache.put(state, shape);
         }
         
@@ -260,5 +288,16 @@ public class PipeBlock extends BaseEntityBlock {
             
         
         return ConnectionType.DISCONNECTED;
+    }
+
+    @Nullable
+    public Direction getPipeEndDirectionClicked(BlockPos pos, Vec3 hit) {
+        for (var dir : Direction.values()) {
+            if (Raytracer.inclusiveContains(DIR_SHAPES_END.get(dir).bounds().move(pos), hit)) {
+                return dir;
+            }
+        }
+        
+        return null;
     }
 }

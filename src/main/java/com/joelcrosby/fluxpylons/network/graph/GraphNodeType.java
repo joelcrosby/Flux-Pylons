@@ -23,4 +23,11 @@ public enum GraphNodeType {
             case ADVANCED -> GraphNodeType.ADVANCED;
         };
     }
+
+    public PipeType getEntityType() {
+        return switch (this) {
+            case BASIC -> PipeType.BASIC;
+            case ADVANCED -> PipeType.ADVANCED;
+        };
+    }
 }
