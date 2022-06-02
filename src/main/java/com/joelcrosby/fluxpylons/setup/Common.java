@@ -8,6 +8,8 @@ import com.joelcrosby.fluxpylons.crate.CrateBlock;
 import com.joelcrosby.fluxpylons.crate.CrateBlockEntity;
 import com.joelcrosby.fluxpylons.crate.CrateContainerMenu;
 import com.joelcrosby.fluxpylons.item.*;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterContainer;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterContainerMenu;
 import com.joelcrosby.fluxpylons.pipe.PipeUpgradeContainer;
 import com.joelcrosby.fluxpylons.pipe.PipeUpgradeContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeExtractItem;
@@ -73,8 +75,7 @@ public class Common {
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new CrateContainerMenu(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos())).setRegistryName("crate"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeUpgradeContainerMenu(FluxPylonsContainerMenus.UPGRADE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos(), PipeUpgradeContainer.createItemFilterInventory(inv.player.level))).setRegistryName("upgrade"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeUpgradeContainerMenu(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos(), PipeUpgradeContainer.createItemFilterInventory(inv.player.level))).setRegistryName("upgrade"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new UpgradeFilterContainerMenu(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, windowId, inv.player, data.readBlockPos(), UpgradeFilterContainer.createFilterInventory(inv.player.level))).setRegistryName("filter"));
     }
-    
- 
 }

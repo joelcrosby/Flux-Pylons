@@ -53,7 +53,7 @@ public class PipeUpgradeManager implements MenuProvider {
 
     @Override
     public AbstractContainerMenu createMenu(int window, Inventory inventory, Player player) {
-        return new PipeUpgradeContainerMenu(FluxPylonsContainerMenus.UPGRADE_CONTAINER_MENU, window, player, node.getPos(), pipeUpgradeContainer.getItems());
+        return new PipeUpgradeContainerMenu(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, window, player, node.getPos(), pipeUpgradeContainer.getItems());
     }
 
     @Override

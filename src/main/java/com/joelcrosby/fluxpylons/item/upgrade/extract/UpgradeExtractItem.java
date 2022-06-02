@@ -35,7 +35,7 @@ public class UpgradeExtractItem extends UpgradeItem {
             }
 
             var destinations = node.getNetwork().getRelativeDestinations(GraphDestinationType.ITEMS, source.getBlockPos());
-            var destination = destinations.get(0);
+            var destination = destinations.stream().findFirst().orElse(null);
 
             if (destination == null) return;
 
