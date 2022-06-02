@@ -22,10 +22,10 @@ public class BaseContainerMenu extends AbstractContainerMenu {
     }
     
     protected void addPlayerInventory(int xInventory, int yInventory) {
-        int id = 9;
+        var id = 9;
 
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 9; x++) {
+        for (var y = 0; y < 3; y++) {
+            for (var x = 0; x < 9; x++) {
                 addSlot(new Slot(player.getInventory(), id, xInventory + x * 18, yInventory + y * 18));
 
                 id++;
@@ -35,8 +35,8 @@ public class BaseContainerMenu extends AbstractContainerMenu {
         id = 0;
 
         for (int i = 0; i < 9; i++) {
-            int x = xInventory + i * 18;
-            int y = yInventory + 4 + (3 * 18);
+            var x = xInventory + i * 18;
+            var y = yInventory + 4 + (3 * 18);
 
             addSlot(new Slot(player.getInventory(), id, x, y));
 

@@ -1,7 +1,6 @@
 package com.joelcrosby.fluxpylons.pipe;
 
 import com.google.common.collect.ImmutableMap;
-import com.joelcrosby.fluxpylons.item.UpgradeManager;
 import com.joelcrosby.fluxpylons.setup.Common;
 import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.network.NetworkManager;
@@ -35,6 +34,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.items.CapabilityItemHandler;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
@@ -273,6 +273,11 @@ public class PipeBlock extends BaseEntityBlock {
             var connectable = tile.getCapability(Common.pipeConnectableCapability, opposite).orElse(null);
             if (connectable != null) {
                 return connectable.getConnectionType(pos, direction);
+            }
+
+            var itemHandler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, opposite).orElse(null);
+            if (itemHandler != null) {
+                return ConnectionType.END;
             }
 
             var energyHandler = tile.getCapability(CapabilityEnergy.ENERGY, opposite).orElse(null);

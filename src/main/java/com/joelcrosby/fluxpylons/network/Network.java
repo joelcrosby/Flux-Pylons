@@ -1,15 +1,16 @@
 package com.joelcrosby.fluxpylons.network;
 
-import com.joelcrosby.fluxpylons.network.graph.Graph;
-import com.joelcrosby.fluxpylons.network.graph.GraphNode;
-import com.joelcrosby.fluxpylons.network.graph.GraphNodeType;
-import com.joelcrosby.fluxpylons.network.graph.GraphScannerResult;
+import com.joelcrosby.fluxpylons.network.graph.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 public class Network {
     private final Graph graph;
@@ -40,6 +41,10 @@ public class Network {
 
     public String getId() {
         return id;
+    }
+    
+    public Level getLevel() {
+        return level;
     }
     
     public void setOriginPos(BlockPos originPos) {
@@ -76,6 +81,14 @@ public class Network {
         return graph.getNodes().stream().filter(p -> p.getPos().equals(pos)).findFirst().orElse(null);
     }
 
+    public List<GraphDestination> getDestinations(GraphDestinationType type) {
+        return graph.getDestinations(type);
+    }
+
+    public List<GraphDestination> getRelativeDestinations(GraphDestinationType type, BlockPos pos) {
+        return graph.getRelativeDestinations(type, pos);
+    }
+    
     public GraphScannerResult scanGraph(Level level, BlockPos pos) {
         var result =  graph.scan(level, pos);
 
@@ -104,52 +117,52 @@ public class Network {
             scanGraph(level, originPos);
         }
 
+        graph.getNodes().forEach(GraphNode::update);
+
+        updateEnergy();
+    }
+
+    private void updateEnergy() {
         if (this.storage.getEnergyStored() <= 0) {
             return;
         }
-        
-        var destinations = graph.getDestinations();
 
-        if (destinations.isEmpty()) {
+        var energyDestinations = graph.getDestinations(GraphDestinationType.ENERGY);
+
+        if (energyDestinations.isEmpty()) {
             return;
         }
 
-        for (var destination : destinations) {
-            var blockEntity = destination
-                    .connectedNode()
-                    .getLevel()
-                    .getBlockEntity(destination.receiver());
-
+        for (var destination : energyDestinations) {
+            var blockEntity = destination.getConnectedBlockEntity();
             if (blockEntity == null) {
                 continue;
             }
 
             var side = destination.incomingDirection().getOpposite();
-            var handler = blockEntity.getCapability(CapabilityEnergy.ENERGY, side).orElse(null);
+            var energyHandler = blockEntity.getCapability(CapabilityEnergy.ENERGY, side).orElse(null);
 
-            if (handler == null) {
-                continue;
-            }
-            
-            if (!handler.canReceive()) {
-                continue;
-            }
+            if (energyHandler != null) {
+                if (!energyHandler.canReceive()) {
+                    continue;
+                }
 
-            var toOffer = Math.min(this.nodeType.getTransferRate(), this.storage.getEnergyStored());
-            if (toOffer <= 0) {
-                break;
-            }
+                var toOffer = Math.min(this.nodeType.getTransferRate(), this.storage.getEnergyStored());
+                if (toOffer <= 0) {
+                    break;
+                }
 
-            toOffer = this.storage.extractEnergy(toOffer, false);
-            if (toOffer <= 0) {
-                break;
-            }
+                toOffer = this.storage.extractEnergy(toOffer, false);
+                if (toOffer <= 0) {
+                    break;
+                }
 
-            var accepted = handler.receiveEnergy(toOffer, false);
+                var accepted = energyHandler.receiveEnergy(toOffer, false);
 
-            var remainder = toOffer - accepted;
-            if (remainder > 0) {
-                this.storage.receiveEnergy(remainder, false);
+                var remainder = toOffer - accepted;
+                if (remainder > 0) {
+                    this.storage.receiveEnergy(remainder, false);
+                }
             }
         }
     }

@@ -2,6 +2,8 @@ package com.joelcrosby.fluxpylons.crate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -33,17 +35,19 @@ public class CrateBlock extends BaseEntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if (world.isClientSide) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+        if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
             
-        var entity = world.getBlockEntity(pos);
+        var entity = level.getBlockEntity(pos);
 
         if (entity == null)
             return InteractionResult.PASS;
 
         if (entity instanceof CrateBlockEntity) {
+            level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.PLAYERS, 1, 1);
+            
             NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) entity, entity.getBlockPos());
         } 
         

@@ -83,6 +83,12 @@ public class GraphNode {
         level.sendBlockUpdated(pos, state, state, 1 | 2);
     }
 
+     public void update() {
+        for (var manager : upgrades.values()) {
+            manager.update();
+        }
+     }
+    
     public static GraphNode fromNbt(Level level, CompoundTag tag) {
         var pos =  BlockPos.of(tag.getLong("pos"));
         var nodeTypeValue = tag.getInt("type");

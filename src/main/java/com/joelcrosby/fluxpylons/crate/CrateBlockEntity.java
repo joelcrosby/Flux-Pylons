@@ -2,9 +2,7 @@ package com.joelcrosby.fluxpylons.crate;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.FluxPylonsBlockEntities;
-import com.joelcrosby.fluxpylons.FluxPylonsBlocks;
 import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
-import com.joelcrosby.fluxpylons.setup.Common;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

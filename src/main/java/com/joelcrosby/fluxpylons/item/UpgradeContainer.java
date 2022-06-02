@@ -8,10 +8,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UpgradeContainer implements Container {
     private final UpgradeItemStackHandler items;
-
+    
+    
     public UpgradeContainer(GraphNode node) {
         this.items = createItemFilterInventory(node.getLevel());
     }
@@ -19,13 +22,31 @@ public class UpgradeContainer implements Container {
     public UpgradeItemStackHandler getItems() {
         return items;
     }
+    
+    public List<UpgradeItem> getUpgrades() {
+        var upgrades = new ArrayList<UpgradeItem>(items.getSlots());
+        
+        for (var i = 0; i < items.getSlots(); i++) {
+            var inSlot = items.getStackInSlot(i);
+
+            if (inSlot.isEmpty()) continue;
+
+            var item = inSlot.getItem();
+
+            if (item instanceof UpgradeItem) {
+                upgrades.add((UpgradeItem) item);
+            }
+        }
+        
+        return upgrades;
+    }
 
     public static UpgradeItemStackHandler createItemFilterInventory(@Nullable Level level) {
         return new UpgradeItemStackHandler() {
             @Override
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
-
+                
                 if (level != null && !level.isClientSide) {
                     NetworkManager.get(level).setDirty();
                 }

@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.*;
 
@@ -92,19 +93,26 @@ public class GraphScanner {
             // Otherwise, we have this loop: node gets placed -> network gets scanned -> TEs get checked -> it might check the TE we just placed
             // -> the newly created TE can be created in immediate mode -> TE#validate is called again -> TE#remove is called again!
 
+            var pos = request.getPos();
+            var dir = request.getDirection();
+            var facingDirection = dir.getOpposite();
+            
             var parentNode = NetworkManager.get(request.getLevel()).getNode(request.getParent().getPos());
-            var blockEntity = request.getLevel().getBlockEntity(request.getPos());
+            var blockEntity = request.getLevel().getBlockEntity(pos);
 
             if (blockEntity == null) {
                 return;
             }
             
-            blockEntity.getCapability(CapabilityEnergy.ENERGY, request.getDirection().getOpposite())
-                .ifPresent(energyStorage -> {
-                    if (!(energyStorage instanceof NetworkEnergyStorage)) {
-                        destinations.add(new GraphDestination(request.getPos(), request.getDirection(), parentNode));
+            blockEntity.getCapability(CapabilityEnergy.ENERGY, facingDirection)
+                .ifPresent(handler -> {
+                    if (!(handler instanceof NetworkEnergyStorage)) {
+                        destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.ENERGY));
                     }
                 });
+            
+            blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facingDirection)
+                .ifPresent(handler -> destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.ITEMS)));
         }
     }
 }

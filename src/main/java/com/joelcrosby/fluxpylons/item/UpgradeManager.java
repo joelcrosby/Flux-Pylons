@@ -23,12 +23,25 @@ public class UpgradeManager implements MenuProvider {
     private final GraphNode node;
     private final Direction dir;
 
+    private int ticks;
+    private static final int tickInterval = 20;
+
     public final UpgradeContainer upgradeContainer;
     
     public UpgradeManager(GraphNode node, Direction dir) {
         this.node = node;
         this.dir = dir;
         this.upgradeContainer = new UpgradeContainer(node);
+    }
+    
+    public void update() {
+        if (tickInterval != 0 && (ticks++) % tickInterval != 0) {
+            return;
+        }
+        
+        for (var upgrade : upgradeContainer.getUpgrades()) {
+            upgrade.update(node, dir);
+        }
     }
     
     public void OpenContainerMenu(ServerPlayer player) {
