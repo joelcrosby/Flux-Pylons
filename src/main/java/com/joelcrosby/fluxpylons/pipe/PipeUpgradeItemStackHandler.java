@@ -1,15 +1,16 @@
-package com.joelcrosby.fluxpylons.item;
+package com.joelcrosby.fluxpylons.pipe;
 
+import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-public class UpgradeItemStackHandler extends ItemStackHandler {
+public class PipeUpgradeItemStackHandler extends ItemStackHandler {
 
     public static final int SIZE = 10;
 
-    public UpgradeItemStackHandler() {
+    public PipeUpgradeItemStackHandler() {
         super(SIZE);
     }
     

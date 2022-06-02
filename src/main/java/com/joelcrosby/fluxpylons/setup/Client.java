@@ -3,7 +3,7 @@ package com.joelcrosby.fluxpylons.setup;
 import com.joelcrosby.fluxpylons.FluxPylonsBlocks;
 import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.crate.CrateGui;
-import com.joelcrosby.fluxpylons.item.UpgradeGui;
+import com.joelcrosby.fluxpylons.pipe.PipeUpgradeGui;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -17,6 +17,6 @@ public final class Client {
         ItemBlockRenderTypes.setRenderLayer(FluxPylonsBlocks.ADV_PIPE, RenderType.cutout());
         
         MenuScreens.register(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, CrateGui::new);
-        MenuScreens.register(FluxPylonsContainerMenus.UPGRADE_CONTAINER_MENU, UpgradeGui::new);
+        MenuScreens.register(FluxPylonsContainerMenus.UPGRADE_CONTAINER_MENU, PipeUpgradeGui::new);
     }
 }

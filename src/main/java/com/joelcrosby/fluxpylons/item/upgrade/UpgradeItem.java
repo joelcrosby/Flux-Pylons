@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.item;
+package com.joelcrosby.fluxpylons.item.upgrade;
 
 import com.joelcrosby.fluxpylons.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.pipe.PipeBlock;

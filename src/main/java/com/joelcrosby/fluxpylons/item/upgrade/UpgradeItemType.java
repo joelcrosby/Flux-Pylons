@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.item;
+package com.joelcrosby.fluxpylons.item.upgrade;
 
 public enum UpgradeItemType {
     Extract,

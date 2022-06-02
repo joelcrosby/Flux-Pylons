@@ -1,5 +1,6 @@
-package com.joelcrosby.fluxpylons.item;
+package com.joelcrosby.fluxpylons.pipe;
 
+import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import com.joelcrosby.fluxpylons.network.NetworkManager;
 import com.joelcrosby.fluxpylons.network.graph.GraphNode;
 import net.minecraft.world.Container;
@@ -11,15 +12,14 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpgradeContainer implements Container {
-    private final UpgradeItemStackHandler items;
+public class PipeUpgradeContainer implements Container {
+    private final PipeUpgradeItemStackHandler items;
     
-    
-    public UpgradeContainer(GraphNode node) {
+    public PipeUpgradeContainer(GraphNode node) {
         this.items = createItemFilterInventory(node.getLevel());
     }
     
-    public UpgradeItemStackHandler getItems() {
+    public PipeUpgradeItemStackHandler getItems() {
         return items;
     }
     
@@ -41,8 +41,8 @@ public class UpgradeContainer implements Container {
         return upgrades;
     }
 
-    public static UpgradeItemStackHandler createItemFilterInventory(@Nullable Level level) {
-        return new UpgradeItemStackHandler() {
+    public static PipeUpgradeItemStackHandler createItemFilterInventory(@Nullable Level level) {
+        return new PipeUpgradeItemStackHandler() {
             @Override
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);

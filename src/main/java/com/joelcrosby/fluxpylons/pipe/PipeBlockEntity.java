@@ -1,6 +1,5 @@
 package com.joelcrosby.fluxpylons.pipe;
 
-import com.joelcrosby.fluxpylons.item.UpgradeManager;
 import com.joelcrosby.fluxpylons.setup.Common;
 import com.joelcrosby.fluxpylons.network.NetworkManager;
 import com.joelcrosby.fluxpylons.network.graph.GraphNode;
@@ -35,7 +34,7 @@ public class PipeBlockEntity extends BlockEntity implements IPipeConnectable {
         return this.pipeType;
     }
 
-    public UpgradeManager getUpgradeManager(Direction dir) {
+    public PipeUpgradeManager getUpgradeManager(Direction dir) {
         var node = NetworkManager.get(level).getNode(worldPosition);
         
         if (node == null) {

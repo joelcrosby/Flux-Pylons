@@ -1,5 +1,6 @@
-package com.joelcrosby.fluxpylons.item;
+package com.joelcrosby.fluxpylons.item.upgrade.extract;
 
+import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import com.joelcrosby.fluxpylons.network.graph.GraphDestinationType;
 import com.joelcrosby.fluxpylons.network.graph.GraphNode;
 import net.minecraft.core.Direction;

@@ -1,7 +1,7 @@
 package com.joelcrosby.fluxpylons.network.graph;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
-import com.joelcrosby.fluxpylons.item.UpgradeManager;
+import com.joelcrosby.fluxpylons.pipe.PipeUpgradeManager;
 import com.joelcrosby.fluxpylons.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,7 +26,7 @@ public class GraphNode {
     
     private final Logger logger = LogManager.getLogger(getClass());
 
-    public final Map<Direction, UpgradeManager> upgrades = new HashMap<>();
+    public final Map<Direction, PipeUpgradeManager> upgrades = new HashMap<>();
     
     public GraphNode(Level level, BlockPos pos, GraphNodeType nodeType) {
         this.level = level;
@@ -34,7 +34,7 @@ public class GraphNode {
         this.nodeType = nodeType;
 
         for (var dir : Direction.values()) {
-            this.upgrades.put(dir, new UpgradeManager(this, dir));
+            this.upgrades.put(dir, new PipeUpgradeManager(this, dir));
         }
     }
 
@@ -58,7 +58,7 @@ public class GraphNode {
         return this.nodeType;
     }
     
-    public UpgradeManager getUpgradeManager(Direction dir) {
+    public PipeUpgradeManager getUpgradeManager(Direction dir) {
         return this.upgrades.get(dir);
     }
     
@@ -97,7 +97,7 @@ public class GraphNode {
         var result = new GraphNode(level, pos, nodeType);
         
         for (var dir : Direction.values()) {
-            var upgradeManager = new UpgradeManager(result, dir);
+            var upgradeManager = new PipeUpgradeManager(result, dir);
             var dataTag = tag.get(dir.getSerializedName());
             
             upgradeManager.deserializeNBT((CompoundTag) dataTag);

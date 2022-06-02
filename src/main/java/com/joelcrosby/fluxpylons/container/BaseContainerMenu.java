@@ -21,6 +21,7 @@ public class BaseContainerMenu extends AbstractContainerMenu {
         this.slots = slots;
     }
     
+    @SuppressWarnings("SameParameterValue")
     protected void addPlayerInventory(int xInventory, int yInventory) {
         var id = 9;
 

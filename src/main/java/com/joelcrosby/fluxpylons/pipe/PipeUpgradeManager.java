@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.item;
+package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
@@ -19,19 +19,19 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 
 
-public class UpgradeManager implements MenuProvider {
+public class PipeUpgradeManager implements MenuProvider {
     private final GraphNode node;
     private final Direction dir;
 
     private int ticks;
     private static final int tickInterval = 20;
 
-    public final UpgradeContainer upgradeContainer;
+    public final PipeUpgradeContainer pipeUpgradeContainer;
     
-    public UpgradeManager(GraphNode node, Direction dir) {
+    public PipeUpgradeManager(GraphNode node, Direction dir) {
         this.node = node;
         this.dir = dir;
-        this.upgradeContainer = new UpgradeContainer(node);
+        this.pipeUpgradeContainer = new PipeUpgradeContainer(node);
     }
     
     public void update() {
@@ -39,7 +39,7 @@ public class UpgradeManager implements MenuProvider {
             return;
         }
         
-        for (var upgrade : upgradeContainer.getUpgrades()) {
+        for (var upgrade : pipeUpgradeContainer.getUpgrades()) {
             upgrade.update(node, dir);
         }
     }
@@ -53,7 +53,7 @@ public class UpgradeManager implements MenuProvider {
 
     @Override
     public AbstractContainerMenu createMenu(int window, Inventory inventory, Player player) {
-        return new UpgradeContainerMenu(FluxPylonsContainerMenus.UPGRADE_CONTAINER_MENU, window, player, node.getPos(), upgradeContainer.getItems());
+        return new PipeUpgradeContainerMenu(FluxPylonsContainerMenus.UPGRADE_CONTAINER_MENU, window, player, node.getPos(), pipeUpgradeContainer.getItems());
     }
 
     @Override
@@ -62,12 +62,12 @@ public class UpgradeManager implements MenuProvider {
     }
     
     public void dropContents(Level level, BlockPos pos) {
-        Containers.dropContents(level, pos, upgradeContainer);
+        Containers.dropContents(level, pos, pipeUpgradeContainer);
     }
     
     public Tag serializeNBT() {
         var tag = new CompoundTag();
-        tag.put("upgradeItems", upgradeContainer.getItems().serializeNBT());
+        tag.put("upgradeItems", pipeUpgradeContainer.getItems().serializeNBT());
         
         return tag;
     }
@@ -77,6 +77,6 @@ public class UpgradeManager implements MenuProvider {
             return;
         }
         
-        upgradeContainer.getItems().deserializeNBT(tag.getCompound("upgradeItems"));
+        pipeUpgradeContainer.getItems().deserializeNBT(tag.getCompound("upgradeItems"));
     }
 }
