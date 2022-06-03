@@ -35,19 +35,23 @@ public class UpgradeFluidExtractItem extends UpgradeItem {
                 continue;
             }
 
-            var destinations = node.getNetwork().getRelativeDestinations(GraphDestinationType.FLUIDS, source.getBlockPos());
+            var destinations = node.getNetwork()
+                    .getRelativeDestinations(GraphDestinationType.FLUIDS, source.getBlockPos());
             
             for (var destination : destinations) {
                 var destinationEntity = destination.getConnectedBlockEntity();
-                if (destinationEntity == null) return;
+                if (destinationEntity == null) continue;
 
                 if (destination.getConnectedBlockEntity().getBlockPos() == source.getBlockPos()) {
                     throw new RuntimeException("destination cannot be the same as source");
                 }
 
-                var incomingDirection = destination.incomingDirection();
-                var destinationHandler = destinationEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, incomingDirection).orElse(null);
+                var incomingDirection = destination.incomingDirection().getOpposite();
+                var destinationHandler = destinationEntity
+                        .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, incomingDirection)
+                        .orElse(null);
 
+                if (destinationHandler == null) continue;
 
                 if (destinationHandler.fill(simulatedExtract, IFluidHandler.FluidAction.SIMULATE) != 0) {
                     var extracted = fluidHandler.drain(stackSize, IFluidHandler.FluidAction.EXECUTE);

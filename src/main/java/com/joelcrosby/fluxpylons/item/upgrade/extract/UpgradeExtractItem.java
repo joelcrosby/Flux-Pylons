@@ -35,19 +35,23 @@ public class UpgradeExtractItem extends UpgradeItem {
                 continue;
             }
 
-            var destinations = node.getNetwork().getRelativeDestinations(GraphDestinationType.ITEMS, source.getBlockPos());
+            var destinations = node.getNetwork()
+                    .getRelativeDestinations(GraphDestinationType.ITEMS, source.getBlockPos());
 
             for (var destination : destinations) {
                 var destinationEntity = destination.getConnectedBlockEntity();
-                if (destinationEntity == null) return;
+                if (destinationEntity == null) continue;
 
                 if (destination.getConnectedBlockEntity().getBlockPos() == source.getBlockPos()) {
                     throw new RuntimeException("destination cannot be the same as source");
                 }
 
-                var incomingDirection = destination.incomingDirection();
-                var destinationHandler = destinationEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection).orElse(null);
+                var incomingDirection = destination.incomingDirection().getOpposite();
+                var destinationHandler = destinationEntity
+                        .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection)
+                        .orElse(null);
 
+                if (destinationHandler == null) continue;
 
                 if (ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true).isEmpty()) {
                     var extracted = itemHandler.extractItem(i, stackSize, false);

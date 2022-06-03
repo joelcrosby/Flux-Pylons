@@ -104,11 +104,14 @@ dependencies {
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")
 
+    implementation fg.deobf("com.teamcofh:cofh_core:${thermal_mc_version}-${cofh_core_version}")
+    implementation fg.deobf("com.teamcofh:thermal_foundation:${thermal_mc_version}-${thermal_foundation_version}")
+    implementation fg.deobf("com.teamcofh:thermal_expansion:${thermal_mc_version}-${thermal_expansion_version}")
+
+
     implementation fg.deobf("curse.maven:the-one-probe-245211:${theoneprobe_id}")
 
     implementation fg.deobf("curse.maven:jade-324717:${jade_id}")
-
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 jar {
