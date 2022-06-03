@@ -1,18 +1,30 @@
 package com.joelcrosby.fluxpylons;
 
+import com.joelcrosby.fluxpylons.pipe.PipeBlockEntity;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class Utility {
@@ -77,6 +89,24 @@ public class Utility {
         if (inventory == null)
             return null;
         return new SidedInvWrapper(inventory, direction);
+    }
+
+    public static void sendBlockEntityToClients(PipeBlockEntity tile) {
+        var level = (ServerLevel) tile.getLevel();
+        var entities = level.getChunkSource().chunkMap.getPlayers(new ChunkPos(tile.getBlockPos()), false);
+        var packet = ClientboundBlockEntityDataPacket.create(tile, BlockEntity::saveWithoutMetadata);
+        for (var e : entities)
+            e.connection.send(packet);
+    }
+
+    public static void addTooltip(String name, List<Component> tooltip) {
+        if (Screen.hasShiftDown()) {
+            var content = I18n.get("info." + FluxPylons.ID + "." + name).split("\n");
+            for (var s : content)
+                tooltip.add(new TextComponent(s).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_AQUA)));
+        } else {
+            tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".shift").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+        }
     }
 
     public interface IMergeItemStack {

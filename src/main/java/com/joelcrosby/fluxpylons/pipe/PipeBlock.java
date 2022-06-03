@@ -8,10 +8,13 @@ import com.joelcrosby.fluxpylons.network.NetworkManager;
 import com.joelcrosby.fluxpylons.util.Raytracer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -38,17 +41,20 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 public class PipeBlock extends BaseEntityBlock {
 
     public static final Map<Direction, EnumProperty<ConnectionType>> DIRECTIONS = new HashMap<>();
-    private static final Map<BlockState, VoxelShape> SHAPE_CACHE = new HashMap<>();
-    private static final Map<BlockState, VoxelShape> COLL_SHAPE_CACHE = new HashMap<>();
+    
+    private static final Map<Pair<BlockState, BlockState>, VoxelShape> SHAPE_CACHE = new HashMap<>();
+    private static final Map<Pair<BlockState, BlockState>, VoxelShape> COLL_SHAPE_CACHE = new HashMap<>();
     
     private static final VoxelShape CENTER_SHAPE = box(5, 5, 5, 11, 11, 11);
     
@@ -78,7 +84,7 @@ public class PipeBlock extends BaseEntityBlock {
     private final PipeType pipeType;
 
     public PipeBlock(PipeType pipeType) {
-        super(Block.Properties.of(Material.STONE).strength(2).sound(SoundType.STONE).noOcclusion());
+        super(Block.Properties.of(Material.STONE).strength(2).sound(SoundType.COPPER).noOcclusion());
         
         this.pipeType = pipeType;
 
@@ -94,29 +100,34 @@ public class PipeBlock extends BaseEntityBlock {
     @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if (world.isClientSide) {
-            return InteractionResult.SUCCESS;
-        }
+        
 
+        if (!(player.getItemInHand(player.getUsedItemHand()).getItem() instanceof WrenchItem)) {
+            return InteractionResult.PASS;
+        }
+        
         var dir = getPipeEndDirectionClicked(pos, result.getLocation());
         var entity = world.getBlockEntity(pos);
 
         if (entity == null)
             return InteractionResult.FAIL;
 
-        if (!state.getValue(DIRECTIONS.get(dir)).isEnd()) {
-            return InteractionResult.FAIL; 
+        if (entity instanceof PipeBlockEntity && !state.getValue(DIRECTIONS.get(dir)).isEnd()) {
+            return InteractionResult.FAIL;
         }
         
         if (!player.isCrouching() && player.getItemInHand(player.getUsedItemHand()).getItem() instanceof WrenchItem) {
             return InteractionResult.FAIL;
         }
         
-        if (entity instanceof PipeBlockEntity && player instanceof ServerPlayer) {
-            ((PipeBlockEntity) entity).getUpgradeManager(dir).OpenContainerMenu((ServerPlayer) player);
+        if (entity instanceof PipeBlockEntity pipeBlockEntity && player instanceof ServerPlayer serverPlayer) {
+            if (!world.isClientSide) {
+                pipeBlockEntity.getUpgradeManager(dir).OpenContainerMenu(serverPlayer);
+            }
+            return InteractionResult.SUCCESS;
         }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -195,13 +206,13 @@ public class PipeBlock extends BaseEntityBlock {
     @Override
     @SuppressWarnings("deprecation")
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return this.cacheAndGetShape(state, SHAPE_CACHE, null);
+        return this.cacheAndGetShape(state, worldIn, pos, s -> s.getShape(worldIn, pos, context), SHAPE_CACHE, null);
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return this.cacheAndGetShape(state, COLL_SHAPE_CACHE, s -> {
+        return this.cacheAndGetShape(state, worldIn, pos,  s -> s.getCollisionShape(worldIn, pos, context), COLL_SHAPE_CACHE, s -> {
             // make the shape a bit higher to allow player to jump up onto a higher block
             var newShape = new MutableObject<VoxelShape>(Shapes.empty());
             s.forAllBoxes((x1, y1, z1, x2, y2, z2) -> newShape.setValue(Shapes.join(Shapes.create(x1, y1, z1, x2, y2 + 3 / 16F, z2), newShape.getValue(), BooleanOp.OR)));
@@ -209,8 +220,27 @@ public class PipeBlock extends BaseEntityBlock {
         });
     }
     
-    private VoxelShape cacheAndGetShape(BlockState state, Map<BlockState, VoxelShape> cache, Function<VoxelShape, VoxelShape> shapeModifier) {
-        var shape = cache.get(state);
+    private VoxelShape cacheAndGetShape(BlockState state,
+                                        BlockGetter worldIn,
+                                        BlockPos pos,
+                                        Function<BlockState, VoxelShape> coverShapeSelector,
+                                        Map<Pair<BlockState, BlockState>, VoxelShape> cache,
+                                        Function<VoxelShape, VoxelShape> shapeModifier) {
+        VoxelShape coverShape = null;
+        BlockState cover = null;
+        
+        var tile = Utility.getBlockEntity(PipeBlockEntity.class, worldIn, pos);
+        if (tile != null && tile.cover != null) {
+            cover = tile.cover;
+            // try catch since the block might expect to find itself at the position
+            try {
+                coverShape = coverShapeSelector.apply(cover);
+            } catch (Exception ignored) {
+            }
+        }
+
+        var key = Pair.of(state, cover);
+        var shape = cache.get(key);
         
         if (shape == null) {
             shape = CENTER_SHAPE;
@@ -228,8 +258,12 @@ public class PipeBlock extends BaseEntityBlock {
             if (shapeModifier != null) {
                 shape = shapeModifier.apply(shape);
             }
+
+            if (coverShape != null) {
+                shape = Shapes.or(shape, coverShape);
+            }
                 
-            cache.put(state, shape);
+            cache.put(key, shape);
         }
         
         return shape;
@@ -315,5 +349,10 @@ public class PipeBlock extends BaseEntityBlock {
         }
         
         return null;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        Utility.addTooltip(this.getRegistryName().getPath(), tooltip);
     }
 }

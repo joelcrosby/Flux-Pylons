@@ -10,18 +10,25 @@ import com.joelcrosby.fluxpylons.pipe.PipeBlock;
 import com.joelcrosby.fluxpylons.pipe.PipeBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,31 +46,52 @@ public class WrenchItem extends Item {
         var state = level.getBlockState(pos);
         var block = state.getBlock();
 
-            
         if (block instanceof PipeBlock) {
+            var tile = Utility.getBlockEntity(PipeBlockEntity.class, level, pos);
+            if (tile == null)
+                return InteractionResult.FAIL;
+            
             if (player.isCrouching()) {
-                if (level.isClientSide)
+                if (!level.isClientSide) {
+                    if (tile.cover != null) {
+                        tile.removeCover(player, context.getHand());
+                        Utility.sendBlockEntityToClients(tile);
+                    } else {
+                        Block.dropResources(state, level, pos, tile, null, ItemStack.EMPTY);
+                        level.removeBlock(pos, false);
+                    }
+                    level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1, 1);
+                }
+                
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            } 
+            
+            if (tile.cover == null) {
+                var offhand = player.getOffhandItem();
+                if (offhand.getItem() instanceof BlockItem) {
+                    if (!level.isClientSide) {
+                        var blockContext = new BlockPlaceContext(context);
+                        var coverBlock = ((BlockItem) offhand.getItem()).getBlock();
+                        var cover = coverBlock.getStateForPlacement(blockContext);
+                        if (cover != null && !(coverBlock instanceof EntityBlock)) {
+                            tile.cover = cover;
+                            Utility.sendBlockEntityToClients(tile);
+                            offhand.shrink(1);
+                            level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.PLAYERS, 1, 1);
+                        }
+                    }
                     return InteractionResult.sidedSuccess(level.isClientSide);
-                
-                var tile = Utility.getBlockEntity(PipeBlockEntity.class, level, pos);
-                if (tile == null)
-                    return InteractionResult.FAIL;
-    
-                Block.dropResources(state, level, pos, tile, null, ItemStack.EMPTY);
-                
-                level.removeBlock(pos, false);
-                level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1, 1);
-                
-            } else {
-                for (var entry : PipeBlock.DIR_SHAPES.entrySet()) {
-                    InteractionResult isClientSide = getInteractionResult(context, level, pos, state, (PipeBlock) block, entry);
-                    if (isClientSide != null) return isClientSide;
                 }
+            }
 
-                for (var entry : PipeBlock.DIR_SHAPES_END.entrySet()) {
-                    InteractionResult isClientSide = getInteractionResult(context, level, pos, state, (PipeBlock) block, entry);
-                    if (isClientSide != null) return isClientSide;
-                }
+            for (var entry : PipeBlock.DIR_SHAPES.entrySet()) {
+                InteractionResult isClientSide = getInteractionResult(context, level, pos, state, (PipeBlock) block, entry);
+                if (isClientSide != null) return isClientSide;
+            }
+
+            for (var entry : PipeBlock.DIR_SHAPES_END.entrySet()) {
+                InteractionResult isClientSide = getInteractionResult(context, level, pos, state, (PipeBlock) block, entry);
+                if (isClientSide != null) return isClientSide;
             }
         }
 
@@ -149,5 +177,10 @@ public class WrenchItem extends Item {
         }
         
         return ConnectionType.BLOCKED;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        Utility.addTooltip(this.getRegistryName().getPath(), tooltip);
     }
 }

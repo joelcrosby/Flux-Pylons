@@ -4,6 +4,7 @@
   "block.fluxpylons.crate": "Crate",
   "block.fluxpylons.pipe": "Pipe",
   "block.fluxpylons.adv_pipe": "Advanced Pipe",
+  
   "item.fluxpylons.wrench": "Wrench",
   "item.fluxpylons.upgrade_extract": "Extract Upgrade",
   "item.fluxpylons.upgrade_fluid_extract": "Fluid Extract Upgrade",
@@ -11,5 +12,11 @@
   
   "container.fluxpylons.crate": "Crate",
   "container.fluxpylons.pipe": "Pipe",
-  "container.fluxpylons.adv_pipe": "Advanced Pipe"
+  "container.fluxpylons.adv_pipe": "Advanced Pipe",
+
+  "info.fluxpylons.shift": "Hold Shift for more info",
+  "info.fluxpylons.crate": "Simple storage crate",
+  "info.fluxpylons.wrench": "Use on pipes to disable connections and sneak while using to remove pipes instantly",
+  "info.fluxpylons.pipe": "Basic dynamic pipe capable of moving items, fluids and energy simultaneously!",
+  "info.fluxpylons.adv_pipe": "Advanced dynamic pipe capable of moving items, fluids and energy simultaneously!"
 }
