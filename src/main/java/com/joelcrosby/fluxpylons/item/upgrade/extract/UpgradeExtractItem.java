@@ -23,6 +23,7 @@ public class UpgradeExtractItem extends UpgradeItem {
 
         if (itemHandler == null) return;
 
+        Slots:
         for (var i = 0; i < itemHandler.getSlots(); i++) {
             var slot = itemHandler.getStackInSlot(i);
             if (slot.isEmpty()) {
@@ -35,27 +36,25 @@ public class UpgradeExtractItem extends UpgradeItem {
             }
 
             var destinations = node.getNetwork().getRelativeDestinations(GraphDestinationType.ITEMS, source.getBlockPos());
-            var destination = destinations.stream().findFirst().orElse(null);
 
-            if (destination == null) return;
+            for (var destination : destinations) {
+                var destinationEntity = destination.getConnectedBlockEntity();
+                if (destinationEntity == null) return;
 
+                if (destination.getConnectedBlockEntity().getBlockPos() == source.getBlockPos()) {
+                    throw new RuntimeException("destination cannot be the same as source");
+                }
 
-            var destinationEntity = destination.getConnectedBlockEntity();
-            if (destinationEntity == null) return;
-
-            if (destination.getConnectedBlockEntity().getBlockPos() == source.getBlockPos()) {
-                throw new RuntimeException("destination cannot be the same as source");
-            }
-
-            var incomingDirection = destination.incomingDirection();
-            var destinationHandler = destinationEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection).orElse(null);
+                var incomingDirection = destination.incomingDirection();
+                var destinationHandler = destinationEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection).orElse(null);
 
 
-            if (ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true).isEmpty()) {
-                var extracted = itemHandler.extractItem(i, stackSize, false);
-                ItemHandlerHelper.insertItem(destinationHandler, extracted, false);
+                if (ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true).isEmpty()) {
+                    var extracted = itemHandler.extractItem(i, stackSize, false);
+                    ItemHandlerHelper.insertItem(destinationHandler, extracted, false);
 
-                break;
+                    break Slots;
+                }
             }
         }
     }

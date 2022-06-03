@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.*;
@@ -113,6 +114,9 @@ public class GraphScanner {
             
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facingDirection)
                 .ifPresent(handler -> destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.ITEMS)));
+            
+            blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facingDirection)
+                .ifPresent(handler -> destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.FLUIDS)));
         }
     }
 }

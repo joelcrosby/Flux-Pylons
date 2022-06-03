@@ -77,7 +77,7 @@ public class GraphNode {
 
         sendBlockUpdate();
     }
-
+    
     public void sendBlockUpdate() {
         BlockState state = level.getBlockState(pos);
         level.sendBlockUpdated(pos, state, state, 1 | 2);

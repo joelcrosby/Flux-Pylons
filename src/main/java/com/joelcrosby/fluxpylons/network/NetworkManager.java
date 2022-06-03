@@ -180,7 +180,8 @@ public class NetworkManager extends SavedData {
             }
 
             if (adjacent.getNetwork() != originNode.getNetwork()) {
-                throw new RuntimeException("The origin node network is different than the adjacent node network");
+                LOGGER.debug("The origin node network is different than the adjacent node network");
+                return;
             }
         }
 
@@ -233,9 +234,15 @@ public class NetworkManager extends SavedData {
         for (var dir : Direction.values()) {
             var adjNode = getNode(node.getPos().relative(dir));
 
-            if (adjNode != null && adjNode.getNodeType() == node.getNodeType()) {
-                nodes.add(adjNode);
+            if (adjNode == null) {
+                continue;
             }
+            
+            if (adjNode.getNodeType() != node.getNodeType()) {
+                continue;
+            }
+            
+            nodes.add(adjNode);
         }
 
         return nodes;

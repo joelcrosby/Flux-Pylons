@@ -19,11 +19,12 @@ public record GraphDestination(BlockPos receiver, Direction incomingDirection, G
         var that = (GraphDestination) o;
         return Objects.equals(receiver, that.receiver) &&
                 incomingDirection == that.incomingDirection &&
-                Objects.equals(connectedNode.getPos(), that.connectedNode.getPos());
+                Objects.equals(connectedNode.getPos(), that.connectedNode.getPos())
+                && destinationType == that.destinationType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(receiver, incomingDirection, connectedNode.getPos());
+        return Objects.hash(receiver, incomingDirection, connectedNode.getPos(), destinationType);
     }
 }

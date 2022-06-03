@@ -24,7 +24,7 @@ public class PipeUpgradeManager implements MenuProvider {
     private final Direction dir;
 
     private int ticks;
-    private static final int tickInterval = 20;
+    private static final int tickInterval = 10;
 
     public final PipeUpgradeContainer pipeUpgradeContainer;
     

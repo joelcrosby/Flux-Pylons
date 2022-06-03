@@ -8,6 +8,7 @@ import com.joelcrosby.fluxpylons.crate.CrateBlock;
 import com.joelcrosby.fluxpylons.crate.CrateBlockEntity;
 import com.joelcrosby.fluxpylons.crate.CrateContainerMenu;
 import com.joelcrosby.fluxpylons.item.*;
+import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeFluidExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterContainer;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterContainerMenu;
 import com.joelcrosby.fluxpylons.pipe.PipeUpgradeContainer;
@@ -56,6 +57,7 @@ public class Common {
 
         registry.register(new WrenchItem().setRegistryName("wrench"));
         registry.register(new UpgradeExtractItem().setRegistryName("upgrade_extract"));
+        registry.register(new UpgradeFluidExtractItem().setRegistryName("upgrade_fluid_extract"));
         registry.register(new UpgradeFilterItem().setRegistryName("upgrade_filter"));
         
         ForgeRegistries.BLOCKS.getValues().stream()

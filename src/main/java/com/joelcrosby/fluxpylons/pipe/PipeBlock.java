@@ -1,6 +1,7 @@
 package com.joelcrosby.fluxpylons.pipe;
 
 import com.google.common.collect.ImmutableMap;
+import com.joelcrosby.fluxpylons.item.WrenchItem;
 import com.joelcrosby.fluxpylons.setup.Common;
 import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.network.NetworkManager;
@@ -34,6 +35,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -104,6 +106,10 @@ public class PipeBlock extends BaseEntityBlock {
 
         if (!state.getValue(DIRECTIONS.get(dir)).isEnd()) {
             return InteractionResult.FAIL; 
+        }
+        
+        if (!player.isCrouching() && player.getItemInHand(player.getUsedItemHand()).getItem() instanceof WrenchItem) {
+            return InteractionResult.FAIL;
         }
         
         if (entity instanceof PipeBlockEntity && player instanceof ServerPlayer) {
@@ -282,6 +288,11 @@ public class PipeBlock extends BaseEntityBlock {
 
             var energyHandler = tile.getCapability(CapabilityEnergy.ENERGY, opposite).orElse(null);
             if (energyHandler != null) {
+                return ConnectionType.END;
+            }
+
+            var fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite).orElse(null);
+            if (fluidHandler != null) {
                 return ConnectionType.END;
             }
         }
