@@ -3,26 +3,27 @@ package com.joelcrosby.fluxpylons.item.upgrade.extract;
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import com.joelcrosby.fluxpylons.network.graph.GraphDestinationType;
 import com.joelcrosby.fluxpylons.network.graph.GraphNode;
+import com.joelcrosby.fluxpylons.network.graph.GraphNodeType;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class UpgradeFluidExtractItem extends UpgradeItem {
-    private static final int stackSize = 200;
-    
     @Override
-    public void update(GraphNode node, Direction dir) {
+    public void update(GraphNode node, Direction dir, GraphNodeType nodeType) {
         var level = node.getLevel();
         var source = level.getBlockEntity(node.getPos().relative(dir));
 
         if (source == null) return;
 
         var fluidHandler = source
-                .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir)
+                .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite())
                 .orElse(null);
 
         if (fluidHandler == null) return;
 
+        var rate = nodeType.getFluidTransferRate();
+        
         Tanks:
         for (var i = 0; i < fluidHandler.getTanks(); i++) {
             var availableFluid = fluidHandler.getFluidInTank(i);
@@ -30,7 +31,7 @@ public class UpgradeFluidExtractItem extends UpgradeItem {
                 continue;
             }
 
-            var simulatedExtract = fluidHandler.drain(stackSize, IFluidHandler.FluidAction.SIMULATE);
+            var simulatedExtract = fluidHandler.drain(rate, IFluidHandler.FluidAction.SIMULATE);
             if (simulatedExtract.isEmpty()) {
                 continue;
             }
@@ -54,7 +55,7 @@ public class UpgradeFluidExtractItem extends UpgradeItem {
                 if (destinationHandler == null) continue;
 
                 if (destinationHandler.fill(simulatedExtract, IFluidHandler.FluidAction.SIMULATE) != 0) {
-                    var extracted = fluidHandler.drain(stackSize, IFluidHandler.FluidAction.EXECUTE);
+                    var extracted = fluidHandler.drain(rate, IFluidHandler.FluidAction.EXECUTE);
                     destinationHandler.fill(extracted, IFluidHandler.FluidAction.EXECUTE);
 
                     break Tanks;

@@ -103,12 +103,23 @@ public class Utility {
         if (Screen.hasShiftDown()) {
             var content = I18n.get("info." + FluxPylons.ID + "." + name).split("\n");
             for (var s : content)
-                tooltip.add(new TextComponent(s).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_AQUA)));
+                tooltip.add(new TextComponent(s).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
         } else {
             tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".shift").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
         }
     }
 
+    public static void addTooltip(String name, List<Component> textComponents, List<Component> tooltip) {
+        if (Screen.hasShiftDown()) {
+            var content = I18n.get("info." + FluxPylons.ID + "." + name).split("\n");
+            for (var s : content)
+                tooltip.add(new TextComponent(s).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
+        } else {
+            tooltip.addAll(textComponents);
+            tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".shift").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+        }
+    }
+    
     public interface IMergeItemStack {
         boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection);
     }

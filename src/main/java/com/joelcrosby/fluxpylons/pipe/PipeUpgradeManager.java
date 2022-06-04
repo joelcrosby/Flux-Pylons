@@ -35,12 +35,18 @@ public class PipeUpgradeManager implements MenuProvider {
     }
     
     public void update() {
+        var upgrades = pipeUpgradeContainer.getUpgrades();
+        
+        for (var upgrade : upgrades.fluids()) {
+            upgrade.update(node, dir, node.getNodeType());
+        }
+        
         if (tickInterval != 0 && (ticks++) % tickInterval != 0) {
             return;
         }
         
-        for (var upgrade : pipeUpgradeContainer.getUpgrades()) {
-            upgrade.update(node, dir);
+        for (var upgrade : upgrades.items()) {
+            upgrade.update(node, dir, node.getNodeType());
         }
     }
     

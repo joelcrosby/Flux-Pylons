@@ -1,6 +1,5 @@
 package com.joelcrosby.fluxpylons.item;
 
-import com.joelcrosby.fluxpylons.setup.Common;
 import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.crate.CrateBlock;
 import com.joelcrosby.fluxpylons.crate.CrateBlockEntity;
@@ -8,17 +7,14 @@ import com.joelcrosby.fluxpylons.network.NetworkManager;
 import com.joelcrosby.fluxpylons.pipe.ConnectionType;
 import com.joelcrosby.fluxpylons.pipe.PipeBlock;
 import com.joelcrosby.fluxpylons.pipe.PipeBlockEntity;
+import com.joelcrosby.fluxpylons.setup.Common;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -182,5 +178,10 @@ public class WrenchItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         Utility.addTooltip(this.getRegistryName().getPath(), tooltip);
+    }
+
+    @Override
+    public Rarity getRarity(ItemStack itemStack) {
+        return Rarity.UNCOMMON;
     }
 }

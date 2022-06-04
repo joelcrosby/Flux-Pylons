@@ -7,16 +7,30 @@ public enum GraphNodeType {
     ADVANCED;
 
     public int getCapacity() {
-        return getTransferRate() * 8;
+        return getEnergyTransferRate() * 8;
     }
 
-    public int getTransferRate() {
+    public int getEnergyTransferRate() {
         return switch (this) {
             case BASIC -> 512;
             case ADVANCED -> 1024 * 4;
         };
     }
 
+    public int getFluidTransferRate() {
+        return switch (this) {
+            case BASIC -> 10;
+            case ADVANCED -> 20;
+        };
+    }
+    
+    public int getItemTransferRate() {
+        return switch (this) {
+            case BASIC -> 8;
+            case ADVANCED -> 16;
+        };
+    }
+    
     public GraphNodeType getEntityType(PipeType pipeType) {
         return switch (pipeType) {
             case BASIC -> GraphNodeType.BASIC;

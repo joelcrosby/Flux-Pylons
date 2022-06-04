@@ -2,7 +2,6 @@ package com.joelcrosby.fluxpylons.network;
 
 import com.joelcrosby.fluxpylons.network.graph.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
@@ -10,7 +9,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Network {
     private final Graph graph;
@@ -33,7 +31,7 @@ public class Network {
         this.nodeType = nodeType;
         this.graph = new Graph(this, this.nodeType);
 
-        this.storage = new NetworkEnergyStorage(nodeType.getCapacity(), nodeType.getTransferRate(), nodeType.getTransferRate());
+        this.storage = new NetworkEnergyStorage(nodeType.getCapacity(), nodeType.getEnergyTransferRate(), nodeType.getEnergyTransferRate());
         this.lazyStorage = LazyOptional.of(() -> this.storage);
         
         this.setOriginPos(originPos);
@@ -147,7 +145,7 @@ public class Network {
                     continue;
                 }
 
-                var toOffer = Math.min(this.nodeType.getTransferRate(), this.storage.getEnergyStored());
+                var toOffer = Math.min(this.nodeType.getEnergyTransferRate(), this.storage.getEnergyStored());
                 if (toOffer <= 0) {
                     break;
                 }

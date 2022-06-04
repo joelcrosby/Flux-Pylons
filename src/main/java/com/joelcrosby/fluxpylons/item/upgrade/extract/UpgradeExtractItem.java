@@ -3,22 +3,22 @@ package com.joelcrosby.fluxpylons.item.upgrade.extract;
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import com.joelcrosby.fluxpylons.network.graph.GraphDestinationType;
 import com.joelcrosby.fluxpylons.network.graph.GraphNode;
+import com.joelcrosby.fluxpylons.network.graph.GraphNodeType;
 import net.minecraft.core.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class UpgradeExtractItem extends UpgradeItem {
-    private static final int stackSize = 16;
     
     @Override
-    public void update(GraphNode node, Direction dir) {
+    public void update(GraphNode node, Direction dir, GraphNodeType nodeType) {
         var level = node.getLevel();
         var source = level.getBlockEntity(node.getPos().relative(dir));
 
         if (source == null) return;
 
         var itemHandler = source
-                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite())
                 .orElse(null);
 
         if (itemHandler == null) return;
@@ -30,7 +30,9 @@ public class UpgradeExtractItem extends UpgradeItem {
                 continue;
             }
 
-            var simulatedExtract = itemHandler.extractItem(i, stackSize, true);
+            var rate = nodeType.getItemTransferRate();
+            
+            var simulatedExtract = itemHandler.extractItem(i, rate, true);
             if (simulatedExtract.isEmpty()) {
                 continue;
             }
@@ -54,7 +56,7 @@ public class UpgradeExtractItem extends UpgradeItem {
                 if (destinationHandler == null) continue;
 
                 if (ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true).isEmpty()) {
-                    var extracted = itemHandler.extractItem(i, stackSize, false);
+                    var extracted = itemHandler.extractItem(i, rate, false);
                     ItemHandlerHelper.insertItem(destinationHandler, extracted, false);
 
                     break Slots;

@@ -1,17 +1,23 @@
 package com.joelcrosby.fluxpylons.pipe;
 
 import com.google.common.collect.ImmutableMap;
-import com.joelcrosby.fluxpylons.item.WrenchItem;
-import com.joelcrosby.fluxpylons.setup.Common;
+import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.Utility;
+import com.joelcrosby.fluxpylons.item.WrenchItem;
 import com.joelcrosby.fluxpylons.network.NetworkManager;
+import com.joelcrosby.fluxpylons.setup.Common;
 import com.joelcrosby.fluxpylons.util.Raytracer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -44,6 +50,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +91,7 @@ public class PipeBlock extends BaseEntityBlock {
     private final PipeType pipeType;
 
     public PipeBlock(PipeType pipeType) {
-        super(Block.Properties.of(Material.STONE).strength(2).sound(SoundType.COPPER).noOcclusion());
+        super(Block.Properties.of(Material.STONE).strength(2).sound(SoundType.COPPER).requiresCorrectToolForDrops());
         
         this.pipeType = pipeType;
 
@@ -100,11 +107,9 @@ public class PipeBlock extends BaseEntityBlock {
     @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        
-
-        if (!(player.getItemInHand(player.getUsedItemHand()).getItem() instanceof WrenchItem)) {
-            return InteractionResult.PASS;
-        }
+//        if (!(player.getItemInHand(player.getUsedItemHand()).getItem() instanceof WrenchItem)) {
+//            return InteractionResult.PASS;
+//        }
         
         var dir = getPipeEndDirectionClicked(pos, result.getLocation());
         var entity = world.getBlockEntity(pos);
@@ -112,7 +117,7 @@ public class PipeBlock extends BaseEntityBlock {
         if (entity == null)
             return InteractionResult.FAIL;
 
-        if (entity instanceof PipeBlockEntity && !state.getValue(DIRECTIONS.get(dir)).isEnd()) {
+        if (state.getBlock() instanceof PipeBlock && !state.getValue(DIRECTIONS.get(dir)).isEnd()) {
             return InteractionResult.FAIL;
         }
         
@@ -291,6 +296,7 @@ public class PipeBlock extends BaseEntityBlock {
         return state;
     }
 
+    @SuppressWarnings("CommentedOutCode")
     public ConnectionType getConnectionType(LevelAccessor world, BlockPos pos, Direction direction) {
         var offset = pos.relative(direction);
         
@@ -350,9 +356,23 @@ public class PipeBlock extends BaseEntityBlock {
         
         return null;
     }
-
+    
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        Utility.addTooltip(this.getRegistryName().getPath(), tooltip);
+        var energyRate = this.pipeType.getNodeType().getEnergyTransferRate();
+        var fluidRate = this.pipeType.getNodeType().getFluidTransferRate();
+        var itemRate = this.pipeType.getNodeType().getItemTransferRate();
+        
+        var energyText = I18n.get("terms." + FluxPylons.ID + ".energy") + " " + energyRate + " FE/t";
+        var fluidText = I18n.get("terms." + FluxPylons.ID + ".fluids") + " " +  fluidRate + " MB/t";
+        var itemText = I18n.get("terms." + FluxPylons.ID + ".items") + " " +  itemRate + " Items/0.5s";
+        
+        var energyComponent = new TextComponent(energyText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
+        var fluidComponent = new TextComponent(fluidText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
+        var itemComponent = new TextComponent(itemText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
+        
+        List<Component> components = Arrays.asList(energyComponent, fluidComponent, itemComponent);
+        
+        Utility.addTooltip(this.getRegistryName().getPath(), components, tooltip);
     }
 }

@@ -1,12 +1,21 @@
 package com.joelcrosby.fluxpylons.item.upgrade;
 
+import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.network.graph.GraphNode;
+import com.joelcrosby.fluxpylons.network.graph.GraphNodeType;
 import com.joelcrosby.fluxpylons.pipe.PipeBlock;
 import com.joelcrosby.fluxpylons.setup.Common;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 
 public abstract class UpgradeItem extends Item {
@@ -14,7 +23,7 @@ public abstract class UpgradeItem extends Item {
         super(new Item.Properties().stacksTo(16).tab(Common.TAB));
     }
 
-    public abstract void update(GraphNode node, Direction dir);
+    public abstract void update(GraphNode node, Direction dir, GraphNodeType nodeType);
     
     @Override
     public InteractionResult useOn(UseOnContext context) {
@@ -33,5 +42,15 @@ public abstract class UpgradeItem extends Item {
         }
 
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        Utility.addTooltip(this.getRegistryName().getPath(), tooltip);
+    }
+
+    @Override
+    public Rarity getRarity(ItemStack itemStack) {
+        return Rarity.UNCOMMON;
     }
 }

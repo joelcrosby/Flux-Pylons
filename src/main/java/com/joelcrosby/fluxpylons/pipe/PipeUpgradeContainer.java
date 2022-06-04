@@ -1,6 +1,8 @@
 package com.joelcrosby.fluxpylons.pipe;
 
-import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
+import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeExtractItem;
+import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeFluidExtractItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterItem;
 import com.joelcrosby.fluxpylons.network.NetworkManager;
 import com.joelcrosby.fluxpylons.network.graph.GraphNode;
 import net.minecraft.world.Container;
@@ -10,7 +12,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class PipeUpgradeContainer implements Container {
     private final PipeUpgradeItemStackHandler items;
@@ -23,8 +24,10 @@ public class PipeUpgradeContainer implements Container {
         return items;
     }
     
-    public List<UpgradeItem> getUpgrades() {
-        var upgrades = new ArrayList<UpgradeItem>(items.getSlots());
+    public PipeUpgrades getUpgrades() {
+        var itemUpgrades = new ArrayList<UpgradeExtractItem>();
+        var fluidUpgrades = new ArrayList<UpgradeFluidExtractItem>();
+        var filterUpgrades = new ArrayList<UpgradeFilterItem>();
         
         for (var i = 0; i < items.getSlots(); i++) {
             var inSlot = items.getStackInSlot(i);
@@ -33,12 +36,15 @@ public class PipeUpgradeContainer implements Container {
 
             var item = inSlot.getItem();
 
-            if (item instanceof UpgradeItem) {
-                upgrades.add((UpgradeItem) item);
-            }
+            if (item instanceof UpgradeExtractItem ue)
+                itemUpgrades.add(ue);
+            if (item instanceof UpgradeFluidExtractItem uf)
+                fluidUpgrades.add(uf);
+            if (item instanceof UpgradeFilterItem ufi)
+                filterUpgrades.add(ufi);
         }
         
-        return upgrades;
+        return new PipeUpgrades(itemUpgrades, fluidUpgrades, filterUpgrades);
     }
 
     public static PipeUpgradeItemStackHandler createItemFilterInventory(@Nullable Level level) {

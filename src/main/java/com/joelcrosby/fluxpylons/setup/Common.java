@@ -7,13 +7,11 @@ import com.joelcrosby.fluxpylons.FluxPylonsItems;
 import com.joelcrosby.fluxpylons.crate.CrateBlock;
 import com.joelcrosby.fluxpylons.crate.CrateBlockEntity;
 import com.joelcrosby.fluxpylons.crate.CrateContainerMenu;
-import com.joelcrosby.fluxpylons.item.*;
+import com.joelcrosby.fluxpylons.item.WrenchItem;
+import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeFluidExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterContainer;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterContainerMenu;
-import com.joelcrosby.fluxpylons.pipe.PipeUpgradeContainer;
-import com.joelcrosby.fluxpylons.pipe.PipeUpgradeContainerMenu;
-import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterItem;
 import com.joelcrosby.fluxpylons.pipe.*;
 import net.minecraft.world.inventory.MenuType;
@@ -27,7 +25,6 @@ import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Common {
@@ -59,10 +56,10 @@ public class Common {
         registry.register(new UpgradeExtractItem().setRegistryName("upgrade_extract"));
         registry.register(new UpgradeFluidExtractItem().setRegistryName("upgrade_fluid_extract"));
         registry.register(new UpgradeFilterItem().setRegistryName("upgrade_filter"));
-        
-        ForgeRegistries.BLOCKS.getValues().stream()
-                .filter(b -> b.getRegistryName().getNamespace().equals(FluxPylons.ID))
-                .forEach(b -> registry.register(new BlockItem(b, new Item.Properties().tab(TAB)).setRegistryName(b.getRegistryName())));
+
+        registry.register(new BlockItem(FluxPylonsBlocks.CRATE, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.CRATE.getRegistryName()));
+        registry.register(new BlockItem(FluxPylonsBlocks.BASIC_PIPE, new Item.Properties().rarity(Rarity.UNCOMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.BASIC_PIPE.getRegistryName()));
+        registry.register(new BlockItem(FluxPylonsBlocks.ADV_PIPE, new Item.Properties().rarity(Rarity.RARE).tab(TAB)).setRegistryName(FluxPylonsBlocks.ADV_PIPE.getRegistryName()));
     }
 
     @SubscribeEvent
