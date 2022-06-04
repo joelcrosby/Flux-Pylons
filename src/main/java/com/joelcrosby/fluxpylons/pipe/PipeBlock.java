@@ -107,10 +107,6 @@ public class PipeBlock extends BaseEntityBlock {
     @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-//        if (!(player.getItemInHand(player.getUsedItemHand()).getItem() instanceof WrenchItem)) {
-//            return InteractionResult.PASS;
-//        }
-        
         var dir = getPipeEndDirectionClicked(pos, result.getLocation());
         var entity = world.getBlockEntity(pos);
 
