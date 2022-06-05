@@ -110,10 +110,11 @@ public class PipeBlock extends BaseEntityBlock {
         var dir = getPipeEndDirectionClicked(pos, result.getLocation());
         var entity = world.getBlockEntity(pos);
 
-        if (entity == null)
+        if (entity == null) {
             return InteractionResult.FAIL;
+        }
 
-        if (state.getBlock() instanceof PipeBlock && !state.getValue(DIRECTIONS.get(dir)).isEnd()) {
+        if (state.getBlock() instanceof PipeBlock && dir != null && !state.getValue(DIRECTIONS.get(dir)).isEnd()) {
             return InteractionResult.FAIL;
         }
         
