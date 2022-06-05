@@ -48,6 +48,14 @@ public class UpgradeFluidExtractItem extends UpgradeItem {
                     throw new RuntimeException("destination cannot be the same as source");
                 }
 
+                var upgradeManager = destination.getConnectedUpgradeManager();
+                var isFiltered = !upgradeManager.getFluidFilterUpgrades().isEmpty();
+                var filterFluids = upgradeManager.getFilterFluids();
+
+                if (isFiltered && !filterFluids.contains(simulatedExtract.getRawFluid().getRegistryName().toString())) {
+                    continue;
+                }
+                
                 var incomingDirection = destination.incomingDirection().getOpposite();
                 var destinationHandler = destinationEntity
                         .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, incomingDirection)

@@ -361,8 +361,8 @@ public class PipeBlock extends BaseEntityBlock {
         var itemRate = this.pipeType.getNodeType().getItemTransferRate();
         
         var energyText = I18n.get("terms." + FluxPylons.ID + ".energy") + " " + energyRate + " FE/t";
-        var fluidText = I18n.get("terms." + FluxPylons.ID + ".fluids") + " " +  fluidRate + " MB/t";
-        var itemText = I18n.get("terms." + FluxPylons.ID + ".items") + " " +  itemRate + " Items/0.5s";
+        var fluidText = I18n.get("terms." + FluxPylons.ID + ".extractFluids") + " " +  fluidRate + " MB/t";
+        var itemText = I18n.get("terms." + FluxPylons.ID + ".extractItems") + " " +  itemRate + " Items/0.5s";
         
         var energyComponent = new TextComponent(energyText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
         var fluidComponent = new TextComponent(fluidText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));

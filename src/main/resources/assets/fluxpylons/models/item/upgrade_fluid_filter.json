@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "fluxpylons:item/upgrade_fluid_filter"
+  }
+}

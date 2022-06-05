@@ -37,7 +37,7 @@ public class PipeUpgradeManager {
     public void update() {
         var upgrades = pipeUpgradeContainer.getUpgrades();
         
-        for (var upgrade : upgrades.fluids()) {
+        for (var upgrade : upgrades.extractFluids()) {
             var upgradeItem = (UpgradeItem) upgrade.getItem();
             upgradeItem.update(upgrade, node, dir, node.getNodeType());
         }
@@ -46,7 +46,7 @@ public class PipeUpgradeManager {
             return;
         }
         
-        for (var upgrade : upgrades.items()) {
+        for (var upgrade : upgrades.extractItems()) {
             var upgradeItem = (UpgradeItem) upgrade.getItem();
             upgradeItem.update(upgrade, node, dir, node.getNodeType());
         }
@@ -55,9 +55,17 @@ public class PipeUpgradeManager {
     public List<ItemStack> getFilterUpgrades() {
         return this.pipeUpgradeContainer.getUpgrades().filters();
     }
+
+    public List<ItemStack> getFluidFilterUpgrades() {
+        return this.pipeUpgradeContainer.getUpgrades().fluidFilters();
+    }
     
     public Set<String> getFilterItemNames() {
         return this.pipeUpgradeContainer.getUpgrades().filterItemRegistryNames();
+    }    
+    
+    public Set<String> getFilterFluids() {
+        return this.pipeUpgradeContainer.getUpgrades().filterFluidRegistryNames();
     }
     
     public void OpenContainerMenu(ServerPlayer player) {

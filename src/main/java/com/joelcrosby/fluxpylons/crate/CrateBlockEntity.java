@@ -103,12 +103,12 @@ public class CrateBlockEntity extends BlockEntity implements Container, MenuProv
     @Override
     public void saveAdditional(CompoundTag compound) {
         super.saveAdditional(compound);
-        compound.put("items", this.items.serializeNBT());
+        compound.put("extractItems", this.items.serializeNBT());
     }
 
     @Override
     public void load(CompoundTag compound) {
-        this.items.deserializeNBT(compound.getCompound("items"));
+        this.items.deserializeNBT(compound.getCompound("extractItems"));
         super.load(compound);
     }
 
