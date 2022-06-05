@@ -11,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class PipeUpgradeContainer implements Container {
     private PipeUpgrades upgrades;
@@ -46,26 +48,47 @@ public class PipeUpgradeContainer implements Container {
     }
     
     private PipeUpgrades cacheUpgrades() {
-        var itemUpgrades = new ArrayList<UpgradeExtractItem>();
-        var fluidUpgrades = new ArrayList<UpgradeFluidExtractItem>();
-        var filterUpgrades = new ArrayList<UpgradeFilterItem>();
+        var itemUpgrades = new ArrayList<ItemStack>();
+        var fluidUpgrades = new ArrayList<ItemStack>();
+        var filterUpgrades = new ArrayList<ItemStack>();
 
         for (var i = 0; i < items.getSlots(); i++) {
-            var inSlot = items.getStackInSlot(i);
+            var stack = items.getStackInSlot(i);
 
-            if (inSlot.isEmpty()) continue;
+            if (stack.isEmpty()) continue;
 
-            var item = inSlot.getItem();
+            var item = stack.getItem();
 
-            if (item instanceof UpgradeExtractItem ue)
-                itemUpgrades.add(ue);
-            if (item instanceof UpgradeFluidExtractItem uf)
-                fluidUpgrades.add(uf);
-            if (item instanceof UpgradeFilterItem ufi)
-                filterUpgrades.add(ufi);
+            if (item instanceof UpgradeExtractItem)
+                itemUpgrades.add(stack);
+            if (item instanceof UpgradeFluidExtractItem)
+                fluidUpgrades.add(stack);
+            if (item instanceof UpgradeFilterItem)
+                filterUpgrades.add(stack);
         }
 
-        return new PipeUpgrades(itemUpgrades, fluidUpgrades, filterUpgrades);
+        var filterRegistryNames = getFilterItemRegistryNames(filterUpgrades);
+        
+        return new PipeUpgrades(itemUpgrades, fluidUpgrades, filterUpgrades, filterRegistryNames);
+    }
+    
+    private HashSet<String> getFilterItemRegistryNames(List<ItemStack> filters) {
+        return filters.stream()
+                .map(stack -> {
+                    var names = new HashSet<String>();
+                    var inventory = UpgradeFilterItem.getInventory(stack);
+
+                    for (var i = 0; i < inventory.getSlots(); i++) {
+                        var slotStack = inventory.getStackInSlot(i);
+
+                        if (slotStack.isEmpty()) continue;
+
+                        names.add(slotStack.getItem().getDescriptionId());
+                    }
+
+                    return names;
+                })
+                .reduce(new HashSet<>(), (prev, curr) -> { prev.addAll(curr); return prev; });
     }
     
     @Override

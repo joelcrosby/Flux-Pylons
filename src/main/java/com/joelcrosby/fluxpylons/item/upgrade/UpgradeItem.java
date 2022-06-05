@@ -23,7 +23,7 @@ public abstract class UpgradeItem extends Item {
         super(new Item.Properties().stacksTo(1).tab(Common.TAB));
     }
 
-    public abstract void update(GraphNode node, Direction dir, GraphNodeType nodeType);
+    public abstract void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType);
     
     @Override
     public InteractionResult useOn(UseOnContext context) {

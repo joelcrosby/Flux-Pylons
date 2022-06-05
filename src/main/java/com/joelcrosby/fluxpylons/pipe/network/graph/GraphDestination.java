@@ -1,5 +1,6 @@
 package com.joelcrosby.fluxpylons.pipe.network.graph;
 
+import com.joelcrosby.fluxpylons.pipe.PipeUpgradeManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -10,6 +11,10 @@ public record GraphDestination(BlockPos receiver, Direction incomingDirection, G
 
     public BlockEntity getConnectedBlockEntity() {
         return connectedNode.getLevel().getBlockEntity(receiver);
+    }
+    
+    public PipeUpgradeManager getConnectedUpgradeManager() {
+        return connectedNode.getUpgradeManager(incomingDirection);
     }
     
     @Override

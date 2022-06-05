@@ -5,12 +5,13 @@ import com.joelcrosby.fluxpylons.pipe.network.graph.GraphDestinationType;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNodeType;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class UpgradeFluidExtractItem extends UpgradeItem {
     @Override
-    public void update(GraphNode node, Direction dir, GraphNodeType nodeType) {
+    public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {
         var level = node.getLevel();
         var source = level.getBlockEntity(node.getPos().relative(dir));
 

@@ -1,6 +1,7 @@
 package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,8 +11,12 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
+
+import java.util.List;
+import java.util.Set;
 
 
 public class PipeUpgradeManager {
@@ -33,7 +38,8 @@ public class PipeUpgradeManager {
         var upgrades = pipeUpgradeContainer.getUpgrades();
         
         for (var upgrade : upgrades.fluids()) {
-            upgrade.update(node, dir, node.getNodeType());
+            var upgradeItem = (UpgradeItem) upgrade.getItem();
+            upgradeItem.update(upgrade, node, dir, node.getNodeType());
         }
         
         if (tickInterval != 0 && (ticks++) % tickInterval != 0) {
@@ -41,8 +47,17 @@ public class PipeUpgradeManager {
         }
         
         for (var upgrade : upgrades.items()) {
-            upgrade.update(node, dir, node.getNodeType());
+            var upgradeItem = (UpgradeItem) upgrade.getItem();
+            upgradeItem.update(upgrade, node, dir, node.getNodeType());
         }
+    }
+    
+    public List<ItemStack> getFilterUpgrades() {
+        return this.pipeUpgradeContainer.getUpgrades().filters();
+    }
+    
+    public Set<String> getFilterItemNames() {
+        return this.pipeUpgradeContainer.getUpgrades().filterItemRegistryNames();
     }
     
     public void OpenContainerMenu(ServerPlayer player) {
