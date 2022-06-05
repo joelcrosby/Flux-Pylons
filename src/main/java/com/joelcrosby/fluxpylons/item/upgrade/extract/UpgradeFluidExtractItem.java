@@ -1,9 +1,9 @@
 package com.joelcrosby.fluxpylons.item.upgrade.extract;
 
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
-import com.joelcrosby.fluxpylons.network.graph.GraphDestinationType;
-import com.joelcrosby.fluxpylons.network.graph.GraphNode;
-import com.joelcrosby.fluxpylons.network.graph.GraphNodeType;
+import com.joelcrosby.fluxpylons.pipe.network.graph.GraphDestinationType;
+import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
+import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNodeType;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;

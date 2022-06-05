@@ -1,7 +1,7 @@
 package com.joelcrosby.fluxpylons.pipe;
 
-import com.joelcrosby.fluxpylons.network.NetworkManager;
-import com.joelcrosby.fluxpylons.network.graph.GraphNode;
+import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
+import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.setup.Common;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

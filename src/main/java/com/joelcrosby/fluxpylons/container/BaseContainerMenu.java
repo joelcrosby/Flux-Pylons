@@ -11,14 +11,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 
 public class BaseContainerMenu extends AbstractContainerMenu {
-    private final Player player;
-    private final int slots;
+    protected final Player player;
+    protected final int slotCount;
 
-    protected BaseContainerMenu(@Nullable MenuType<?> type, int windowId, Player player, int slots) {
+    protected BaseContainerMenu(@Nullable MenuType<?> type, int windowId, Player player, int slotCount) {
         super(type, windowId);
 
         this.player = player;
-        this.slots = slots;
+        this.slotCount = slotCount;
     }
     
     @SuppressWarnings("SameParameterValue")
@@ -47,7 +47,7 @@ public class BaseContainerMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
-        return Utility.transferStackInSlot(this, this::moveItemStackTo, player, slotIndex, stack -> Pair.of(0, this.slots));
+        return Utility.transferStackInSlot(this, this::moveItemStackTo, player, slotIndex, stack -> Pair.of(0, this.slotCount));
     }
     
     @Override

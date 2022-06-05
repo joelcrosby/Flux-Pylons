@@ -3,21 +3,33 @@ package com.joelcrosby.fluxpylons.pipe;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeFluidExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterItem;
-import com.joelcrosby.fluxpylons.network.NetworkManager;
-import com.joelcrosby.fluxpylons.network.graph.GraphNode;
+import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
+import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class PipeUpgradeContainer implements Container {
-    private final PipeUpgradeItemStackHandler items;
+    private PipeUpgrades upgrades;
+    private final Level level;
+    private final PipeUpgradeItemStackHandler items = new PipeUpgradeItemStackHandler() {
+        @Override
+        protected void onContentsChanged(int slot) {
+            super.onContentsChanged(slot);
+
+            upgrades = cacheUpgrades();
+
+            if (level != null && !level.isClientSide) {
+                NetworkManager.get(level).setDirty();
+            }
+        }
+    };
     
     public PipeUpgradeContainer(GraphNode node) {
-        this.items = createItemFilterInventory(node.getLevel());
+        this.level = node.getLevel();
     }
     
     public PipeUpgradeItemStackHandler getItems() {
@@ -25,10 +37,19 @@ public class PipeUpgradeContainer implements Container {
     }
     
     public PipeUpgrades getUpgrades() {
+        if (this.upgrades != null) {
+            return this.upgrades;
+        }
+        
+        this.upgrades = cacheUpgrades();
+        return this.upgrades;
+    }
+    
+    private PipeUpgrades cacheUpgrades() {
         var itemUpgrades = new ArrayList<UpgradeExtractItem>();
         var fluidUpgrades = new ArrayList<UpgradeFluidExtractItem>();
         var filterUpgrades = new ArrayList<UpgradeFilterItem>();
-        
+
         for (var i = 0; i < items.getSlots(); i++) {
             var inSlot = items.getStackInSlot(i);
 
@@ -43,21 +64,8 @@ public class PipeUpgradeContainer implements Container {
             if (item instanceof UpgradeFilterItem ufi)
                 filterUpgrades.add(ufi);
         }
-        
-        return new PipeUpgrades(itemUpgrades, fluidUpgrades, filterUpgrades);
-    }
 
-    public static PipeUpgradeItemStackHandler createItemFilterInventory(@Nullable Level level) {
-        return new PipeUpgradeItemStackHandler() {
-            @Override
-            protected void onContentsChanged(int slot) {
-                super.onContentsChanged(slot);
-                
-                if (level != null && !level.isClientSide) {
-                    NetworkManager.get(level).setDirty();
-                }
-            }
-        };
+        return new PipeUpgrades(itemUpgrades, fluidUpgrades, filterUpgrades);
     }
     
     @Override

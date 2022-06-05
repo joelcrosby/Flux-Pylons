@@ -1,8 +1,8 @@
-package com.joelcrosby.fluxpylons.network.graph;
+package com.joelcrosby.fluxpylons.pipe.network.graph;
 
-import com.joelcrosby.fluxpylons.network.NetworkEnergyStorage;
-import com.joelcrosby.fluxpylons.network.NetworkManager;
 import com.joelcrosby.fluxpylons.pipe.PipeBlock;
+import com.joelcrosby.fluxpylons.pipe.network.NetworkEnergyStorage;
+import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;

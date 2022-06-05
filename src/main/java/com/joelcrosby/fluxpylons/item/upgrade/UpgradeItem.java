@@ -1,9 +1,9 @@
 package com.joelcrosby.fluxpylons.item.upgrade;
 
 import com.joelcrosby.fluxpylons.Utility;
-import com.joelcrosby.fluxpylons.network.graph.GraphNode;
-import com.joelcrosby.fluxpylons.network.graph.GraphNodeType;
 import com.joelcrosby.fluxpylons.pipe.PipeBlock;
+import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
+import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNodeType;
 import com.joelcrosby.fluxpylons.setup.Common;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public abstract class UpgradeItem extends Item {
     public UpgradeItem() {
-        super(new Item.Properties().stacksTo(16).tab(Common.TAB));
+        super(new Item.Properties().stacksTo(1).tab(Common.TAB));
     }
 
     public abstract void update(GraphNode node, Direction dir, GraphNodeType nodeType);

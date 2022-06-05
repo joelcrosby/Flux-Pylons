@@ -1,36 +1,24 @@
 package com.joelcrosby.fluxpylons.item.upgrade.filter;
 
-import com.joelcrosby.fluxpylons.network.NetworkManager;
-import com.joelcrosby.fluxpylons.network.graph.GraphNode;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-
-import javax.annotation.Nullable;
 
 public class UpgradeFilterContainer implements Container {
+    public static final int SLOTS = 10;
+    
     private final UpgradeFilterItemStackHandler items;
     
-    public UpgradeFilterContainer(GraphNode node) {
-        this.items = createFilterInventory(node.getLevel());
+    public UpgradeFilterContainer() {
+        this.items = createFilterInventory();
     }
     
     public UpgradeFilterItemStackHandler getItems() {
         return items;
     }
 
-    public static UpgradeFilterItemStackHandler createFilterInventory(@Nullable Level level) {
-        return new UpgradeFilterItemStackHandler() {
-            @Override
-            protected void onContentsChanged(int slot) {
-                super.onContentsChanged(slot);
-                
-                if (level != null && !level.isClientSide) {
-                    NetworkManager.get(level).setDirty();
-                }
-            }
-        };
+    public static UpgradeFilterItemStackHandler createFilterInventory() {
+        return new UpgradeFilterItemStackHandler(UpgradeFilterContainer.SLOTS, ItemStack.EMPTY);
     }
     
     @Override

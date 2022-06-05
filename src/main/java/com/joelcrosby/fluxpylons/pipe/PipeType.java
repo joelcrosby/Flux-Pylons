@@ -1,7 +1,7 @@
 package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.FluxPylonsBlockEntities;
-import com.joelcrosby.fluxpylons.network.graph.GraphNodeType;
+import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNodeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public enum PipeType {

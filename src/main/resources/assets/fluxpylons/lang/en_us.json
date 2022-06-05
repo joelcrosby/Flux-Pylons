@@ -13,6 +13,7 @@
   "container.fluxpylons.crate": "Crate",
   "container.fluxpylons.pipe": "Dynamic Pipe",
   "container.fluxpylons.adv_pipe": "Advanced Dynamic Pipe",
+  "container.fluxpylons.upgrade_filter": "Filter Upgrade",
 
   "info.fluxpylons.shift": "Hold Shift for more info",
   "info.fluxpylons.crate": "Simple storage crate",

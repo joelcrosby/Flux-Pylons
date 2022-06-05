@@ -1,17 +1,14 @@
 package com.joelcrosby.fluxpylons.item.upgrade.filter;
 
-import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
-
 public class UpgradeFilterItemStackHandler extends ItemStackHandler  {
+    public ItemStack stack;
 
-    public static final int SIZE = 10;
-
-    public UpgradeFilterItemStackHandler() {
-        super(SIZE);
+    public UpgradeFilterItemStackHandler(int size, ItemStack itemStack) {
+        super(size);
+        this.stack = itemStack;
     }
 
     @Override
@@ -20,7 +17,9 @@ public class UpgradeFilterItemStackHandler extends ItemStackHandler  {
     }
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return stack.getItem() instanceof UpgradeItem;
+    protected void onContentsChanged(int slot) {
+        if (!stack.equals(ItemStack.EMPTY)) {
+            UpgradeFilterItem.setInventory(stack, this);
+        }
     }
 }

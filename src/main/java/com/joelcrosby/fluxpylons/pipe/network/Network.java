@@ -1,6 +1,6 @@
-package com.joelcrosby.fluxpylons.network;
+package com.joelcrosby.fluxpylons.pipe.network;
 
-import com.joelcrosby.fluxpylons.network.graph.*;
+import com.joelcrosby.fluxpylons.pipe.network.graph.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;

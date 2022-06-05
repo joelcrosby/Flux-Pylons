@@ -2,7 +2,6 @@ package com.joelcrosby.fluxpylons.setup;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.FluxPylonsBlocks;
-import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.FluxPylonsItems;
 import com.joelcrosby.fluxpylons.crate.CrateBlock;
 import com.joelcrosby.fluxpylons.crate.CrateBlockEntity;
@@ -10,7 +9,6 @@ import com.joelcrosby.fluxpylons.crate.CrateContainerMenu;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeFluidExtractItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterContainer;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterItem;
 import com.joelcrosby.fluxpylons.pipe.*;
@@ -73,8 +71,8 @@ public class Common {
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new CrateContainerMenu(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos())).setRegistryName("crate"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeUpgradeContainerMenu(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, windowId, inv.player, data.readBlockPos(), PipeUpgradeContainer.createItemFilterInventory(inv.player.level))).setRegistryName("upgrade"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new UpgradeFilterContainerMenu(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, windowId, inv.player, data.readBlockPos(), UpgradeFilterContainer.createFilterInventory(inv.player.level))).setRegistryName("filter"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new CrateContainerMenu(windowId, inv.player, data.readBlockPos())).setRegistryName("crate"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeUpgradeContainerMenu(windowId, inv.player, new PipeUpgradeItemStackHandler())).setRegistryName("upgrade"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new UpgradeFilterContainerMenu(windowId, inv, inv.player, data.readItem())).setRegistryName("filter"));
     }
 }

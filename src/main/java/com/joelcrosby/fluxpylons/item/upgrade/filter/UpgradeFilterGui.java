@@ -1,15 +1,18 @@
 package com.joelcrosby.fluxpylons.item.upgrade.filter;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.network.PacketHandler;
+import com.joelcrosby.fluxpylons.network.packets.PacketGhostSlot;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class UpgradeFilterGui extends AbstractContainerScreen<UpgradeFilterContainerMenu> {
-
+    private final UpgradeFilterContainerMenu container;
     private static final ResourceLocation TEXTURE = new ResourceLocation(FluxPylons.ID, "textures/gui/filter.png");
 
     public UpgradeFilterGui(UpgradeFilterContainerMenu container, Inventory inv, Component titleIn) {
@@ -17,6 +20,7 @@ public class UpgradeFilterGui extends AbstractContainerScreen<UpgradeFilterConta
         
         this.imageWidth = 176;
         this.imageHeight = 153;
+        this.container = container;
     }
     
     @Override
@@ -35,5 +39,20 @@ public class UpgradeFilterGui extends AbstractContainerScreen<UpgradeFilterConta
         this.font.draw(poseStack, this.title.getString(), 8, 6, 4210752);
 
         renderTooltip(poseStack, mouseX - leftPos, mouseY - topPos);
+    }
+
+    @Override
+    public boolean mouseClicked(double x, double y, int btn) {
+        if (hoveredSlot == null || !(hoveredSlot instanceof FilterSlotHandler)) {
+            return super.mouseClicked(x, y, btn);
+        }
+
+        var stack = this.menu.getCarried();// getMinecraft().player.inventoryMenu.getCarried();
+        stack = stack.copy().split(hoveredSlot.getMaxStackSize()); // Limit to slot limit
+        if (ItemHandlerHelper.canItemStacksStack(stack, container.filterItem)) return true;
+        hoveredSlot.set(stack); // Temporarily update the client for continuity purposes
+        PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, stack, stack.getCount()));
+
+        return true;
     }
 }

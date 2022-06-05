@@ -1,20 +1,17 @@
 package com.joelcrosby.fluxpylons.pipe;
 
+import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.container.BaseContainerMenu;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-
-import javax.annotation.Nullable;
 
 public class PipeUpgradeContainerMenu extends BaseContainerMenu {
 
     private final ItemStackHandler itemStackHandler;
 
-    public PipeUpgradeContainerMenu(@Nullable MenuType<?> type, int id, Player player, BlockPos pos, ItemStackHandler itemStackHandler) {
-        super(type, id, player, 10);
+    public PipeUpgradeContainerMenu(int id, Player player, ItemStackHandler itemStackHandler) {
+        super(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, id, player, 10);
         this.itemStackHandler = itemStackHandler;
         
         this.addOwnSlots();

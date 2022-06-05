@@ -5,6 +5,7 @@ import com.joelcrosby.fluxpylons.FluxPylonsBlocks;
 import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.crate.CrateGui;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterGui;
+import com.joelcrosby.fluxpylons.network.PacketHandler;
 import com.joelcrosby.fluxpylons.pipe.PipeRenderer;
 import com.joelcrosby.fluxpylons.pipe.PipeUpgradeGui;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -16,7 +17,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public final class Client {
 
     @SuppressWarnings("unused")
-    public static void setup(FMLClientSetupEvent event) {
+    public static void setup(final FMLClientSetupEvent event) {
+        PacketHandler.register();
+        
         ItemBlockRenderTypes.setRenderLayer(FluxPylonsBlocks.BASIC_PIPE, RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(FluxPylonsBlocks.ADV_PIPE, RenderType.cutout());
 

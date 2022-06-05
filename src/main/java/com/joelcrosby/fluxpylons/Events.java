@@ -1,6 +1,6 @@
 package com.joelcrosby.fluxpylons;
 
-import com.joelcrosby.fluxpylons.network.NetworkManager;
+import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

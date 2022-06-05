@@ -1,8 +1,8 @@
-package com.joelcrosby.fluxpylons.network.graph;
+package com.joelcrosby.fluxpylons.pipe.network.graph;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.pipe.PipeUpgradeManager;
-import com.joelcrosby.fluxpylons.network.Network;
+import com.joelcrosby.fluxpylons.pipe.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

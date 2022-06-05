@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.network.graph;
+package com.joelcrosby.fluxpylons.pipe.network.graph;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

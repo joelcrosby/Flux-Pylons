@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
-import com.joelcrosby.fluxpylons.network.NetworkManager;
+import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import com.joelcrosby.fluxpylons.setup.Common;
 import com.joelcrosby.fluxpylons.util.Raytracer;
 import net.minecraft.ChatFormatting;

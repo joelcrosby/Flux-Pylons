@@ -1,20 +1,18 @@
 package com.joelcrosby.fluxpylons.crate;
 
+import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.container.BaseContainerMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.SlotItemHandler;
-
-import javax.annotation.Nullable;
 
 public class CrateContainerMenu extends BaseContainerMenu {
 
     public final CrateBlockEntity tile;
     
-    public CrateContainerMenu(@Nullable MenuType<?> type, int id, Player player, BlockPos pos) {
-        super(type, id, player, 54);
+    public CrateContainerMenu(int id, Player player, BlockPos pos) {
+        super(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, id, player, 54);
         
         this.tile = Utility.getBlockEntity(CrateBlockEntity.class, player.level, pos);
 

@@ -1,21 +1,28 @@
 package com.joelcrosby.fluxpylons.item.upgrade.filter;
 
+import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.container.BaseContainerMenu;
-import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
-
-import javax.annotation.Nullable;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class UpgradeFilterContainerMenu extends BaseContainerMenu {
+    private final UpgradeFilterItemStackHandler itemStackHandler;
 
-    private final ItemStackHandler itemStackHandler;
+    public ItemStack filterItem;
 
-    public UpgradeFilterContainerMenu(@Nullable MenuType<?> type, int id, Player player, BlockPos pos, ItemStackHandler itemStackHandler) {
-        super(type, id, player, 10);
-        this.itemStackHandler = itemStackHandler;
+    public UpgradeFilterContainerMenu(int windowId, Inventory playerInventory, Player player, FriendlyByteBuf data) {
+        this(windowId, playerInventory, player, data.readItem());
+    }
+    
+    public UpgradeFilterContainerMenu(int windowId, Inventory playerInventory, Player player, ItemStack filterItem) {
+        super(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, windowId, player, 10);
+        
+        this.itemStackHandler = UpgradeFilterItem.getInventory(filterItem);
+        this.filterItem = ItemStack.EMPTY;
         
         this.addOwnSlots();
         this.addPlayerInventory(8, 71);
@@ -30,7 +37,7 @@ public class UpgradeFilterContainerMenu extends BaseContainerMenu {
         for (var i = 0; i < this.itemStackHandler.getSlots() / 5; i++) {
             for (var j = 0; j < 5; j++) {
                 slot++;
-                this.addSlot(new SlotItemHandler(this.itemStackHandler, slot, 8 + off + j * 18, y + i * 18));
+                this.addSlot(new FilterSlotHandler(this.itemStackHandler, slot, 8 + off + j * 18, y + i * 18));
             }
         }
     }
@@ -38,5 +45,43 @@ public class UpgradeFilterContainerMenu extends BaseContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return true;
+    }
+
+    @Override
+    public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
+        if (slotId >= 0 && slotId < slotCount) {
+            return;
+        }
+        
+        super.clicked(slotId, dragType, clickType, player);
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player playerIn, int index) {
+        var stack = ItemStack.EMPTY;
+        var slot = this.slots.get(index);
+        
+        if (slot != null && slot.hasItem()) {
+            var currentStack = slot.getItem().copy();
+            
+            if (ItemHandlerHelper.canItemStacksStack(currentStack, filterItem)) {
+                return ItemStack.EMPTY;
+            }
+            
+            currentStack.setCount(1);
+            
+            // Only do this if we click from the players inventory
+            if (index >= slotCount) {
+                for (int i = 0; i < slotCount; i++) { // Prevents the same item from going in there more than once.
+                    if (this.slots.get(i).getItem().equals(currentStack, false)) // Don't limit tags
+                        return ItemStack.EMPTY;
+                }
+                if (!this.moveItemStackTo(currentStack, 0, slotCount, false)) {
+                    return ItemStack.EMPTY;
+                }
+            }
+        }
+
+        return stack;
     }
 }

@@ -2,18 +2,18 @@ package com.joelcrosby.fluxpylons.crate;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.FluxPylonsBlockEntities;
-import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -23,11 +23,19 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.Nullable;
 
-public class CrateBlockEntity extends BaseContainerBlockEntity implements MenuProvider {
+public class CrateBlockEntity extends BlockEntity implements Container, MenuProvider {
 
     private final static int SIZE = 54;
     
-    public final ItemStackHandler items = new ItemStackHandler(SIZE);
+    public final ItemStackHandler items = new ItemStackHandler(SIZE) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            super.onContentsChanged(slot);
+            
+            setChanged();
+        }
+    };
+    
     private LazyOptional<IItemHandlerModifiable> handler;
 
     public CrateBlockEntity(BlockPos pos, BlockState state) {
@@ -39,22 +47,12 @@ public class CrateBlockEntity extends BaseContainerBlockEntity implements MenuPr
         return new TranslatableComponent("container." + FluxPylons.ID + ".crate");
     }
 
-    @Override
-    protected Component getDefaultName() {
-        return new TranslatableComponent("container." + FluxPylons.ID + ".crate");
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int window, Inventory inventory, Player player) {
-        return new CrateContainerMenu(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, window, player, worldPosition);
+        return new CrateContainerMenu(window, player, worldPosition);
     }
-
-    @Override
-    protected AbstractContainerMenu createMenu(int window, Inventory inventory) {
-        return new CrateContainerMenu(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, window, null, worldPosition);
-    }
-
+    
     @Override
     public int getContainerSize() {
         return SIZE;

@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.network.graph;
+package com.joelcrosby.fluxpylons.pipe.network.graph;
 
 import com.joelcrosby.fluxpylons.pipe.PipeType;
 
