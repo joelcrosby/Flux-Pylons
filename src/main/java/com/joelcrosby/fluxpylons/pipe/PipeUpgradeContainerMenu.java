@@ -2,20 +2,42 @@ package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.container.BaseContainerMenu;
+import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class PipeUpgradeContainerMenu extends BaseContainerMenu {
 
     private final ItemStackHandler itemStackHandler;
+    private final PipeUpgradeManager upgradeManager;
 
-    public PipeUpgradeContainerMenu(int id, Player player, ItemStackHandler itemStackHandler) {
+    public PipeUpgradeContainerMenu(int id, Player player, ItemStackHandler itemStackHandler, FriendlyByteBuf data) {
+        this(id, player, itemStackHandler, data.readBlockPos(), Direction.values()[data.readByte()]);
+    }
+
+    public PipeUpgradeContainerMenu(int id, Player player, ItemStackHandler itemStackHandler, BlockPos pos,  Direction dir) {
         super(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, id, player, 10);
         this.itemStackHandler = itemStackHandler;
-        
+        this.upgradeManager = player.level.isClientSide() ? null : NetworkManager.get(player.level).getNode(pos).getUpgradeManager(dir);
+
         this.addOwnSlots();
         this.addPlayerInventory(8, 71);
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int slotIndex) {
+        var itemStack = super.quickMoveStack(player, slotIndex);
+        
+        if (this.upgradeManager != null) {
+            this.upgradeManager.pipeUpgradeContainer.setChanged();
+        }
+        
+        return itemStack;
     }
 
     protected void addOwnSlots() {
@@ -30,10 +52,5 @@ public class PipeUpgradeContainerMenu extends BaseContainerMenu {
                 this.addSlot(new SlotItemHandler(this.itemStackHandler, slot, 8 + off + j * 18, y + i * 18));
             }
         }
-    }
-    
-    @Override
-    public boolean stillValid(Player player) {
-        return true;
     }
 }

@@ -38,8 +38,9 @@ public class PipeUpgradeManager {
         var upgrades = pipeUpgradeContainer.getUpgrades();
         
         for (var upgrade : upgrades.extractFluids()) {
-            var upgradeItem = (UpgradeItem) upgrade.getItem();
-            upgradeItem.update(upgrade, node, dir, node.getNodeType());
+            if (!upgrade.isEmpty() && upgrade.getItem() instanceof UpgradeItem upgradeItem) {
+                upgradeItem.update(upgrade, node, dir, node.getNodeType());
+            }
         }
         
         if (tickInterval != 0 && (ticks++) % tickInterval != 0) {
@@ -47,17 +48,18 @@ public class PipeUpgradeManager {
         }
         
         for (var upgrade : upgrades.extractItems()) {
-            var upgradeItem = (UpgradeItem) upgrade.getItem();
-            upgradeItem.update(upgrade, node, dir, node.getNodeType());
+            if (!upgrade.isEmpty() && upgrade.getItem() instanceof UpgradeItem upgradeItem) {
+                upgradeItem.update(upgrade, node, dir, node.getNodeType());
+            }
         }
     }
     
     public List<ItemStack> getFilterUpgrades() {
-        return this.pipeUpgradeContainer.getUpgrades().filters();
+        return this.pipeUpgradeContainer.getUpgrades().filterItems();
     }
 
     public List<ItemStack> getFluidFilterUpgrades() {
-        return this.pipeUpgradeContainer.getUpgrades().fluidFilters();
+        return this.pipeUpgradeContainer.getUpgrades().filterFluids();
     }
     
     public Set<String> getFilterItemNames() {
@@ -73,7 +75,7 @@ public class PipeUpgradeManager {
         
         NetworkHooks.openGui(player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
-                        new PipeUpgradeContainerMenu(windowId, player, pipeUpgradeContainer.getItems()), containerName),
+                        new PipeUpgradeContainerMenu(windowId, player, pipeUpgradeContainer.getItems(), node.getPos(), dir), containerName),
                 buffer -> {
                     buffer.writeBlockPos(node.getPos());
                     buffer.writeByte(dir.ordinal());

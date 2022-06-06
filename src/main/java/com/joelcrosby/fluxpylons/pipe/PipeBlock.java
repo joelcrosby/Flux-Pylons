@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -91,7 +92,7 @@ public class PipeBlock extends BaseEntityBlock {
     private final PipeType pipeType;
 
     public PipeBlock(PipeType pipeType) {
-        super(Block.Properties.of(Material.STONE).strength(2).sound(SoundType.COPPER).requiresCorrectToolForDrops());
+        super(Block.Properties.of(Material.METAL, MaterialColor.METAL).strength(1.6f).sound(SoundType.COPPER));
         
         this.pipeType = pipeType;
 
@@ -110,26 +111,26 @@ public class PipeBlock extends BaseEntityBlock {
         var dir = getPipeEndDirectionClicked(pos, result.getLocation());
         var entity = world.getBlockEntity(pos);
 
-        if (entity == null) {
+        if (dir == null || entity == null || !(state.getBlock() instanceof PipeBlock)) {
             return InteractionResult.FAIL;
         }
+        
+        var connectionType =  state.getValue(DIRECTIONS.get(dir));
 
-        if (state.getBlock() instanceof PipeBlock && dir != null && !state.getValue(DIRECTIONS.get(dir)).isEnd()) {
+        if (!connectionType.isEnd()) {
             return InteractionResult.FAIL;
         }
         
         if (!player.isCrouching() && player.getItemInHand(player.getUsedItemHand()).getItem() instanceof WrenchItem) {
-            return InteractionResult.FAIL;
+            return InteractionResult.PASS;
         }
         
         if (entity instanceof PipeBlockEntity pipeBlockEntity && player instanceof ServerPlayer serverPlayer) {
-            if (!world.isClientSide) {
-                pipeBlockEntity.getUpgradeManager(dir).OpenContainerMenu(serverPlayer);
-            }
+            pipeBlockEntity.getUpgradeManager(dir).OpenContainerMenu(serverPlayer);
             return InteractionResult.SUCCESS;
         }
 
-        return InteractionResult.PASS;
+        return super.use(state,world,pos, player, hand, result);
     }
 
     @Override
@@ -361,8 +362,8 @@ public class PipeBlock extends BaseEntityBlock {
         var itemRate = this.pipeType.getNodeType().getItemTransferRate();
         
         var energyText = I18n.get("terms." + FluxPylons.ID + ".energy") + " " + energyRate + " FE/t";
-        var fluidText = I18n.get("terms." + FluxPylons.ID + ".extractFluids") + " " +  fluidRate + " MB/t";
-        var itemText = I18n.get("terms." + FluxPylons.ID + ".extractItems") + " " +  itemRate + " Items/0.5s";
+        var fluidText = I18n.get("terms." + FluxPylons.ID + ".fluids") + " " +  fluidRate + " MB/t";
+        var itemText = I18n.get("terms." + FluxPylons.ID + ".items") + " " +  itemRate + " Items/0.5s";
         
         var energyComponent = new TextComponent(energyText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
         var fluidComponent = new TextComponent(fluidText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));

@@ -75,7 +75,7 @@ public class Common {
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new CrateContainerMenu(windowId, inv.player, data.readBlockPos())).setRegistryName("crate"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeUpgradeContainerMenu(windowId, inv.player, new PipeUpgradeItemStackHandler())).setRegistryName("upgrade"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeUpgradeContainerMenu(windowId, inv.player, new PipeUpgradeItemStackHandler(), data)).setRegistryName("upgrade"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new UpgradeFilterContainerMenu(windowId, inv, inv.player, data.readItem())).setRegistryName("filter"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new UpgradeFluidFilterContainerMenu(windowId, inv, inv.player, data.readItem())).setRegistryName("fluid_filter"));
     }

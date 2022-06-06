@@ -34,50 +34,59 @@ public class Utility {
     }
 
     public static ItemStack transferStackInSlot(AbstractContainerMenu container, IMergeItemStack merge, Player player, int slotIndex, Function<ItemStack, Pair<Integer, Integer>> predicate) {
-        var inventoryStart = (int) container.slots.stream().filter(slot -> slot.container != player.getInventory()).count();
+        var inventoryStream = container.slots.stream().filter(slot -> slot.container != player.getInventory());
+        var inventoryStart = (int) inventoryStream.count();
         var inventoryEnd = inventoryStart + 26;
         var hotbarStart = inventoryEnd + 1;
         var hotbarEnd = hotbarStart + 8;
 
         var slot = container.slots.get(slotIndex);
-        if (slot != null && slot.hasItem()) {
-            var newStack = slot.getItem();
-            var currentStack = newStack.copy();
 
-            if (slotIndex >= inventoryStart) {
-                // shift into this container here
-                // mergeItemStack with the slots that newStack should go into
-                // return an empty stack if mergeItemStack fails
-                // shift into this container here
-                // mergeItemStack with the slots that newStack should go into
-                // return an empty stack if mergeItemStack fails
-                var slots = predicate.apply(newStack);
-                
-                if (slots != null) {
-                    if (merge.mergeItemStack(newStack, slots.getLeft(), slots.getRight(), false))
-                        return ItemStack.EMPTY;
-                }
-                
-                else if (slotIndex >= inventoryStart && slotIndex <= inventoryEnd) {
-                    if (merge.mergeItemStack(newStack, hotbarStart, hotbarEnd + 1, false))
-                        return ItemStack.EMPTY;
-                } else if (slotIndex >= inventoryEnd + 1 && slotIndex < hotbarEnd + 1 && merge.mergeItemStack(newStack, inventoryStart, inventoryEnd + 1, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (merge.mergeItemStack(newStack, inventoryStart, hotbarEnd + 1, false)) {
-                return ItemStack.EMPTY;
-            }
-            if (newStack.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-            if (newStack.getCount() == currentStack.getCount())
-                return ItemStack.EMPTY;
-            slot.onTake(player, newStack);
-            return currentStack;
+        if (slot == null || !slot.hasItem()) {
+            return ItemStack.EMPTY;
         }
-        return ItemStack.EMPTY;
+        
+        var newStack = slot.getItem();
+        var currentStack = newStack.copy();
+
+        if (slotIndex >= inventoryStart) {
+            // shift into this container here
+            // mergeItemStack with the slots that newStack should go into
+            // return an empty stack if mergeItemStack fails
+            // shift into this container here
+            // mergeItemStack with the slots that newStack should go into
+            // return an empty stack if mergeItemStack fails
+            var slots = predicate.apply(newStack);
+            
+            if (slots != null) {
+                if (merge.mergeItemStack(newStack, slots.getLeft(), slots.getRight(), false))
+                    return ItemStack.EMPTY;
+            }
+            
+            else if (slotIndex >= inventoryStart && slotIndex <= inventoryEnd) {
+                if (merge.mergeItemStack(newStack, hotbarStart, hotbarEnd + 1, false))
+                    return ItemStack.EMPTY;
+            } else if (slotIndex >= inventoryEnd + 1 && slotIndex < hotbarEnd + 1 && merge.mergeItemStack(newStack, inventoryStart, inventoryEnd + 1, false)) {
+                return ItemStack.EMPTY;
+            }
+        } else if (merge.mergeItemStack(newStack, inventoryStart, hotbarEnd + 1, false)) {
+            slot.setChanged();
+            return ItemStack.EMPTY;
+        }
+        
+        if (newStack.isEmpty()) {
+            slot.set(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
+        }
+        
+        if (newStack.getCount() == currentStack.getCount()) {
+            return ItemStack.EMPTY;
+        }
+        
+        slot.onTake(player, newStack);
+        
+        return currentStack;
     }
 
     public static IItemHandler getBlockItemHandler(LevelAccessor world, BlockPos pos, Direction direction) {

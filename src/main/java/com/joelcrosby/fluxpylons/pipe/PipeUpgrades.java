@@ -8,9 +8,9 @@ import java.util.List;
 public record PipeUpgrades(
         List<ItemStack> extractItems,
         List<ItemStack> extractFluids,
-        List<ItemStack> filters,
+        List<ItemStack> filterItems,
         HashSet<String> filterItemRegistryNames,
-        List<ItemStack> fluidFilters,
+        List<ItemStack> filterFluids,
         HashSet<String> filterFluidRegistryNames
 ) {
 }

@@ -19,11 +19,15 @@ import java.util.List;
 public class PipeUpgradeContainer implements Container {
     private PipeUpgrades upgrades;
     private final Level level;
+    
     private final PipeUpgradeItemStackHandler items = new PipeUpgradeItemStackHandler() {
         @Override
         protected void onContentsChanged(int slot) {
             super.onContentsChanged(slot);
-
+            updateUpgrades();
+        }
+        
+        private void updateUpgrades() {
             upgrades = cacheUpgrades();
 
             if (level != null && !level.isClientSide) {
@@ -50,10 +54,10 @@ public class PipeUpgradeContainer implements Container {
     }
     
     private PipeUpgrades cacheUpgrades() {
-        var itemUpgrades = new ArrayList<ItemStack>();
-        var fluidUpgrades = new ArrayList<ItemStack>();
-        var filterUpgrades = new ArrayList<ItemStack>();
-        var fluidFilterUpgrades = new ArrayList<ItemStack>();
+        var extractItems = new ArrayList<ItemStack>();
+        var extractFluids = new ArrayList<ItemStack>();
+        var filterItems = new ArrayList<ItemStack>();
+        var filterFluids = new ArrayList<ItemStack>();
 
         for (var i = 0; i < items.getSlots(); i++) {
             var stack = items.getStackInSlot(i);
@@ -63,19 +67,19 @@ public class PipeUpgradeContainer implements Container {
             var item = stack.getItem();
 
             if (item instanceof UpgradeExtractItem)
-                itemUpgrades.add(stack);
+                extractItems.add(stack);
             if (item instanceof UpgradeFluidExtractItem)
-                fluidUpgrades.add(stack);
+                extractFluids.add(stack);
             if (item instanceof UpgradeFilterItem)
-                filterUpgrades.add(stack);
+                filterItems.add(stack);
             if (item instanceof UpgradeFluidFilterItem)
-                fluidFilterUpgrades.add(stack);
+                filterFluids.add(stack);
         }
 
-        var filterRegistryNames = getFilterItemRegistryNames(filterUpgrades);
-        var fluids = getFilterFluidRegistryNames(fluidFilterUpgrades);
+        var filterRegistryNames = getFilterItemRegistryNames(filterItems);
+        var fluids = getFilterFluidRegistryNames(filterFluids);
         
-        return new PipeUpgrades(itemUpgrades, fluidUpgrades, filterUpgrades, filterRegistryNames, fluidFilterUpgrades, fluids);
+        return new PipeUpgrades(extractItems, extractFluids, filterItems, filterRegistryNames, filterFluids, fluids);
     }
     
     private HashSet<String> getFilterItemRegistryNames(List<ItemStack> filters) {
@@ -153,7 +157,13 @@ public class PipeUpgradeContainer implements Container {
     }
 
     @Override
-    public void setChanged() {}
+    public void setChanged() {
+        this.upgrades = cacheUpgrades();
+
+        if (level != null && !level.isClientSide) {
+            NetworkManager.get(level).setDirty();
+        }
+    }
 
     @Override
     public boolean stillValid(Player player) {
