@@ -1,9 +1,9 @@
 package com.joelcrosby.fluxpylons.pipe;
 
-import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeExtractItem;
-import com.joelcrosby.fluxpylons.item.upgrade.extract.UpgradeFluidExtractItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFilterItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.UpgradeFluidFilterItem;
+import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
+import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterItem;
 import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.util.FluidHelper;
@@ -66,13 +66,13 @@ public class PipeUpgradeContainer implements Container {
 
             var item = stack.getItem();
 
-            if (item instanceof UpgradeExtractItem)
+            if (item instanceof ExtractItem)
                 extractItems.add(stack);
-            if (item instanceof UpgradeFluidExtractItem)
+            if (item instanceof FluidExtractItem)
                 extractFluids.add(stack);
-            if (item instanceof UpgradeFilterItem)
+            if (item instanceof FilterItem)
                 filterItems.add(stack);
-            if (item instanceof UpgradeFluidFilterItem)
+            if (item instanceof FluidFilterItem)
                 filterFluids.add(stack);
         }
 
@@ -86,7 +86,7 @@ public class PipeUpgradeContainer implements Container {
         return filters.stream()
                 .map(stack -> {
                     var names = new HashSet<String>();
-                    var inventory = UpgradeFilterItem.getInventory(stack);
+                    var inventory = FilterItem.getInventory(stack);
 
                     for (var i = 0; i < inventory.getSlots(); i++) {
                         var slotStack = inventory.getStackInSlot(i);
@@ -105,7 +105,7 @@ public class PipeUpgradeContainer implements Container {
         return filters.stream()
                 .map(stack -> {
                     var names = new HashSet<String>();
-                    var inventory = UpgradeFluidFilterItem.getInventory(stack);
+                    var inventory = FluidFilterItem.getInventory(stack);
 
                     for (var i = 0; i < inventory.getSlots(); i++) {
                         var slotStack = inventory.getStackInSlot(i);

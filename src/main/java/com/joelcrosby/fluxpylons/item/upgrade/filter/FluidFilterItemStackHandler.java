@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
-public class UpgradeFluidFilterItemStackHandler extends ItemStackHandler {
+public class FluidFilterItemStackHandler extends ItemStackHandler {
     public ItemStack stack;
 
-    public UpgradeFluidFilterItemStackHandler(int size, ItemStack itemStack) {
+    public FluidFilterItemStackHandler(int size, ItemStack itemStack) {
         super(size);
         this.stack = itemStack;
     }
@@ -23,7 +23,7 @@ public class UpgradeFluidFilterItemStackHandler extends ItemStackHandler {
     @Override
     protected void onContentsChanged(int slot) {
         if (!stack.equals(ItemStack.EMPTY)) {
-            UpgradeFluidFilterItem.setInventory(stack, this);
+            FluidFilterItem.setInventory(stack, this);
         }
     }
 

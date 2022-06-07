@@ -11,11 +11,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class UpgradeFluidFilterGui extends AbstractContainerScreen<UpgradeFluidFilterContainerMenu> {
-    private final UpgradeFluidFilterContainerMenu container;
+public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
+    private final FilterContainerMenu container;
     private static final ResourceLocation TEXTURE = new ResourceLocation(FluxPylons.ID, "textures/gui/filter.png");
 
-    public UpgradeFluidFilterGui(UpgradeFluidFilterContainerMenu container, Inventory inv, Component titleIn) {
+    public FilterGui(FilterContainerMenu container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
         
         this.imageWidth = 176;

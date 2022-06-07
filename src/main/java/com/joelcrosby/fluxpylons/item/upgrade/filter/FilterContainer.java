@@ -4,21 +4,21 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class UpgradeFilterContainer implements Container {
+public class FilterContainer implements Container {
     public static final int SLOTS = 10;
     
-    private final UpgradeFilterItemStackHandler items;
+    private final FilterItemStackHandler items;
     
-    public UpgradeFilterContainer() {
+    public FilterContainer() {
         this.items = createFilterInventory();
     }
     
-    public UpgradeFilterItemStackHandler getItems() {
+    public FilterItemStackHandler getItems() {
         return items;
     }
 
-    public static UpgradeFilterItemStackHandler createFilterInventory() {
-        return new UpgradeFilterItemStackHandler(UpgradeFilterContainer.SLOTS, ItemStack.EMPTY);
+    public static FilterItemStackHandler createFilterInventory() {
+        return new FilterItemStackHandler(FilterContainer.SLOTS, ItemStack.EMPTY);
     }
     
     @Override

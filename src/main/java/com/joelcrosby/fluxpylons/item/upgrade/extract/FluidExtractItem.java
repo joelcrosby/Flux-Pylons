@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class UpgradeFluidExtractItem extends UpgradeItem {
+public class FluidExtractItem extends UpgradeItem {
     @Override
     public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {
         var level = node.getLevel();

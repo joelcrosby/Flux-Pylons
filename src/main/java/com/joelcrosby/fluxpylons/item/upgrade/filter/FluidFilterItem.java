@@ -27,7 +27,7 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class UpgradeFluidFilterItem extends UpgradeItem {
+public class FluidFilterItem extends UpgradeItem {
     @Override
     public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {
         
@@ -48,16 +48,16 @@ public class UpgradeFluidFilterItem extends UpgradeItem {
         
         NetworkHooks.openGui((ServerPlayer) player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
-                        new UpgradeFluidFilterContainerMenu(windowId, playerInventory, player, stack), containerName), 
+                        new FluidFilterContainerMenu(windowId, playerInventory, player, stack), containerName), 
                 (buffer -> buffer.writeItem(stack))
         );
         
         return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
 
-    public static UpgradeFluidFilterItemStackHandler getInventory(ItemStack stack) {
+    public static FluidFilterItemStackHandler getInventory(ItemStack stack) {
         var compound = stack.getOrCreateTag();
-        var handler = new UpgradeFluidFilterItemStackHandler(UpgradeFilterContainer.SLOTS, stack);
+        var handler = new FluidFilterItemStackHandler(FilterContainer.SLOTS, stack);
         
         handler.deserializeNBT(compound.getCompound("inventory"));
         
@@ -65,10 +65,10 @@ public class UpgradeFluidFilterItem extends UpgradeItem {
             return handler;
         }
         
-        return setInventory(stack, new UpgradeFluidFilterItemStackHandler(UpgradeFilterContainer.SLOTS, stack));
+        return setInventory(stack, new FluidFilterItemStackHandler(FilterContainer.SLOTS, stack));
     }
 
-    public static UpgradeFluidFilterItemStackHandler setInventory(ItemStack stack, UpgradeFluidFilterItemStackHandler handler) {
+    public static FluidFilterItemStackHandler setInventory(ItemStack stack, FluidFilterItemStackHandler handler) {
         stack.getOrCreateTag().put("inventory", handler.serializeNBT());
         return handler;
     }

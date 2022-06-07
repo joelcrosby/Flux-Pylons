@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class UpgradeExtractItem extends UpgradeItem {
+public class ExtractItem extends UpgradeItem {
     
     @Override
     public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {

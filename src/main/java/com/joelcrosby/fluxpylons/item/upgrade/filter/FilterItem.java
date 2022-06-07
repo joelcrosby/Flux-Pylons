@@ -27,7 +27,7 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class UpgradeFilterItem extends UpgradeItem {
+public class FilterItem extends UpgradeItem {
     @Override
     public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {
         
@@ -48,16 +48,16 @@ public class UpgradeFilterItem extends UpgradeItem {
         
         NetworkHooks.openGui((ServerPlayer) player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
-                        new UpgradeFilterContainerMenu(windowId, playerInventory, player, stack), containerName), 
+                        new FilterContainerMenu(windowId, playerInventory, player, stack), containerName), 
                 (buffer -> buffer.writeItem(stack))
         );
         
         return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
 
-    public static UpgradeFilterItemStackHandler getInventory(ItemStack stack) {
+    public static FilterItemStackHandler getInventory(ItemStack stack) {
         var compound = stack.getOrCreateTag();
-        var handler = new UpgradeFilterItemStackHandler(UpgradeFilterContainer.SLOTS, stack);
+        var handler = new FilterItemStackHandler(FilterContainer.SLOTS, stack);
         
         handler.deserializeNBT(compound.getCompound("inventory"));
         
@@ -65,10 +65,10 @@ public class UpgradeFilterItem extends UpgradeItem {
             return handler;
         }
         
-        return setInventory(stack, new UpgradeFilterItemStackHandler(UpgradeFilterContainer.SLOTS, stack));
+        return setInventory(stack, new FilterItemStackHandler(FilterContainer.SLOTS, stack));
     }
 
-    public static UpgradeFilterItemStackHandler setInventory(ItemStack stack, UpgradeFilterItemStackHandler handler) {
+    public static FilterItemStackHandler setInventory(ItemStack stack, FilterItemStackHandler handler) {
         stack.getOrCreateTag().put("inventory", handler.serializeNBT());
         return handler;
     }
