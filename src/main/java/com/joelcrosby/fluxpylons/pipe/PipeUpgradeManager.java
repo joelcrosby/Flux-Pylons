@@ -150,7 +150,7 @@ public class PipeUpgradeManager {
         var isDenyList = filter.getOrCreateTag().getBoolean("is-deny-list");
 
         var anyMatch = this.pipeUpgradeContainer.getUpgrades()
-                .filterItems()
+                .filterFluids()
                 .stream()
                 .anyMatch(filterItem ->  {
 
