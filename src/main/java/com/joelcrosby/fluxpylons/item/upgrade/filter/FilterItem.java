@@ -55,6 +55,24 @@ public class FilterItem extends UpgradeItem {
         return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
 
+    public static void setAllowDeny(ItemStack stack, boolean isDenyFilter) {
+        stack.getOrCreateTag().putBoolean("is-deny-filter", isDenyFilter);
+    }
+    
+    public static Boolean getAllowDeny(ItemStack stack) {
+        var compound = stack.getOrCreateTag();
+        return compound.getBoolean("is-deny-filter");
+    }
+
+    public static void setMatchNbt(ItemStack stack, boolean matchNbt) {
+        stack.getOrCreateTag().putBoolean("match-nbt", matchNbt);
+    }
+
+    public static Boolean getMatchNbt(ItemStack stack) {
+        var compound = stack.getOrCreateTag();
+        return compound.getBoolean("match-nbt");
+    }
+    
     public static FilterItemStackHandler getInventory(ItemStack stack) {
         var compound = stack.getOrCreateTag();
         var handler = new FilterItemStackHandler(FilterContainer.SLOTS, stack);

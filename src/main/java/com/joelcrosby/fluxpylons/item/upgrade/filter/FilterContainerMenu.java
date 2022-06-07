@@ -23,7 +23,7 @@ public class FilterContainerMenu extends BaseContainerMenu {
         super(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, windowId, player, 10);
         
         this.itemStackHandler = FilterItem.getInventory(filterItem);
-        this.filterItem = ItemStack.EMPTY;
+        this.filterItem = filterItem;
         
         this.addOwnSlots();
         this.addPlayerInventory(8, 71);
