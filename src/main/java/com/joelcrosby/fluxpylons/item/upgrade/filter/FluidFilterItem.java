@@ -73,13 +73,13 @@ public class FluidFilterItem extends UpgradeItem {
         return handler;
     }
 
-    public static void setIsDenyFilter(ItemStack stack, boolean isDenyFilter) {
-        stack.getOrCreateTag().putBoolean("is-deny-filter", isDenyFilter);
+    public static void setIsDenyList(ItemStack stack, boolean isDenyList) {
+        stack.getOrCreateTag().putBoolean("is-deny-list", isDenyList);
     }
 
-    public static Boolean getIsDenyFilter(ItemStack stack) {
+    public static Boolean getIsDenyList(ItemStack stack) {
         var compound = stack.getOrCreateTag();
-        return compound.getBoolean("is-deny-filter");
+        return compound.getBoolean("is-deny-list");
     }
     
     @OnlyIn(Dist.CLIENT)

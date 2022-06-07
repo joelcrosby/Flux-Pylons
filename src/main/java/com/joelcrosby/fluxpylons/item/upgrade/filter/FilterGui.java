@@ -19,7 +19,7 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(FluxPylons.ID, "textures/gui/filter.png");
     private final ItemStack filterItem;
 
-    private boolean isDenyFilter;
+    private boolean isDenyList;
     private boolean matchNbt;
     
     public FilterGui(FilterContainerMenu container, Inventory inv, Component titleIn) {
@@ -40,14 +40,14 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
             new ResourceLocation(FluxPylons.ID, "textures/gui/buttons/btn_deny.png"),
         };
 
-        isDenyFilter = FilterItem.getIsDenyFilter(filterItem);
+        isDenyList = FilterItem.getIsDenyList(filterItem);
         
         var allowDenyX = getGuiLeft() + 8;
         var allowDenyY = getGuiTop() + 18;
         
-        var allowDenyBtn = new ToggleButton(allowDenyX, allowDenyY, allowDenyTextures, isDenyFilter ? 1 : 0, (btn) -> {
-            isDenyFilter = !isDenyFilter;            
-            ((ToggleButton) btn).setTexturePosition(isDenyFilter ? 1 : 0);
+        var allowDenyBtn = new ToggleButton(allowDenyX, allowDenyY, allowDenyTextures, isDenyList ? 1 : 0, (btn) -> {
+            isDenyList = !isDenyList;            
+            ((ToggleButton) btn).setTexturePosition(isDenyList ? 1 : 0);
         });
 
         var matchNbtTextures = new ResourceLocation[] {
@@ -71,7 +71,7 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
 
     @Override
     public void onClose() {
-        PacketHandler.sendToServer(new PacketUpdateFilter(isDenyFilter, matchNbt));
+        PacketHandler.sendToServer(new PacketUpdateFilter(isDenyList, matchNbt));
         super.onClose();
     }
     

@@ -8,14 +8,14 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketUpdateFluidFilter {
-    private final boolean allowDeny;
+    private final boolean isDenyList;
 
-    public PacketUpdateFluidFilter(boolean allowDeny) {
-        this.allowDeny = allowDeny;
+    public PacketUpdateFluidFilter(boolean isDenyList) {
+        this.isDenyList = isDenyList;
     }
 
     public static void encode(PacketUpdateFluidFilter msg, FriendlyByteBuf buffer) {
-        buffer.writeBoolean(msg.allowDeny);
+        buffer.writeBoolean(msg.isDenyList);
     }
 
     public static PacketUpdateFluidFilter decode(FriendlyByteBuf buffer) {
@@ -36,7 +36,7 @@ public class PacketUpdateFluidFilter {
                 if (container instanceof FluidFilterContainerMenu filterContainerMenu) {
                     var filterItem = filterContainerMenu.filterItem;
                     if (filterItem == null) return;
-                    FluidFilterItem.setIsDenyFilter(filterItem, msg.allowDeny);
+                    FluidFilterItem.setIsDenyList(filterItem, msg.isDenyList);
                 }
             });
 

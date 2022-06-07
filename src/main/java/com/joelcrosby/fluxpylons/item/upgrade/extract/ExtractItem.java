@@ -50,10 +50,7 @@ public class ExtractItem extends UpgradeItem {
                 }
 
                 var upgradeManager = destination.getConnectedUpgradeManager();
-                var isFiltered = !upgradeManager.getFilterUpgrades().isEmpty();
-                var filterItemNames = upgradeManager.getFilterItemNames();
-                
-                if (isFiltered && !filterItemNames.contains(simulatedExtract.getItem().getDescriptionId())) {
+                if (!upgradeManager.IsValidDestination(simulatedExtract)) {
                     continue;
                 }
                 

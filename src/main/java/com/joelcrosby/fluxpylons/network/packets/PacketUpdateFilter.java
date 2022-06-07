@@ -8,16 +8,16 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketUpdateFilter {
-    private final boolean allowDeny;
+    private final boolean isDenyList;
     private final boolean matchNbt;
 
-    public PacketUpdateFilter(boolean allowDeny, boolean compareNBT) {
-        this.allowDeny = allowDeny;
+    public PacketUpdateFilter(boolean isDenyList, boolean compareNBT) {
+        this.isDenyList = isDenyList;
         this.matchNbt = compareNBT;
     }
 
     public static void encode(PacketUpdateFilter msg, FriendlyByteBuf buffer) {
-        buffer.writeBoolean(msg.allowDeny);
+        buffer.writeBoolean(msg.isDenyList);
         buffer.writeBoolean(msg.matchNbt);
     }
 
@@ -39,7 +39,7 @@ public class PacketUpdateFilter {
                 if (container instanceof FilterContainerMenu filterContainerMenu) {
                     var filterItem = filterContainerMenu.filterItem;
                     if (filterItem == null) return;
-                    FilterItem.setIsDenyFilter(filterItem, msg.allowDeny);
+                    FilterItem.setIsDenyList(filterItem, msg.isDenyList);
                     FilterItem.setMatchNbt(filterItem, msg.matchNbt);
                 }
             });

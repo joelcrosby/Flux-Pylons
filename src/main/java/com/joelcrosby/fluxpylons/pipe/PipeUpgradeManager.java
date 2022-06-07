@@ -2,6 +2,7 @@ package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterItem;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +14,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
@@ -99,5 +101,50 @@ public class PipeUpgradeManager {
         }
         
         pipeUpgradeContainer.getItems().deserializeNBT(tag.getCompound("upgradeItems"));
+    }
+    
+    public boolean IsValidDestination(ItemStack itemStack) {
+        var isFiltered = !getFilterUpgrades().isEmpty();
+        if (!isFiltered) {
+            return true;
+        }
+        
+        return getFilterUpgrades().stream().anyMatch(filter -> IsValidDestination(itemStack, filter));
+    }
+
+    private boolean IsValidDestination(ItemStack itemStack, ItemStack filter) {
+        var isDenyList = filter.getOrCreateTag().getBoolean("is-deny-list");
+        var matchNbt = filter.getOrCreateTag().getBoolean("match-nbt");
+        var filterItemNames = getFilterItemNames();
+
+        if (matchNbt) {
+            var foundNbtMatch = this.pipeUpgradeContainer.getUpgrades()
+                    .filterItems()
+                    .stream()
+                    .anyMatch(filterItem ->  {
+
+                        var inventory = FilterItem.getInventory(filterItem);
+                        var canStack = false;
+                        
+                        for (var i = 0; i < inventory.getSlots(); i++) {
+                            var slotStack = inventory.getStackInSlot(i);
+
+                            if (slotStack.isEmpty()) continue;
+
+                            if (ItemHandlerHelper.canItemStacksStack(itemStack, slotStack)) {
+                                canStack = true;
+                                break;
+                            }
+                        }
+
+                        return canStack;
+                    });
+            
+            return isDenyList != foundNbtMatch;
+        }
+
+        var foundMatch = filterItemNames.contains(itemStack.getItem().getDescriptionId());
+        
+        return isDenyList != foundMatch;
     }
 }
