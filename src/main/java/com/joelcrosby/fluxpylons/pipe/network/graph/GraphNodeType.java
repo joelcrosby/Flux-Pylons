@@ -19,15 +19,15 @@ public enum GraphNodeType {
 
     public int getFluidTransferRate() {
         return switch (this) {
-            case BASIC -> 10;
-            case ADVANCED -> 20;
+            case BASIC -> 20;
+            case ADVANCED -> 200;
         };
     }
     
     public int getItemTransferRate() {
         return switch (this) {
             case BASIC -> 8;
-            case ADVANCED -> 16;
+            case ADVANCED -> 32;
         };
     }
     
