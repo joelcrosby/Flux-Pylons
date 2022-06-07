@@ -52,11 +52,12 @@ public class WrenchItem extends Item {
                     if (tile.cover != null) {
                         tile.removeCover(player, context.getHand());
                         Utility.sendBlockEntityToClients(tile);
+                        level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1, 1);
                     } else {
                         Block.dropResources(state, level, pos, tile, null, ItemStack.EMPTY);
                         level.removeBlock(pos, false);
+                        level.playSound(null, pos, SoundEvents.COPPER_BREAK, SoundSource.PLAYERS, 1, 1);
                     }
-                    level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1, 1);
                 }
                 
                 return InteractionResult.sidedSuccess(level.isClientSide);
@@ -76,6 +77,7 @@ public class WrenchItem extends Item {
                             level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.PLAYERS, 1, 1);
                         }
                     }
+                    
                     return InteractionResult.sidedSuccess(level.isClientSide);
                 }
             }
@@ -92,18 +94,19 @@ public class WrenchItem extends Item {
         }
 
         if (block instanceof CrateBlock) {
-            if (level.isClientSide) {
-                return InteractionResult.PASS;
-            }
-            
             if (player.isCrouching()) {
-                var tile = Utility.getBlockEntity(CrateBlockEntity.class, level, pos);
-                if (tile == null)
-                    return InteractionResult.FAIL;
-                
-                Block.dropResources(state, level, pos, tile, null, ItemStack.EMPTY);
-                level.removeBlock(pos, false);
-                level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1, 1);
+                if (!level.isClientSide) {
+                    var tile = Utility.getBlockEntity(CrateBlockEntity.class, level, pos);
+                    if (tile == null)
+                        return InteractionResult.FAIL;
+
+                    Block.dropResources(state, level, pos, tile, null, ItemStack.EMPTY);
+                    level.removeBlock(pos, false);
+                    level.playSound(null, pos, SoundEvents.COPPER_BREAK, SoundSource.PLAYERS, 1, 1);
+                    level.updateNeighborsAt(pos, state.getBlock());
+                }
+
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
         
