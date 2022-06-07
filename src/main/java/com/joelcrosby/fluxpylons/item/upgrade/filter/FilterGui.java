@@ -40,7 +40,7 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
             new ResourceLocation(FluxPylons.ID, "textures/gui/buttons/btn_deny.png"),
         };
 
-        isDenyFilter = FilterItem.getAllowDeny(filterItem);
+        isDenyFilter = FilterItem.getIsDenyFilter(filterItem);
         
         var allowDenyX = getGuiLeft() + 8;
         var allowDenyY = getGuiTop() + 18;
@@ -99,10 +99,15 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
             return super.mouseClicked(x, y, btn);
         }
 
-        var stack = this.menu.getCarried();// getMinecraft().player.inventoryMenu.getCarried();
-        stack = stack.copy().split(hoveredSlot.getMaxStackSize()); // Limit to slot limit
-        if (ItemHandlerHelper.canItemStacksStack(stack, container.filterItem)) return true;
-        hoveredSlot.set(stack); // Temporarily update the client for continuity purposes
+        var stack = this.menu.getCarried();
+        stack = stack.copy().split(hoveredSlot.getMaxStackSize());
+        
+        if (ItemHandlerHelper.canItemStacksStack(stack, container.filterItem)) {
+            return true;
+        }
+        
+        hoveredSlot.set(stack); 
+        
         PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, stack, stack.getCount()));
 
         return true;

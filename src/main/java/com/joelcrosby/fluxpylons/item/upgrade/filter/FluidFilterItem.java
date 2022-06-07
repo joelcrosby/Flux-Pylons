@@ -73,6 +73,15 @@ public class FluidFilterItem extends UpgradeItem {
         return handler;
     }
 
+    public static void setIsDenyFilter(ItemStack stack, boolean isDenyFilter) {
+        stack.getOrCreateTag().putBoolean("is-deny-filter", isDenyFilter);
+    }
+
+    public static Boolean getIsDenyFilter(ItemStack stack) {
+        var compound = stack.getOrCreateTag();
+        return compound.getBoolean("is-deny-filter");
+    }
+    
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {

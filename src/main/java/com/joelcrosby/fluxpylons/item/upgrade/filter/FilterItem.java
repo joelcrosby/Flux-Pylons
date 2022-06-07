@@ -55,11 +55,11 @@ public class FilterItem extends UpgradeItem {
         return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
 
-    public static void setAllowDeny(ItemStack stack, boolean isDenyFilter) {
+    public static void setIsDenyFilter(ItemStack stack, boolean isDenyFilter) {
         stack.getOrCreateTag().putBoolean("is-deny-filter", isDenyFilter);
     }
     
-    public static Boolean getAllowDeny(ItemStack stack) {
+    public static Boolean getIsDenyFilter(ItemStack stack) {
         var compound = stack.getOrCreateTag();
         return compound.getBoolean("is-deny-filter");
     }

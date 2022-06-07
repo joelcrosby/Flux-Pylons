@@ -3,6 +3,7 @@ package com.joelcrosby.fluxpylons.network;
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.network.packets.PacketGhostSlot;
 import com.joelcrosby.fluxpylons.network.packets.PacketUpdateFilter;
+import com.joelcrosby.fluxpylons.network.packets.PacketUpdateFluidFilter;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,9 +24,13 @@ public class PacketHandler {
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .simpleChannel();
 
+    @SuppressWarnings("UnusedAssignment")
     public static void register() {
-        HANDLER.registerMessage(1, PacketGhostSlot.class, PacketGhostSlot::encode, PacketGhostSlot::decode, PacketGhostSlot.Handler::handle);
-        HANDLER.registerMessage(2, PacketUpdateFilter.class, PacketUpdateFilter::encode, PacketUpdateFilter::decode, PacketUpdateFilter.Handler::handle);
+        var id = 0;
+        
+        HANDLER.registerMessage(id++, PacketGhostSlot.class, PacketGhostSlot::encode, PacketGhostSlot::decode, PacketGhostSlot.Handler::handle);
+        HANDLER.registerMessage(id++, PacketUpdateFilter.class, PacketUpdateFilter::encode, PacketUpdateFilter::decode, PacketUpdateFilter.Handler::handle);
+        HANDLER.registerMessage(id++, PacketUpdateFluidFilter.class, PacketUpdateFluidFilter::encode, PacketUpdateFluidFilter::decode, PacketUpdateFluidFilter.Handler::handle);
     }
 
     public static void sendTo(Object msg, ServerPlayer player) {

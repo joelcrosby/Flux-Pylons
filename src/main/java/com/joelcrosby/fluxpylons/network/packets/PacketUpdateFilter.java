@@ -39,7 +39,7 @@ public class PacketUpdateFilter {
                 if (container instanceof FilterContainerMenu filterContainerMenu) {
                     var filterItem = filterContainerMenu.filterItem;
                     if (filterItem == null) return;
-                    FilterItem.setAllowDeny(filterItem, msg.allowDeny);
+                    FilterItem.setIsDenyFilter(filterItem, msg.allowDeny);
                     FilterItem.setMatchNbt(filterItem, msg.matchNbt);
                 }
             });
