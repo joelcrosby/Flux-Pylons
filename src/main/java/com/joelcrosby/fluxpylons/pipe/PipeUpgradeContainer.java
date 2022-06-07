@@ -6,15 +6,12 @@ import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterItem;
 import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
-import com.joelcrosby.fluxpylons.util.FluidHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 public class PipeUpgradeContainer implements Container {
     private PipeUpgrades upgrades;
@@ -75,49 +72,8 @@ public class PipeUpgradeContainer implements Container {
             if (item instanceof FluidFilterItem)
                 filterFluids.add(stack);
         }
-
-        var filterRegistryNames = getFilterItemRegistryNames(filterItems);
-        var fluids = getFilterFluidRegistryNames(filterFluids);
         
-        return new PipeUpgrades(extractItems, extractFluids, filterItems, filterRegistryNames, filterFluids, fluids);
-    }
-    
-    private HashSet<String> getFilterItemRegistryNames(List<ItemStack> filters) {
-        return filters.stream()
-                .map(stack -> {
-                    var names = new HashSet<String>();
-                    var inventory = FilterItem.getInventory(stack);
-
-                    for (var i = 0; i < inventory.getSlots(); i++) {
-                        var slotStack = inventory.getStackInSlot(i);
-
-                        if (slotStack.isEmpty()) continue;
-
-                        names.add(slotStack.getItem().getDescriptionId());
-                    }
-
-                    return names;
-                })
-                .reduce(new HashSet<>(), (prev, curr) -> { prev.addAll(curr); return prev; });
-    }
-
-    private HashSet<String> getFilterFluidRegistryNames(List<ItemStack> filters) {
-        return filters.stream()
-                .map(stack -> {
-                    var names = new HashSet<String>();
-                    var inventory = FluidFilterItem.getInventory(stack);
-
-                    for (var i = 0; i < inventory.getSlots(); i++) {
-                        var slotStack = inventory.getStackInSlot(i);
-
-                        if (slotStack.isEmpty()) continue;
-
-                        names.add(FluidHelper.getFromStack(slotStack, true).getValue().getFluid().getRegistryName().toString());
-                    }
-
-                    return names;
-                })
-                .reduce(new HashSet<>(), (prev, curr) -> { prev.addAll(curr); return prev; });
+        return new PipeUpgrades(extractItems, extractFluids, filterItems, filterFluids);
     }
     
     @Override

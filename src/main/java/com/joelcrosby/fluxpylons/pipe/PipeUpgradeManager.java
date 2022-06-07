@@ -4,6 +4,7 @@ import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterItem;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
+import com.joelcrosby.fluxpylons.util.FluidHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,11 +15,11 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
-import java.util.Set;
 
 
 public class PipeUpgradeManager {
@@ -64,14 +65,6 @@ public class PipeUpgradeManager {
         return this.pipeUpgradeContainer.getUpgrades().filterFluids();
     }
     
-    public Set<String> getFilterItemNames() {
-        return this.pipeUpgradeContainer.getUpgrades().filterItemRegistryNames();
-    }    
-    
-    public Set<String> getFilterFluids() {
-        return this.pipeUpgradeContainer.getUpgrades().filterFluidRegistryNames();
-    }
-    
     public void OpenContainerMenu(ServerPlayer player) {
         var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + node.getNodeType().getEntityType().getId());
         
@@ -115,36 +108,72 @@ public class PipeUpgradeManager {
     private boolean IsValidDestination(ItemStack itemStack, ItemStack filter) {
         var isDenyList = filter.getOrCreateTag().getBoolean("is-deny-list");
         var matchNbt = filter.getOrCreateTag().getBoolean("match-nbt");
-        var filterItemNames = getFilterItemNames();
 
-        if (matchNbt) {
-            var foundNbtMatch = this.pipeUpgradeContainer.getUpgrades()
-                    .filterItems()
-                    .stream()
-                    .anyMatch(filterItem ->  {
+        var anyMatch = this.pipeUpgradeContainer.getUpgrades()
+                .filterItems()
+                .stream()
+                .anyMatch(filterItem ->  {
 
-                        var inventory = FilterItem.getInventory(filterItem);
-                        var canStack = false;
-                        
-                        for (var i = 0; i < inventory.getSlots(); i++) {
-                            var slotStack = inventory.getStackInSlot(i);
+                    var inventory = FilterItem.getInventory(filterItem);
+                    var isMatch = false;
+                    
+                    for (var i = 0; i < inventory.getSlots(); i++) {
+                        var slotStack = inventory.getStackInSlot(i);
 
-                            if (slotStack.isEmpty()) continue;
+                        if (slotStack.isEmpty()) continue;
 
-                            if (ItemHandlerHelper.canItemStacksStack(itemStack, slotStack)) {
-                                canStack = true;
-                                break;
-                            }
+                        if (matchNbt) {
+                            isMatch = ItemHandlerHelper.canItemStacksStack(itemStack, slotStack);
+                        } else {
+                            isMatch = itemStack.sameItem(slotStack);
                         }
+                        
+                        if (isMatch) break;
+                    }
 
-                        return canStack;
-                    });
-            
-            return isDenyList != foundNbtMatch;
+                    return isMatch;
+                });
+        
+        return isDenyList != anyMatch;
+    }
+
+    public boolean IsValidDestination(FluidStack fluidStack) {
+        var isFiltered = !getFluidFilterUpgrades().isEmpty();
+        if (!isFiltered) {
+            return true;
         }
 
-        var foundMatch = filterItemNames.contains(itemStack.getItem().getDescriptionId());
-        
-        return isDenyList != foundMatch;
+        return getFluidFilterUpgrades().stream().anyMatch(filter -> IsValidDestination(fluidStack, filter));
+    }
+    
+    private boolean IsValidDestination(FluidStack fluidStack, ItemStack filter) {
+        var isDenyList = filter.getOrCreateTag().getBoolean("is-deny-list");
+
+        var anyMatch = this.pipeUpgradeContainer.getUpgrades()
+                .filterItems()
+                .stream()
+                .anyMatch(filterItem ->  {
+
+                    var inventory = FilterItem.getInventory(filterItem);
+                    var isMatch = false;
+
+                    for (var i = 0; i < inventory.getSlots(); i++) {
+                        var slotStack = inventory.getStackInSlot(i);
+
+                        if (slotStack.isEmpty()) continue;
+
+                        var slotFluidStack = FluidHelper.getFromStack(slotStack, true).getValue();
+                        
+                        if (slotFluidStack == null) continue;
+                        
+                        isMatch = slotFluidStack.isFluidEqual(fluidStack);
+
+                        if (isMatch) break;
+                    }
+
+                    return isMatch;
+                });
+
+        return isDenyList != anyMatch;
     }
 }

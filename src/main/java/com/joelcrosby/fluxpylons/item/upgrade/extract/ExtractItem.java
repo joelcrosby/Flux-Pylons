@@ -49,17 +49,17 @@ public class ExtractItem extends UpgradeItem {
                     throw new RuntimeException("destination cannot be the same as source");
                 }
 
-                var upgradeManager = destination.getConnectedUpgradeManager();
-                if (!upgradeManager.IsValidDestination(simulatedExtract)) {
-                    continue;
-                }
-                
                 var incomingDirection = destination.incomingDirection().getOpposite();
                 var destinationHandler = destinationEntity
                         .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection)
                         .orElse(null);
 
                 if (destinationHandler == null) continue;
+                
+                var upgradeManager = destination.getConnectedUpgradeManager();
+                if (!upgradeManager.IsValidDestination(simulatedExtract)) {
+                    continue;
+                }
 
                 if (ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true).isEmpty()) {
                     var extracted = itemHandler.extractItem(i, rate, false);
