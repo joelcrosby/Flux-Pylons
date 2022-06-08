@@ -40,12 +40,17 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
             new ResourceLocation(FluxPylons.ID, "textures/gui/buttons/btn_deny.png"),
         };
 
+        var allowDenyTooltips = new String[] {
+                "item.fluxpylons.filter.tooltip.allow",
+                "item.fluxpylons.filter.tooltip.deny",
+        };
+        
         isDenyList = FilterItem.getIsDenyList(filterItem);
         
         var allowDenyX = getGuiLeft() + 8;
         var allowDenyY = getGuiTop() + 18;
-        
-        var allowDenyBtn = new ToggleButton(allowDenyX, allowDenyY, allowDenyTextures, isDenyList ? 1 : 0, (btn) -> {
+
+        var allowDenyBtn = new ToggleButton(this, allowDenyX, allowDenyY, allowDenyTextures, allowDenyTooltips, isDenyList ? 1 : 0, (btn) -> {
             isDenyList = !isDenyList;            
             ((ToggleButton) btn).setTexturePosition(isDenyList ? 1 : 0);
         });
@@ -54,13 +59,18 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
             new ResourceLocation(FluxPylons.ID, "textures/gui/buttons/btn_match_nbt_off.png"),
             new ResourceLocation(FluxPylons.ID, "textures/gui/buttons/btn_match_nbt_on.png"),
         };
+        
+        var matchNbtTooltips = new String[] {
+                "item.fluxpylons.filter.tooltip.ignore-nbt",
+                "item.fluxpylons.filter.tooltip.match-nbt",
+        };
 
         matchNbt = FilterItem.getMatchNbt(filterItem);
 
         var matchNbtX = getGuiLeft() + 8;
         var matchNbtY = getGuiTop() + 36;
 
-        var matchNbtBtn = new ToggleButton(matchNbtX, matchNbtY, matchNbtTextures, matchNbt ? 1 : 0, (btn) -> {
+        var matchNbtBtn = new ToggleButton(this, matchNbtX, matchNbtY, matchNbtTextures, matchNbtTooltips, matchNbt ? 1 : 0, (btn) -> {
             matchNbt = !matchNbt;
             ((ToggleButton) btn).setTexturePosition(matchNbt ? 1 : 0);
         });

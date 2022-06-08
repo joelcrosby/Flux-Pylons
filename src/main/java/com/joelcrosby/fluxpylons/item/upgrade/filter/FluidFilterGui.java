@@ -39,12 +39,17 @@ public class FluidFilterGui extends AbstractContainerScreen<FluidFilterContainer
                 new ResourceLocation(FluxPylons.ID, "textures/gui/buttons/btn_deny.png"),
         };
 
+        var allowDenyTooltips = new String[] {
+                "item.fluxpylons.filter.tooltip.allow",
+                "item.fluxpylons.filter.tooltip.deny"
+        };
+
         isDenyList = FilterItem.getIsDenyList(filterItem);
 
         var allowDenyX = getGuiLeft() + 8;
         var allowDenyY = getGuiTop() + 18;
 
-        var allowDenyBtn = new ToggleButton(allowDenyX, allowDenyY, allowDenyTextures, isDenyList ? 1 : 0, (btn) -> {
+        var allowDenyBtn = new ToggleButton(this, allowDenyX, allowDenyY, allowDenyTextures, allowDenyTooltips, isDenyList ? 1 : 0, (btn) -> {
             isDenyList = !isDenyList;
             ((ToggleButton) btn).setTexturePosition(isDenyList ? 1 : 0);
         });
