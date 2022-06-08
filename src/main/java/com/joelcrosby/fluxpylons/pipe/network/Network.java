@@ -140,27 +140,29 @@ public class Network {
             var side = destination.incomingDirection().getOpposite();
             var energyHandler = blockEntity.getCapability(CapabilityEnergy.ENERGY, side).orElse(null);
 
-            if (energyHandler != null) {
-                if (!energyHandler.canReceive()) {
-                    continue;
-                }
+            if (energyHandler == null) {
+                continue;
+            }
+            
+            if (!energyHandler.canReceive()) {
+                continue;
+            }
 
-                var toOffer = Math.min(this.nodeType.getEnergyTransferRate(), this.storage.getEnergyStored());
-                if (toOffer <= 0) {
-                    break;
-                }
+            var toOffer = Math.min(this.nodeType.getEnergyTransferRate(), this.storage.getEnergyStored());
+            if (toOffer <= 0) {
+                break;
+            }
 
-                toOffer = this.storage.extractEnergy(toOffer, false);
-                if (toOffer <= 0) {
-                    break;
-                }
+            toOffer = this.storage.extractEnergy(toOffer, false);
+            if (toOffer <= 0) {
+                break;
+            }
 
-                var accepted = energyHandler.receiveEnergy(toOffer, false);
+            var accepted = energyHandler.receiveEnergy(toOffer, false);
 
-                var remainder = toOffer - accepted;
-                if (remainder > 0) {
-                    this.storage.receiveEnergy(remainder, false);
-                }
+            var remainder = toOffer - accepted;
+            if (remainder > 0) {
+                this.storage.receiveEnergy(remainder, false);
             }
         }
     }

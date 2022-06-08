@@ -22,9 +22,8 @@ public class Graph {
     }
 
     public GraphScannerResult scan(Level originLevel, BlockPos originPos) {
-        GraphScanner scanner = new GraphScanner(nodes, this.nodeType);
-
-        GraphScannerResult result = scanner.scanAt(originLevel, originPos);
+        var scanner = new GraphScanner(nodes, this.nodeType);
+        var result = scanner.scanAt(originLevel, originPos);
 
         this.nodes = result.foundNodes();
 

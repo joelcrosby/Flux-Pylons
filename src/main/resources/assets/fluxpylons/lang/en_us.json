@@ -10,6 +10,11 @@
   "item.fluxpylons.upgrade_fluid_extract": "Fluid Extract Upgrade",
   "item.fluxpylons.upgrade_filter": "Filter Upgrade",
   "item.fluxpylons.upgrade_fluid_filter": "Fluid Filter Upgrade",
+
+  "item.fluxpylons.filter.tooltip.allow": "Allow List",
+  "item.fluxpylons.filter.tooltip.deny": "Deny List",
+  "item.fluxpylons.filter.tooltip.match-nbt": "Match NBT",
+  "item.fluxpylons.filter.tooltip.ignore-nbt": "Ignore NBT",
   
   "container.fluxpylons.crate": "Crate",
   "container.fluxpylons.pipe": "Dynamic Pipe",

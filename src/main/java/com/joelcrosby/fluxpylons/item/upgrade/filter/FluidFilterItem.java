@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -81,11 +82,10 @@ public class FluidFilterItem extends UpgradeItem {
         var compound = stack.getOrCreateTag();
         return compound.getBoolean("is-deny-list");
     }
-    
+
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-        
         var mc = Minecraft.getInstance();
 
         if (world == null || mc.player == null) return;
@@ -94,12 +94,19 @@ public class FluidFilterItem extends UpgradeItem {
 
         if (sneakPressed) {
             var inventory = getInventory(stack);
-            
+            var isDenyList = getIsDenyList(stack);
+
+            var prefix = "item.fluxpylons.filter.tooltip.";
+            var isDenyComponent = new TranslatableComponent(prefix + (isDenyList ? "deny" : "allow")).setStyle(Style.EMPTY.applyFormat(isDenyList ? ChatFormatting.RED : ChatFormatting.DARK_GREEN));
+
+            tooltip.add(isDenyComponent);
+            tooltip.add(new TextComponent(""));
+
             for (var i = 0; i < inventory.getSlots(); i++) {
                 var stackInSlot = inventory.getStackInSlot(i);
-                
+
                 if (stackInSlot.isEmpty()) continue;
-                
+
                 tooltip.add(new TranslatableComponent(stackInSlot.getItem().getDescriptionId()).withStyle(ChatFormatting.GOLD));
             }
         } else {

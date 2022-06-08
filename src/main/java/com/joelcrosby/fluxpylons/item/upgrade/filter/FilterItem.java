@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -94,7 +95,6 @@ public class FilterItem extends UpgradeItem {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-        
         var mc = Minecraft.getInstance();
 
         if (world == null || mc.player == null) return;
@@ -103,6 +103,15 @@ public class FilterItem extends UpgradeItem {
 
         if (sneakPressed) {
             var inventory = getInventory(stack);
+            var isDenyList = getIsDenyList(stack);
+            var matchNbt = getMatchNbt(stack);
+
+            var prefix = "item.fluxpylons.filter.tooltip.";
+            var isDenyComponent = new TranslatableComponent(prefix + (isDenyList ? "deny" : "allow")).setStyle(Style.EMPTY.applyFormat(isDenyList ? ChatFormatting.RED : ChatFormatting.DARK_GREEN));
+            var matchNbtComponent = new TranslatableComponent(prefix + (matchNbt ? "match-nbt" : "ignore-nbt")).setStyle(Style.EMPTY.applyFormat(matchNbt ? ChatFormatting.DARK_GREEN : ChatFormatting.RED));
+            
+            tooltip.add(isDenyComponent.append(new TextComponent(" | ").setStyle(Style.EMPTY).append(matchNbtComponent)));
+            tooltip.add(new TextComponent(""));
             
             for (var i = 0; i < inventory.getSlots(); i++) {
                 var stackInSlot = inventory.getStackInSlot(i);
