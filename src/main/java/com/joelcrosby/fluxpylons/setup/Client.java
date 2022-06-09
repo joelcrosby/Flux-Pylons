@@ -4,7 +4,7 @@ import com.joelcrosby.fluxpylons.FluxPylonsBlockEntities;
 import com.joelcrosby.fluxpylons.FluxPylonsBlocks;
 import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.crate.CrateGui;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterGui;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.BasicFilterGui;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterGui;
 import com.joelcrosby.fluxpylons.network.PacketHandler;
 import com.joelcrosby.fluxpylons.pipe.PipeRenderer;
@@ -29,7 +29,7 @@ public final class Client {
         
         MenuScreens.register(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, CrateGui::new);
         MenuScreens.register(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, PipeUpgradeGui::new);
-        MenuScreens.register(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, FilterGui::new);
+        MenuScreens.register(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, BasicFilterGui::new);
         MenuScreens.register(FluxPylonsContainerMenus.UPGRADE_FLUID_FILTER_CONTAINER_MENU, FluidFilterGui::new);
     }
 }

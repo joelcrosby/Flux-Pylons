@@ -2,8 +2,8 @@ package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
 import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import net.minecraft.world.Container;
@@ -67,7 +67,7 @@ public class PipeUpgradeContainer implements Container {
                 extractItems.add(stack);
             if (item instanceof FluidExtractItem)
                 extractFluids.add(stack);
-            if (item instanceof FilterItem)
+            if (item instanceof BaseFilterItem)
                 filterItems.add(stack);
             if (item instanceof FluidFilterItem)
                 filterFluids.add(stack);

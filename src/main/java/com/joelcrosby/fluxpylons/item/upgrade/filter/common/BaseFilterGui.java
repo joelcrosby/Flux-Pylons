@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.item.upgrade.filter;
+package com.joelcrosby.fluxpylons.item.upgrade.filter.common;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.gui.ToggleButton;
@@ -14,21 +14,24 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
-    private final FilterContainerMenu container;
+public class BaseFilterGui<TContainerMenu extends BaseFilterContainerMenu> extends AbstractContainerScreen<TContainerMenu> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(FluxPylons.ID, "textures/gui/filter.png");
-    private final ItemStack filterItem;
-
-    private boolean isDenyList;
-    private boolean matchNbt;
     
-    public FilterGui(FilterContainerMenu container, Inventory inv, Component titleIn) {
+    protected final TContainerMenu container;
+    protected final ItemStack filterItem;
+    protected final BaseFilterItem item;
+
+    protected boolean isDenyList;
+    protected boolean matchNbt;
+    
+    public BaseFilterGui(TContainerMenu container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
         
         this.imageWidth = 176;
         this.imageHeight = 153;
         this.container = container;
         this.filterItem = container.filterItem;
+        this.item = (BaseFilterItem) filterItem.getItem();
     }
 
     @Override
@@ -45,7 +48,7 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
                 "item.fluxpylons.filter.tooltip.deny",
         };
         
-        isDenyList = FilterItem.getIsDenyList(filterItem);
+        isDenyList = BaseFilterItem.getIsDenyList(filterItem);
         
         var allowDenyX = getGuiLeft() + 8;
         var allowDenyY = getGuiTop() + 18;
@@ -65,7 +68,7 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
                 "item.fluxpylons.filter.tooltip.match-nbt",
         };
 
-        matchNbt = FilterItem.getMatchNbt(filterItem);
+        matchNbt = BaseFilterItem.getMatchNbt(filterItem);
 
         var matchNbtX = getGuiLeft() + 8;
         var matchNbtY = getGuiTop() + 36;
@@ -76,13 +79,10 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
         });
 
         addRenderableWidget(allowDenyBtn);
-        addRenderableWidget(matchNbtBtn);
-    }
-
-    @Override
-    public void onClose() {
-        PacketHandler.sendToServer(new PacketUpdateFilter(isDenyList, matchNbt));
-        super.onClose();
+        
+        if (item.supportsNbtMatch()) {
+            addRenderableWidget(matchNbtBtn);
+        }
     }
     
     @Override
@@ -121,5 +121,11 @@ public class FilterGui extends AbstractContainerScreen<FilterContainerMenu> {
         PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, stack, stack.getCount()));
 
         return true;
+    }
+
+    @Override
+    public void onClose() {
+        PacketHandler.sendToServer(new PacketUpdateFilter(isDenyList, matchNbt));
+        super.onClose();
     }
 }

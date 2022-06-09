@@ -1,6 +1,6 @@
 package com.joelcrosby.fluxpylons.network.packets;
 
-import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterSlotHandler;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FilterSlotHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;

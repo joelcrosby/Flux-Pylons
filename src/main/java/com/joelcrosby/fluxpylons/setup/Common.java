@@ -9,10 +9,10 @@ import com.joelcrosby.fluxpylons.crate.CrateContainerMenu;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterContainerMenu;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterContainerMenu;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.BasicFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
 import com.joelcrosby.fluxpylons.pipe.*;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
@@ -55,7 +55,7 @@ public class Common {
         registry.register(new WrenchItem().setRegistryName("wrench"));
         registry.register(new ExtractItem().setRegistryName("upgrade_extract"));
         registry.register(new FluidExtractItem().setRegistryName("upgrade_fluid_extract"));
-        registry.register(new FilterItem().setRegistryName("upgrade_filter"));
+        registry.register(new BasicFilterItem().setRegistryName("upgrade_filter"));
         registry.register(new FluidFilterItem().setRegistryName("upgrade_fluid_filter"));
 
         registry.register(new BlockItem(FluxPylonsBlocks.CRATE, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.CRATE.getRegistryName()));
@@ -76,7 +76,7 @@ public class Common {
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new CrateContainerMenu(windowId, inv.player, data.readBlockPos())).setRegistryName("crate"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeUpgradeContainerMenu(windowId, inv.player, new PipeUpgradeItemStackHandler(), data)).setRegistryName("upgrade"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new FilterContainerMenu(windowId, inv, inv.player, data.readItem())).setRegistryName("filter"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new ItemFilterContainerMenu(windowId, inv, inv.player, data.readItem())).setRegistryName("filter"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new FluidFilterContainerMenu(windowId, inv, inv.player, data.readItem())).setRegistryName("fluid_filter"));
     }
 }

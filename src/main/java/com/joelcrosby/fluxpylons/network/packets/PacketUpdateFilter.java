@@ -1,7 +1,7 @@
 package com.joelcrosby.fluxpylons.network.packets;
 
-import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterContainerMenu;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterContainerMenu;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -36,11 +36,11 @@ public class PacketUpdateFilter {
                 if (container == null)
                     return;
 
-                if (container instanceof FilterContainerMenu filterContainerMenu) {
+                if (container instanceof BaseFilterContainerMenu filterContainerMenu) {
                     var filterItem = filterContainerMenu.filterItem;
                     if (filterItem == null) return;
-                    FilterItem.setIsDenyList(filterItem, msg.isDenyList);
-                    FilterItem.setMatchNbt(filterItem, msg.matchNbt);
+                    BaseFilterItem.setIsDenyList(filterItem, msg.isDenyList);
+                    BaseFilterItem.setMatchNbt(filterItem, msg.matchNbt);
                 }
             });
 

@@ -2,7 +2,7 @@ package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.FilterItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.util.FluidHelper;
 import net.minecraft.core.BlockPos;
@@ -114,7 +114,7 @@ public class PipeUpgradeManager {
                 .stream()
                 .anyMatch(filterItem ->  {
 
-                    var inventory = FilterItem.getInventory(filterItem);
+                    var inventory = BaseFilterItem.getInventory(filterItem);
                     var isMatch = false;
                     
                     for (var i = 0; i < inventory.getSlots(); i++) {
@@ -154,7 +154,7 @@ public class PipeUpgradeManager {
                 .stream()
                 .anyMatch(filterItem ->  {
 
-                    var inventory = FilterItem.getInventory(filterItem);
+                    var inventory = BaseFilterItem.getInventory(filterItem);
                     var isMatch = false;
 
                     for (var i = 0; i < inventory.getSlots(); i++) {

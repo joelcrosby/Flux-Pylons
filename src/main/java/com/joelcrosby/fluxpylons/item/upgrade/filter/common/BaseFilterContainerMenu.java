@@ -1,28 +1,28 @@
-package com.joelcrosby.fluxpylons.item.upgrade.filter;
+package com.joelcrosby.fluxpylons.item.upgrade.filter.common;
 
-import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.container.BaseContainerMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class FilterContainerMenu extends BaseContainerMenu {
+public class BaseFilterContainerMenu extends BaseContainerMenu {
     protected final ItemStackHandler itemStackHandler;
 
     public ItemStack filterItem;
 
-    public FilterContainerMenu(int windowId, Inventory playerInventory, Player player, FriendlyByteBuf data) {
-        this(windowId, playerInventory, player, data.readItem());
+    public BaseFilterContainerMenu(MenuType<?> menuType, int windowId, Inventory playerInventory, Player player, FriendlyByteBuf data) {
+        this(menuType, windowId, playerInventory, player, data.readItem());
     }
     
-    public FilterContainerMenu(int windowId, Inventory playerInventory, Player player, ItemStack filterItem) {
-        super(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, windowId, player, 10);
+    public BaseFilterContainerMenu(MenuType<?> menuType, int windowId, Inventory playerInventory, Player player, ItemStack filterItem) {
+        super(menuType, windowId, player, 10);
         
-        this.itemStackHandler = FilterItem.getInventory(filterItem);
+        this.itemStackHandler = BaseFilterItem.getInventory(filterItem);
         this.filterItem = filterItem;
         
         this.addOwnSlots();

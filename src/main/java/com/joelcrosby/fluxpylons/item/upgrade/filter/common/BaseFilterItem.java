@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.item.upgrade.filter;
+package com.joelcrosby.fluxpylons.item.upgrade.filter.common;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
@@ -12,23 +12,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class FilterItem extends UpgradeItem {
+public abstract class BaseFilterItem extends UpgradeItem {
+    
+    protected abstract ItemStackHandler getItemStackHandler(ItemStack stack);
+    
     @Override
     public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {
         
@@ -37,23 +34,6 @@ public class FilterItem extends UpgradeItem {
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return false;
-    }
-    
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
-        var stack = player.getItemInHand(interactionHand);
-        
-        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, stack);
-
-        var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
-        
-        NetworkHooks.openGui((ServerPlayer) player,
-                new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
-                        new FilterContainerMenu(windowId, playerInventory, player, stack), containerName), 
-                (buffer -> buffer.writeItem(stack))
-        );
-        
-        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
 
     public static void setIsDenyList(ItemStack stack, boolean isDenyList) {
@@ -73,25 +53,30 @@ public class FilterItem extends UpgradeItem {
         var compound = stack.getOrCreateTag();
         return compound.getBoolean("match-nbt");
     }
-    
-    public static FilterItemStackHandler getInventory(ItemStack stack) {
-        var compound = stack.getOrCreateTag();
-        var handler = new FilterItemStackHandler(FilterContainer.SLOTS, stack);
-        
-        handler.deserializeNBT(compound.getCompound("inventory"));
-        
-        if (compound.contains("inventory")) {
-            return handler;
-        }
-        
-        return setInventory(stack, new FilterItemStackHandler(FilterContainer.SLOTS, stack));
-    }
 
-    public static FilterItemStackHandler setInventory(ItemStack stack, FilterItemStackHandler handler) {
+    public static ItemStackHandler setInventory(ItemStack stack, ItemStackHandler handler) {
         stack.getOrCreateTag().put("inventory", handler.serializeNBT());
         return handler;
     }
 
+    protected boolean supportsNbtMatch() {
+        return true;
+    }
+
+    public static ItemStackHandler getInventory(ItemStack stack) {
+        var compound = stack.getOrCreateTag();
+        var item = (BaseFilterItem) stack.getItem();
+        var handler = item.getItemStackHandler(stack);
+
+        handler.deserializeNBT(compound.getCompound("inventory"));
+
+        if (compound.contains("inventory")) {
+            return handler;
+        }
+        
+        return setInventory(stack, item.getItemStackHandler(stack));
+    }
+    
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
@@ -107,10 +92,13 @@ public class FilterItem extends UpgradeItem {
             var matchNbt = getMatchNbt(stack);
 
             var prefix = "item.fluxpylons.filter.tooltip.";
+            
             var isDenyComponent = new TranslatableComponent(prefix + (isDenyList ? "deny" : "allow")).setStyle(Style.EMPTY.applyFormat(isDenyList ? ChatFormatting.RED : ChatFormatting.DARK_GREEN));
             var matchNbtComponent = new TranslatableComponent(prefix + (matchNbt ? "match-nbt" : "ignore-nbt")).setStyle(Style.EMPTY.applyFormat(matchNbt ? ChatFormatting.DARK_GREEN : ChatFormatting.RED));
             
-            tooltip.add(isDenyComponent.append(new TextComponent(" | ").setStyle(Style.EMPTY).append(matchNbtComponent)));
+            var divider = new TextComponent(" | ").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_GRAY));
+            
+            tooltip.add(isDenyComponent.append(supportsNbtMatch() ? divider.append(matchNbtComponent) : TextComponent.EMPTY));
             tooltip.add(new TextComponent(""));
             
             for (var i = 0; i < inventory.getSlots(); i++) {

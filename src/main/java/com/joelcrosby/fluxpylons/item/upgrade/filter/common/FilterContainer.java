@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.item.upgrade.filter;
+package com.joelcrosby.fluxpylons.item.upgrade.filter.common;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -7,18 +7,18 @@ import net.minecraft.world.item.ItemStack;
 public class FilterContainer implements Container {
     public static final int SLOTS = 10;
     
-    private final FilterItemStackHandler items;
+    private final ItemFilterStackHandler items;
     
     public FilterContainer() {
         this.items = createFilterInventory();
     }
     
-    public FilterItemStackHandler getItems() {
+    public ItemFilterStackHandler getItems() {
         return items;
     }
 
-    public static FilterItemStackHandler createFilterInventory() {
-        return new FilterItemStackHandler(FilterContainer.SLOTS, ItemStack.EMPTY);
+    public static ItemFilterStackHandler createFilterInventory() {
+        return new ItemFilterStackHandler(FilterContainer.SLOTS, ItemStack.EMPTY);
     }
     
     @Override
