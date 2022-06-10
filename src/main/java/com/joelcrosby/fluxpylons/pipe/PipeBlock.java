@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
+import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import com.joelcrosby.fluxpylons.setup.Common;
 import com.joelcrosby.fluxpylons.util.Raytracer;
@@ -107,9 +108,9 @@ public class PipeBlock extends BaseEntityBlock {
     
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         var dir = getPipeEndDirectionClicked(pos, result.getLocation());
-        var entity = world.getBlockEntity(pos);
+        var entity = level.getBlockEntity(pos);
 
         if (dir == null || entity == null || !(state.getBlock() instanceof PipeBlock)) {
             return InteractionResult.FAIL;
@@ -121,16 +122,32 @@ public class PipeBlock extends BaseEntityBlock {
             return InteractionResult.FAIL;
         }
         
-        if (!player.isCrouching() && player.getItemInHand(player.getUsedItemHand()).getItem() instanceof WrenchItem) {
-            return InteractionResult.PASS;
-        }
-        
-        if (entity instanceof PipeBlockEntity pipeBlockEntity && player instanceof ServerPlayer serverPlayer) {
-            pipeBlockEntity.getUpgradeManager(dir).OpenContainerMenu(serverPlayer);
-            return InteractionResult.SUCCESS;
+        if (!(entity instanceof PipeBlockEntity pipeBlockEntity)) {
+            return InteractionResult.FAIL;
         }
 
-        return super.use(state,world,pos, player, hand, result);
+        var itemStack = player.getItemInHand(player.getUsedItemHand());
+        
+        if (!player.isCrouching() && itemStack.getItem() instanceof UpgradeItem) {
+            if (!level.isClientSide) {
+                if (pipeBlockEntity.getUpgradeManager(dir).insertUpgrade(itemStack.copy())) {
+                    itemStack.shrink(1);
+                }
+            }
+
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+        
+        if (!player.isCrouching() && itemStack.getItem() instanceof WrenchItem) {
+            return InteractionResult.FAIL;
+        }
+        
+        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+            pipeBlockEntity.getUpgradeManager(dir).OpenContainerMenu(serverPlayer);
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+
+        return InteractionResult.SUCCESS;
     }
 
     @Override

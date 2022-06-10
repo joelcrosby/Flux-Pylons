@@ -107,6 +107,18 @@ public class PipeUpgradeContainer implements Container {
         return items.extractItem(slot, items.getStackInSlot(slot).getCount(), true);
     }
 
+    public boolean insertItem(ItemStack itemStack) {
+        for (var i = 0; i < items.getSlots(); i++) {
+            if (items.getStackInSlot(i).isEmpty()) {
+                items.insertItem(i, itemStack, false);
+                setChanged();
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     @Override
     public void setItem(int slot, ItemStack stack) {
         items.setStackInSlot(slot, stack);

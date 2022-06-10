@@ -82,6 +82,10 @@ public class PipeUpgradeManager {
         Containers.dropContents(level, pos, pipeUpgradeContainer);
     }
     
+    public boolean insertUpgrade(ItemStack itemStack) {
+        return pipeUpgradeContainer.insertItem(itemStack);
+    }
+    
     public Tag serializeNBT() {
         var tag = new CompoundTag();
         tag.put("upgradeItems", pipeUpgradeContainer.getItems().serializeNBT());
