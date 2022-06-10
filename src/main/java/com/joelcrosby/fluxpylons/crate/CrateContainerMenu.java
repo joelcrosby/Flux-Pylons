@@ -6,18 +6,29 @@ import com.joelcrosby.fluxpylons.container.BaseContainerMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.SlotItemHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class CrateContainerMenu extends BaseContainerMenu {
 
     public final CrateBlockEntity tile;
     
     public CrateContainerMenu(int id, Player player, BlockPos pos) {
-        super(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, id, player, 54);
+        super(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, id, player);
         
         this.tile = Utility.getBlockEntity(CrateBlockEntity.class, player.level, pos);
 
         this.addOwnSlots();
-        this.addPlayerInventory(8, 140);
+        this.addPlayerInventory();
+    }
+
+    @Override
+    protected int getSlotCount() {
+        return 54;
+    }
+
+    @Override
+    protected Pair<Integer, Integer> getPlayerInventoryPosition() {
+        return Pair.of(8, 140);
     }
 
     protected void addOwnSlots() {

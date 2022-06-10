@@ -6,6 +6,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
@@ -24,7 +26,9 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 public class Utility {
@@ -128,7 +132,42 @@ public class Utility {
             tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".shift").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
         }
     }
-    
+
+    public static ListTag stringListToTag(List<String> list) {
+        var nbtList = new ListTag();
+        
+        for (String string : list) {
+            var tag = new CompoundTag();
+            tag.putString("list", string);
+            nbtList.add(tag);
+        }
+        
+        return nbtList;
+    }
+
+    public static List<String> TagToStringList(ListTag nbtList) {
+        var list = new ArrayList<String>();
+        
+        for (int i = 0; i < nbtList.size(); i++) {
+            CompoundTag tag = nbtList.getCompound(i);
+            list.add(tag.getString("list"));
+        }
+        
+        return list;
+    }
+
+    public static <T> T getIndex(Set<T> set, int index) {
+        var i = 0;
+        
+        for (T entry:set) {
+            if (index == i) return entry;
+            i++;
+        }
+        
+        return null;
+    }
+
+
     public interface IMergeItemStack {
         boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection);
     }

@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class PipeUpgradeContainerMenu extends BaseContainerMenu {
 
@@ -21,12 +22,22 @@ public class PipeUpgradeContainerMenu extends BaseContainerMenu {
     }
 
     public PipeUpgradeContainerMenu(int id, Player player, ItemStackHandler itemStackHandler, BlockPos pos,  Direction dir) {
-        super(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, id, player, 10);
+        super(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, id, player);
         this.itemStackHandler = itemStackHandler;
         this.upgradeManager = player.level.isClientSide() ? null : NetworkManager.get(player.level).getNode(pos).getUpgradeManager(dir);
 
         this.addOwnSlots();
-        this.addPlayerInventory(8, 71);
+        this.addPlayerInventory();
+    }
+
+    @Override
+    protected int getSlotCount() {
+        return 10;
+    }
+
+    @Override
+    protected Pair<Integer, Integer> getPlayerInventoryPosition() {
+        return Pair.of(8, 71);
     }
 
     @Override

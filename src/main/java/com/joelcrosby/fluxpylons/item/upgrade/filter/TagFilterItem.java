@@ -2,8 +2,7 @@ package com.joelcrosby.fluxpylons.item.upgrade.filter;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterStackHandler;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterStackHandler;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -16,26 +15,26 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 
-public class FluidFilterItem extends BaseFilterItem {
+public class TagFilterItem extends BaseFilterItem {
     @Override
     public ItemStackHandler getItemStackHandler(ItemStack stack) {
-        return new FluidFilterStackHandler(10, stack);
+        return new ItemFilterStackHandler(1, stack);
     }
-    
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         var stack = player.getItemInHand(interactionHand);
-        
+
         if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 
         var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
-        
+
         NetworkHooks.openGui((ServerPlayer) player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
-                        new FluidFilterContainerMenu(windowId, player, stack), containerName), 
+                        new TagFilterContainerMenu(windowId, player, stack), containerName),
                 (buffer -> buffer.writeItem(stack))
         );
-        
+
         return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
     

@@ -2,7 +2,6 @@ package com.joelcrosby.fluxpylons.item.upgrade.filter;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FilterContainer;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterStackHandler;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -20,7 +19,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class BasicFilterItem extends BaseFilterItem {
     @Override
     public ItemStackHandler getItemStackHandler(ItemStack stack) {
-        return new ItemFilterStackHandler(FilterContainer.SLOTS, stack);
+        return new ItemFilterStackHandler(10, stack);
     }
     
     @Override
@@ -33,7 +32,7 @@ public class BasicFilterItem extends BaseFilterItem {
 
         NetworkHooks.openGui((ServerPlayer) player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
-                        new ItemFilterContainerMenu(windowId, playerInventory, player, stack), containerName),
+                        new ItemFilterContainerMenu(windowId, player, stack), containerName),
                 (buffer -> buffer.writeItem(stack))
         );
 

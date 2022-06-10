@@ -12,19 +12,23 @@ import javax.annotation.Nullable;
 
 public abstract class BaseContainerMenu extends AbstractContainerMenu {
     protected final Player player;
-    protected final int slotCount;
+    protected abstract int getSlotCount();
 
-    protected BaseContainerMenu(@Nullable MenuType<?> type, int windowId, Player player, int slotCount) {
+    protected BaseContainerMenu(@Nullable MenuType<?> type, int windowId, Player player) {
         super(type, windowId);
 
         this.player = player;
-        this.slotCount = slotCount;
     }
     
-    @SuppressWarnings("SameParameterValue")
-    protected void addPlayerInventory(int xInventory, int yInventory) {
+    protected abstract Pair<Integer, Integer> getPlayerInventoryPosition();
+    
+    protected void addPlayerInventory() {
         var id = 9;
 
+        var pos = getPlayerInventoryPosition();
+        var xInventory = pos.getLeft();
+        var yInventory = pos.getRight();
+        
         for (var y = 0; y < 3; y++) {
             for (var x = 0; x < 9; x++) {
                 addSlot(new Slot(player.getInventory(), id, xInventory + x * 18, yInventory + y * 18));
@@ -47,7 +51,7 @@ public abstract class BaseContainerMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
-        return Utility.transferStackInSlot(this, this::moveItemStackTo, player, slotIndex, stack -> Pair.of(0, this.slotCount));
+        return Utility.transferStackInSlot(this, this::moveItemStackTo, player, slotIndex, stack -> Pair.of(0, this.getSlotCount()));
     }
     
     @Override

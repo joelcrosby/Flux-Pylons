@@ -6,10 +6,11 @@
   "block.fluxpylons.adv_pipe": "Advanced Dynamic Pipe",
   
   "item.fluxpylons.wrench": "Dynamic Wrench",
-  "item.fluxpylons.upgrade_extract": "Extract Upgrade",
-  "item.fluxpylons.upgrade_fluid_extract": "Fluid Extract Upgrade",
-  "item.fluxpylons.upgrade_filter": "Filter Upgrade",
-  "item.fluxpylons.upgrade_fluid_filter": "Fluid Filter Upgrade",
+  "item.fluxpylons.upgrade_extract": "Extract Card",
+  "item.fluxpylons.upgrade_fluid_extract": "Fluid Extract Card",
+  "item.fluxpylons.upgrade_filter": "Filter Card",
+  "item.fluxpylons.upgrade_fluid_filter": "Fluid Filter Card",
+  "item.fluxpylons.upgrade_tag_filter": "Tag Filter Card",
 
   "item.fluxpylons.filter.tooltip.allow": "Allow List",
   "item.fluxpylons.filter.tooltip.deny": "Deny List",
@@ -19,8 +20,9 @@
   "container.fluxpylons.crate": "Crate",
   "container.fluxpylons.pipe": "Dynamic Pipe",
   "container.fluxpylons.adv_pipe": "Advanced Dynamic Pipe",
-  "container.fluxpylons.upgrade_filter": "Filter Upgrade",
-  "container.fluxpylons.upgrade_fluid_filter": "Fluid Filter Upgrade",
+  "container.fluxpylons.upgrade_filter": "Filter Card",
+  "container.fluxpylons.upgrade_fluid_filter": "Fluid Filter Card",
+  "container.fluxpylons.upgrade_tag_filter": "Tag Filter Card",
 
   "info.fluxpylons.shift": "Hold Shift for more info",
   "info.fluxpylons.crate": "Simple storage crate",

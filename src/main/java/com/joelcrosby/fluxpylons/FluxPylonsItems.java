@@ -15,6 +15,8 @@ public class FluxPylonsItems
     public static final BaseFilterItem UPGRADE_FILTER = null;
     @ObjectHolder(FluxPylons.ID + ":upgrade_fluid_filter")
     public static final FluidFilterItem UPGRADE_FLUID_FILTER = null;
+    @ObjectHolder(FluxPylons.ID + ":upgrade_tag_filter")
+    public static final FluidFilterItem UPGRADE_TAG_FILTER = null;
     @ObjectHolder(FluxPylons.ID + ":upgrade_extract")
     public static final ExtractItem UPGRADE_EXTRACT = null;
     @ObjectHolder(FluxPylons.ID + ":upgrade_fluid_extract")

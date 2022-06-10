@@ -11,6 +11,8 @@ import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.BasicFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterContainerMenu;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
 import com.joelcrosby.fluxpylons.pipe.*;
@@ -57,6 +59,7 @@ public class Common {
         registry.register(new FluidExtractItem().setRegistryName("upgrade_fluid_extract"));
         registry.register(new BasicFilterItem().setRegistryName("upgrade_filter"));
         registry.register(new FluidFilterItem().setRegistryName("upgrade_fluid_filter"));
+        registry.register(new TagFilterItem().setRegistryName("upgrade_tag_filter"));
 
         registry.register(new BlockItem(FluxPylonsBlocks.CRATE, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.CRATE.getRegistryName()));
         registry.register(new BlockItem(FluxPylonsBlocks.BASIC_PIPE, new Item.Properties().rarity(Rarity.UNCOMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.BASIC_PIPE.getRegistryName()));
@@ -76,7 +79,8 @@ public class Common {
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new CrateContainerMenu(windowId, inv.player, data.readBlockPos())).setRegistryName("crate"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new PipeUpgradeContainerMenu(windowId, inv.player, new PipeUpgradeItemStackHandler(), data)).setRegistryName("upgrade"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new ItemFilterContainerMenu(windowId, inv, inv.player, data.readItem())).setRegistryName("filter"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new FluidFilterContainerMenu(windowId, inv, inv.player, data.readItem())).setRegistryName("fluid_filter"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new ItemFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("filter"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new FluidFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("fluid_filter"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new TagFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("tag_filter"));
     }
 }

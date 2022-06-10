@@ -1,13 +1,16 @@
 package com.joelcrosby.fluxpylons.item.upgrade.filter.common;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNodeType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
@@ -20,6 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseFilterItem extends UpgradeItem {
@@ -38,6 +42,24 @@ public abstract class BaseFilterItem extends UpgradeItem {
 
     public static void setIsDenyList(ItemStack stack, boolean isDenyList) {
         stack.getOrCreateTag().putBoolean("is-deny-list", isDenyList);
+    }
+    
+    public static void setTags(ItemStack stack, List<String> tags) {
+        stack.getOrCreateTag().put("tags", Utility.stringListToTag(tags));
+    }
+
+    public static List<String> getTags(ItemStack card) {
+        var tags = new ArrayList<String>();
+        var compound = card.getOrCreateTag();
+        
+        if (compound.contains("tags")) {
+            var listNBT = compound.getList("tags", Tag.TAG_COMPOUND);
+            tags = new ArrayList<>(Utility.TagToStringList(listNBT));
+        } else {
+            compound.put("tags", Utility.stringListToTag(tags));
+        }
+        
+        return tags;
     }
     
     public static Boolean getIsDenyList(ItemStack stack) {
@@ -101,13 +123,22 @@ public abstract class BaseFilterItem extends UpgradeItem {
             tooltip.add(isDenyComponent.append(supportsNbtMatch() ? divider.append(matchNbtComponent) : TextComponent.EMPTY));
             tooltip.add(new TextComponent(""));
             
-            for (var i = 0; i < inventory.getSlots(); i++) {
-                var stackInSlot = inventory.getStackInSlot(i);
-                
-                if (stackInSlot.isEmpty()) continue;
-                
-                tooltip.add(new TranslatableComponent(stackInSlot.getItem().getDescriptionId()).withStyle(ChatFormatting.GOLD));
+            if (stack.getItem() instanceof TagFilterItem) {
+                var tags = getTags(stack);
+
+                for (var tag : tags) {
+                    tooltip.add(new TranslatableComponent(tag).withStyle(ChatFormatting.DARK_AQUA));
+                }
+            } else {
+                for (var i = 0; i < inventory.getSlots(); i++) {
+                    var stackInSlot = inventory.getStackInSlot(i);
+
+                    if (stackInSlot.isEmpty()) continue;
+
+                    tooltip.add(new TranslatableComponent(stackInSlot.getItem().getDescriptionId()).withStyle(ChatFormatting.GOLD));
+                }
             }
+            
         } else {
             tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".shift").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
         }

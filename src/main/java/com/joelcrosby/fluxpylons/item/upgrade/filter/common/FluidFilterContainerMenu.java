@@ -9,13 +9,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class FluidFilterContainerMenu extends BaseFilterContainerMenu {
-    
+
+    @SuppressWarnings("unused")
     public FluidFilterContainerMenu(int windowId, Inventory playerInventory, Player player, FriendlyByteBuf data) {
-        this(windowId, playerInventory, player, data.readItem());
+        this(windowId, player, data.readItem());
     }
 
-    public FluidFilterContainerMenu(int windowId, Inventory playerInventory, Player player, ItemStack filterItem) {
-        super(FluxPylonsContainerMenus.UPGRADE_FLUID_FILTER_CONTAINER_MENU, windowId, playerInventory, player, filterItem);
+    public FluidFilterContainerMenu(int windowId, Player player, ItemStack filterItem) {
+        super(FluxPylonsContainerMenus.UPGRADE_FLUID_FILTER_CONTAINER_MENU, windowId, player, filterItem);
     }
 
     @Override
@@ -51,8 +52,8 @@ public class FluidFilterContainerMenu extends BaseFilterContainerMenu {
 
             currentStack.setCount(1);
             
-            if (index >= slotCount) {
-                for (int i = 0; i < slotCount; i++) {
+            if (index >= getSlotCount()) {
+                for (int i = 0; i < getSlotCount(); i++) {
                     var slotStack = this.slots.get(i).getItem();
                     var fluidStack = FluidHelper.getFromStack(slotStack, true).getValue();
                     
@@ -61,7 +62,7 @@ public class FluidFilterContainerMenu extends BaseFilterContainerMenu {
                     }
                 }
                 
-                if (!this.moveItemStackTo(currentStack, 0, slotCount, false)) {
+                if (!this.moveItemStackTo(currentStack, 0, getSlotCount(), false)) {
                     return ItemStack.EMPTY;
                 }
             }

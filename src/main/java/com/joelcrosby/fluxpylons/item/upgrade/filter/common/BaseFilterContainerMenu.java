@@ -9,24 +9,36 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
-public class BaseFilterContainerMenu extends BaseContainerMenu {
+public abstract class BaseFilterContainerMenu extends BaseContainerMenu {
     protected final ItemStackHandler itemStackHandler;
 
     public ItemStack filterItem;
 
+    @SuppressWarnings("unused")
     public BaseFilterContainerMenu(MenuType<?> menuType, int windowId, Inventory playerInventory, Player player, FriendlyByteBuf data) {
-        this(menuType, windowId, playerInventory, player, data.readItem());
+        this(menuType, windowId, player, data.readItem());
     }
     
-    public BaseFilterContainerMenu(MenuType<?> menuType, int windowId, Inventory playerInventory, Player player, ItemStack filterItem) {
-        super(menuType, windowId, player, 10);
+    public BaseFilterContainerMenu(MenuType<?> menuType, int windowId, Player player, ItemStack filterItem) {
+        super(menuType, windowId, player);
         
         this.itemStackHandler = BaseFilterItem.getInventory(filterItem);
         this.filterItem = filterItem;
         
         this.addOwnSlots();
-        this.addPlayerInventory(8, 71);
+        this.addPlayerInventory();
+    }
+
+    @Override
+    protected int getSlotCount() {
+        return 10;
+    }
+
+    @Override
+    protected Pair<Integer, Integer> getPlayerInventoryPosition() {
+        return Pair.of(8, 71);
     }
 
     protected void addOwnSlots() {
@@ -42,18 +54,13 @@ public class BaseFilterContainerMenu extends BaseContainerMenu {
             }
         }
     }
-    
-    @Override
-    public boolean stillValid(Player player) {
-        return true;
-    }
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
-        if (slotId >= 0 && slotId < slotCount) {
+        if (slotId >= 0 && slotId < getSlotCount()) {
             return;
         }
-        
+
         super.clicked(slotId, dragType, clickType, player);
     }
 
@@ -72,12 +79,12 @@ public class BaseFilterContainerMenu extends BaseContainerMenu {
             currentStack.setCount(1);
             
             // Only do this if we click from the players inventory
-            if (index >= slotCount) {
-                for (int i = 0; i < slotCount; i++) { // Prevents the same item from going in there more than once.
+            if (index >= getSlotCount()) {
+                for (int i = 0; i < getSlotCount(); i++) { // Prevents the same item from going in there more than once.
                     if (this.slots.get(i).getItem().equals(currentStack, false)) // Don't limit tags
                         return ItemStack.EMPTY;
                 }
-                if (!this.moveItemStackTo(currentStack, 0, slotCount, false)) {
+                if (!this.moveItemStackTo(currentStack, 0, getSlotCount(), false)) {
                     return ItemStack.EMPTY;
                 }
             }

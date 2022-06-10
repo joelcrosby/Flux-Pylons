@@ -8,11 +8,12 @@ import net.minecraft.world.item.ItemStack;
 
 public class ItemFilterContainerMenu extends BaseFilterContainerMenu {
 
+    @SuppressWarnings("unused")
     public ItemFilterContainerMenu(int windowId, Inventory playerInventory, Player player, FriendlyByteBuf data) {
-        this(windowId, playerInventory, player, data.readItem());
+        this(windowId, player, data.readItem());
     }
 
-    public ItemFilterContainerMenu(int windowId, Inventory playerInventory, Player player, ItemStack filterItem) {
-        super(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, windowId, playerInventory, player, filterItem);
+    public ItemFilterContainerMenu(int windowId, Player player, ItemStack filterItem) {
+        super(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, windowId, player, filterItem);
     }
 }
