@@ -156,6 +156,10 @@ public class Utility {
         return list;
     }
 
+    public static boolean inBounds(int x, int y, int w, int h, double ox, double oy) {
+        return ox >= x && ox <= x + w && oy >= y && oy <= y + h;
+    }
+    
     public static <T> T getIndex(Set<T> set, int index) {
         var i = 0;
         

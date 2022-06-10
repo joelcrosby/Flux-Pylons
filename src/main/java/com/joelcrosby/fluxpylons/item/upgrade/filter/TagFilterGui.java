@@ -1,6 +1,7 @@
 package com.joelcrosby.fluxpylons.item.upgrade.filter;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.gui.ToggleButton;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FilterSlotHandler;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -44,6 +46,7 @@ public class TagFilterGui extends AbstractContainerScreen<TagFilterContainerMenu
     private final List<TagListItem> tagListItems = new ArrayList<>();
     
     private static final int LIST_ITEM_SCROLL_SIZE = 10;
+    private static final int LIST_WIDTH = 124;
     
     public TagFilterGui(TagFilterContainerMenu container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
@@ -238,15 +241,30 @@ public class TagFilterGui extends AbstractContainerScreen<TagFilterContainerMenu
                 color = 0x1B7491;
             }
             
-            if (mouseX >= this.x && mouseY >= this.y && mouseX < this.x + 140 && mouseY < this.y + 12) {
+            if (mouseX >= this.x && mouseY >= this.y && mouseX < this.x + LIST_WIDTH && mouseY < this.y + 12) {
                 color = 0xFFFFFF;
                 
                 if (isSelected) {
                     color = 0x42a8c9;
                 }
+
+                matrix.pushPose();
+                RenderSystem.disableDepthTest();
+                RenderSystem.colorMask(true, true, true, false);
+                
+                fillGradient(matrix, this.x - 2, this.y - 1, this.x + (LIST_WIDTH - 2), this.y + LIST_ITEM_SCROLL_SIZE, 0x885B5B5B, 0x885B5B5B);
+                
+                if (Utility.inBounds(this.x - 2, this.y - 1, LIST_ITEM_SCROLL_SIZE, LIST_ITEM_SCROLL_SIZE, mouseX, mouseY)) {
+                    var tooltip = new TextComponent(this.tag);
+                    TagFilterGui.this.renderTooltip(matrix, tooltip, (int) mouseX, (int) mouseY);
+                }
+                
+                RenderSystem.colorMask(true, true, true, true);
+                matrix.popPose();
             }
+
+            TagFilterGui.this.font.draw(matrix, this.tag, this.x, this.y + 1, color);
             
-            TagFilterGui.this.font.draw(matrix, this.tag, this.x, this.y, color);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, TEXTURE);
         }
