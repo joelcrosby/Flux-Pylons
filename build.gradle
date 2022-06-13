@@ -92,12 +92,10 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.19'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
-
-    compileOnly "mekanism:Mekanism:${mekanism_version}:api"
 
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}")
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")
@@ -108,9 +106,7 @@ dependencies {
     implementation fg.deobf("com.teamcofh:thermal_foundation:${thermal_mc_version}-${thermal_foundation_version}")
     implementation fg.deobf("com.teamcofh:thermal_expansion:${thermal_mc_version}-${thermal_expansion_version}")
 
-
     implementation fg.deobf("curse.maven:the-one-probe-245211:${theoneprobe_id}")
-
     implementation fg.deobf("curse.maven:jade-324717:${jade_id}")
 }
 
