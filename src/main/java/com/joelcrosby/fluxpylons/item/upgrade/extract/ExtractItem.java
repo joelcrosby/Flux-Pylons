@@ -61,12 +61,15 @@ public class ExtractItem extends UpgradeItem {
                     continue;
                 }
 
-                if (ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true).isEmpty()) {
-                    var extracted = itemHandler.extractItem(i, rate, false);
-                    ItemHandlerHelper.insertItem(destinationHandler, extracted, false);
+                var remainder = ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true).getCount();
+                var amountToExtract = simulatedExtract.getCount() - remainder;
+                
+                if (amountToExtract == 0) continue;
+                
+                var extracted = itemHandler.extractItem(i, amountToExtract, false);
+                ItemHandlerHelper.insertItem(destinationHandler, extracted, false);
 
-                    break Slots;
-                }
+                break Slots;
             }
         }
     }

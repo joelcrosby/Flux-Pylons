@@ -60,12 +60,14 @@ public class FluidExtractItem extends UpgradeItem {
                     continue;
                 }
 
-                if (destinationHandler.fill(simulatedExtract, IFluidHandler.FluidAction.SIMULATE) != 0) {
-                    var extracted = fluidHandler.drain(rate, IFluidHandler.FluidAction.EXECUTE);
-                    destinationHandler.fill(extracted, IFluidHandler.FluidAction.EXECUTE);
+                var amountToExtract = destinationHandler.fill(simulatedExtract, IFluidHandler.FluidAction.SIMULATE);
 
-                    break Tanks;
-                }
+                if (amountToExtract == 0) continue;
+
+                var extracted = fluidHandler.drain(amountToExtract, IFluidHandler.FluidAction.EXECUTE);
+                destinationHandler.fill(extracted, IFluidHandler.FluidAction.EXECUTE);
+
+                break Tanks;
             }
         }
     }
