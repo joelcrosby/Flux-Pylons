@@ -1,6 +1,7 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/cube_column",
   "textures": {
-    "all": "fluxpylons:block/crate"
+    "end": "fluxpylons:block/crate_end",
+    "side": "fluxpylons:block/crate"
   }
 }
