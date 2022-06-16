@@ -29,7 +29,7 @@ public class FluidFilterContainerMenu extends BaseFilterContainerMenu {
         for (var i = 0; i < this.itemStackHandler.getSlots() / 5; i++) {
             for (var j = 0; j < 5; j++) {
                 slot++;
-                this.addSlot(new FilterSlotHandler(this.itemStackHandler, slot, 8 + off + j * 18, y + i * 18));
+                this.addSlot(new FluidFilterSlotHandler(this.itemStackHandler, slot, 8 + off + j * 18, y + i * 18));
             }
         }
     }
