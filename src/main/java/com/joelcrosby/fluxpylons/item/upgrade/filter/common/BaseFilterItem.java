@@ -62,7 +62,7 @@ public abstract class BaseFilterItem extends UpgradeItem {
         return tags;
     }
     
-    public static Boolean getIsDenyList(ItemStack stack) {
+    public static boolean getIsDenyList(ItemStack stack) {
         var compound = stack.getOrCreateTag();
         
         if (compound.contains("is-deny-list")) {
@@ -80,7 +80,7 @@ public abstract class BaseFilterItem extends UpgradeItem {
         stack.getOrCreateTag().putBoolean("match-nbt", matchNbt);
     }
 
-    public static Boolean getMatchNbt(ItemStack stack) {
+    public static boolean getMatchNbt(ItemStack stack) {
         var compound = stack.getOrCreateTag();
         return compound.getBoolean("match-nbt");
     }

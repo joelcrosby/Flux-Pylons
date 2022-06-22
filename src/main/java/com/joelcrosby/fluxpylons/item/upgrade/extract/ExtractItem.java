@@ -67,8 +67,8 @@ public class ExtractItem extends BaseFilterItem {
 
         if (itemHandler == null) return;
 
-        var isDenyList = itemStack.getOrCreateTag().getBoolean("is-deny-list");
-        var matchNbt = itemStack.getOrCreateTag().getBoolean("match-nbt");
+        var isDenyList = BaseFilterItem.getIsDenyList(itemStack);
+        var matchNbt = BaseFilterItem.getMatchNbt(itemStack);
         var inventory = BaseFilterItem.getInventory(itemStack);
 
         var rate = nodeType.getItemTransferRate();

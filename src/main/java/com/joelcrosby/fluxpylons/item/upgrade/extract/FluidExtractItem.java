@@ -71,7 +71,7 @@ public class FluidExtractItem extends BaseFilterItem {
 
         if (fluidHandler == null) return;
 
-        var isDenyList = itemStack.getOrCreateTag().getBoolean("is-deny-list");
+        var isDenyList = BaseFilterItem.getIsDenyList(itemStack);
         var inventory = BaseFilterItem.getInventory(itemStack);
         
         var rate = nodeType.getFluidTransferRate();

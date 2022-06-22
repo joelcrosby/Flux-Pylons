@@ -110,8 +110,8 @@ public class PipeUpgradeManager {
     }
 
     private boolean IsValidDestination(ItemStack itemStack, ItemStack filter) {
-        var isDenyList = filter.getOrCreateTag().getBoolean("is-deny-list");
-        var matchNbt = filter.getOrCreateTag().getBoolean("match-nbt");
+        var isDenyList = BaseFilterItem.getIsDenyList(filter);
+        var matchNbt = BaseFilterItem.getMatchNbt(filter);
 
         var anyMatch = this.pipeUpgradeContainer.getUpgrades()
                 .filterItems()
@@ -139,7 +139,7 @@ public class PipeUpgradeManager {
     }
     
     private boolean IsValidDestination(FluidStack fluidStack, ItemStack filter) {
-        var isDenyList = filter.getOrCreateTag().getBoolean("is-deny-list");
+        var isDenyList = BaseFilterItem.getIsDenyList(filter);
 
         var anyMatch = this.pipeUpgradeContainer.getUpgrades()
                 .filterFluids()
