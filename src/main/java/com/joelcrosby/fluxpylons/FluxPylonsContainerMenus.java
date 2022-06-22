@@ -20,4 +20,5 @@ public class FluxPylonsContainerMenus {
     @ObjectHolder(FluxPylons.ID + ":tag_filter")
     public static final MenuType<TagFilterContainerMenu> UPGRADE_TAG_FILTER_CONTAINER_MENU = null;
     
+    public static final int BaseFilterContainerSlots = 14;
 }

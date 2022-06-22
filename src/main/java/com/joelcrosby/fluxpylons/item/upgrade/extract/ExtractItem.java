@@ -1,6 +1,7 @@
 package com.joelcrosby.fluxpylons.item.upgrade.extract;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
@@ -23,11 +24,12 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 
+
 public class ExtractItem extends BaseFilterItem {
 
     @Override
     public ItemStackHandler getItemStackHandler(ItemStack stack) {
-        return new ItemFilterStackHandler(10, stack);
+        return new ItemFilterStackHandler(FluxPylonsContainerMenus.BaseFilterContainerSlots, stack);
     }
 
     @Override

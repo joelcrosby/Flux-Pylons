@@ -1,5 +1,6 @@
 package com.joelcrosby.fluxpylons.item.upgrade.filter.common;
 
+import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.container.BaseContainerMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -33,7 +34,7 @@ public abstract class BaseFilterContainerMenu extends BaseContainerMenu {
 
     @Override
     protected int getSlotCount() {
-        return 10;
+        return FluxPylonsContainerMenus.BaseFilterContainerSlots;
     }
 
     @Override
@@ -46,9 +47,10 @@ public abstract class BaseFilterContainerMenu extends BaseContainerMenu {
         var y = 18;
         
         var slot = -1;
+        var rowSlots = FluxPylonsContainerMenus.BaseFilterContainerSlots / 2;
         
-        for (var i = 0; i < this.itemStackHandler.getSlots() / 5; i++) {
-            for (var j = 0; j < 5; j++) {
+        for (var i = 0; i < this.itemStackHandler.getSlots() / rowSlots; i++) {
+            for (var j = 0; j < rowSlots; j++) {
                 slot++;
                 this.addSlot(new FilterSlotHandler(this.itemStackHandler, slot, 8 + off + j * 18, y + i * 18));
             }

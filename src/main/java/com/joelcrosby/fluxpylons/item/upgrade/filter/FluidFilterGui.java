@@ -20,15 +20,12 @@ public class FluidFilterGui extends BaseFilterGui<FluidFilterContainerMenu> {
         super.init();
         
         var renderer = new BlockEntityWithoutLevelRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
-        
-        
-        
         this.itemRenderer = new FluidStackRenderer(minecraft.getTextureManager(),
                 minecraft.getModelManager(),
                 minecraft.getItemColors(),
                 renderer,
                 new Vector2D(43, 17),
-                new Vector2D(132, 52),
+                new Vector2D(168, 52),
                 this);
     }
 }

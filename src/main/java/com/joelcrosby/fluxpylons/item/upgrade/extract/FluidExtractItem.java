@@ -1,6 +1,7 @@
 package com.joelcrosby.fluxpylons.item.upgrade.extract;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
@@ -27,7 +28,7 @@ public class FluidExtractItem extends BaseFilterItem {
     
     @Override
     public ItemStackHandler getItemStackHandler(ItemStack stack) {
-        return new FluidFilterStackHandler(10, stack);
+        return new FluidFilterStackHandler(FluxPylonsContainerMenus.BaseFilterContainerSlots, stack);
     }
 
     @Override

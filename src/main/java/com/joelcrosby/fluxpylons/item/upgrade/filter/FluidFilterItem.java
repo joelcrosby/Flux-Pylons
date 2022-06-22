@@ -1,6 +1,7 @@
 package com.joelcrosby.fluxpylons.item.upgrade.filter;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterStackHandler;
@@ -19,7 +20,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class FluidFilterItem extends BaseFilterItem {
     @Override
     public ItemStackHandler getItemStackHandler(ItemStack stack) {
-        return new FluidFilterStackHandler(10, stack);
+        return new FluidFilterStackHandler(FluxPylonsContainerMenus.BaseFilterContainerSlots, stack);
     }
     
     @Override

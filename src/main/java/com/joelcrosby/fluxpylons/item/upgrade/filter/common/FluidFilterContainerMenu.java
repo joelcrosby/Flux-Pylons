@@ -25,9 +25,10 @@ public class FluidFilterContainerMenu extends BaseFilterContainerMenu {
         var y = 18;
 
         var slot = -1;
-
-        for (var i = 0; i < this.itemStackHandler.getSlots() / 5; i++) {
-            for (var j = 0; j < 5; j++) {
+        var rows = FluxPylonsContainerMenus.BaseFilterContainerSlots / 2;
+        
+        for (var i = 0; i < this.itemStackHandler.getSlots() / rows; i++) {
+            for (var j = 0; j < rows; j++) {
                 slot++;
                 this.addSlot(new FluidFilterSlotHandler(this.itemStackHandler, slot, 8 + off + j * 18, y + i * 18));
             }
