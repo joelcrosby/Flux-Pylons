@@ -1,0 +1,11 @@
+{
+  "type": "fluxpylons:clear_nbt",
+  "ingredients": [
+    {
+      "item": "fluxpylons:upgrade_tag_filter"
+    }
+  ],
+  "result": {
+    "item": "fluxpylons:upgrade_tag_filter"
+  }
+}

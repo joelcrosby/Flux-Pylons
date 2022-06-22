@@ -1,6 +1,8 @@
 package com.joelcrosby.fluxpylons;
 
 import com.joelcrosby.fluxpylons.setup.Client;
+import com.joelcrosby.fluxpylons.setup.Common;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -15,5 +17,6 @@ public class FluxPylons
     {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(Client::setup));
+        bus.addGenericListener(RecipeSerializer.class, Common::registerRecipeSerializers);
     }
 }

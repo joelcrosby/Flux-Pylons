@@ -16,8 +16,10 @@ import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
 import com.joelcrosby.fluxpylons.pipe.*;
+import com.joelcrosby.fluxpylons.util.ClearNbtRecipe;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.capabilities.Capability;
@@ -82,5 +84,9 @@ public class Common {
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new ItemFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("filter"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new FluidFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("fluid_filter"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new TagFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("tag_filter"));
+    }
+
+    public static void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
+        event.getRegistry().register(new ClearNbtRecipe.Serializer().setRegistryName("fluxpylons:clear_nbt"));
     }
 }
