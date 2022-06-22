@@ -1,6 +1,7 @@
 package com.joelcrosby.fluxpylons;
 
 import com.joelcrosby.fluxpylons.pipe.PipeBlockEntity;
+import com.joelcrosby.fluxpylons.util.FluidHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
@@ -22,7 +23,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -171,6 +175,45 @@ public class Utility {
         return null;
     }
 
+    public static boolean matchesFilterInventory(ItemStackHandler inventory, ItemStack itemStack, boolean matchNbt) {
+        var isMatch = false;
+
+        for (var i = 0; i < inventory.getSlots(); i++) {
+            var slotStack = inventory.getStackInSlot(i);
+
+            if (slotStack.isEmpty()) continue;
+
+            if (matchNbt) {
+                isMatch = ItemHandlerHelper.canItemStacksStack(itemStack, slotStack);
+            } else {
+                isMatch = itemStack.sameItem(slotStack);
+            }
+
+            if (isMatch) break;
+        }
+
+        return isMatch;
+    }
+
+    public static boolean matchesFilterInventory(ItemStackHandler inventory, FluidStack fluidStack) {
+        var isMatch = false;
+
+        for (var i = 0; i < inventory.getSlots(); i++) {
+            var slotStack = inventory.getStackInSlot(i);
+
+            if (slotStack.isEmpty()) continue;
+
+            var slotFluidStack = FluidHelper.getFromStack(slotStack, true).getValue();
+
+            if (slotFluidStack == null) continue;
+
+            isMatch = slotFluidStack.isFluidEqual(fluidStack);
+
+            if (isMatch) break;
+        }
+
+        return isMatch;
+    }
 
     public interface IMergeItemStack {
         boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection);

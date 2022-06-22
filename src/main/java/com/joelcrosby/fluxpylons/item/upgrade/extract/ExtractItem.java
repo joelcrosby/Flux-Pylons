@@ -1,15 +1,56 @@
 package com.joelcrosby.fluxpylons.item.upgrade.extract;
 
-import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
+import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.Utility;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterStackHandler;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphDestinationType;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNodeType;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.NetworkHooks;
 
-public class ExtractItem extends UpgradeItem {
+public class ExtractItem extends BaseFilterItem {
+
+    @Override
+    public ItemStackHandler getItemStackHandler(ItemStack stack) {
+        return new ItemFilterStackHandler(10, stack);
+    }
+
+    @Override
+    protected boolean defaultsToDenyList() {
+        return true;
+    }
+    
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+        var stack = player.getItemInHand(interactionHand);
+
+        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+
+        var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
+
+        NetworkHooks.openGui((ServerPlayer) player,
+                new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
+                        new ItemFilterContainerMenu(windowId, player, stack), containerName),
+                (buffer -> buffer.writeItem(stack))
+        );
+
+        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+    }
     
     @Override
     public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {
@@ -24,6 +65,12 @@ public class ExtractItem extends UpgradeItem {
 
         if (itemHandler == null) return;
 
+        var isDenyList = itemStack.getOrCreateTag().getBoolean("is-deny-list");
+        var matchNbt = itemStack.getOrCreateTag().getBoolean("match-nbt");
+        var inventory = BaseFilterItem.getInventory(itemStack);
+
+        var rate = nodeType.getItemTransferRate();
+        
         Slots:
         for (var i = 0; i < itemHandler.getSlots(); i++) {
             var slot = itemHandler.getStackInSlot(i);
@@ -31,7 +78,10 @@ public class ExtractItem extends UpgradeItem {
                 continue;
             }
 
-            var rate = nodeType.getItemTransferRate();
+            var matchesFilter = Utility.matchesFilterInventory(inventory, slot, matchNbt);
+            if (isDenyList == matchesFilter) {
+                continue;
+            }
             
             var simulatedExtract = itemHandler.extractItem(i, rate, true);
             if (simulatedExtract.isEmpty()) {

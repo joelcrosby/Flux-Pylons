@@ -64,7 +64,16 @@ public abstract class BaseFilterItem extends UpgradeItem {
     
     public static Boolean getIsDenyList(ItemStack stack) {
         var compound = stack.getOrCreateTag();
-        return compound.getBoolean("is-deny-list");
+        
+        if (compound.contains("is-deny-list")) {
+            return compound.getBoolean("is-deny-list");
+        }
+        
+        if (!(stack.getItem() instanceof BaseFilterItem baseFilterItem)) {
+            return false;
+        }
+        
+        return baseFilterItem.defaultsToDenyList();
     }
 
     public static void setMatchNbt(ItemStack stack, boolean matchNbt) {
@@ -83,6 +92,10 @@ public abstract class BaseFilterItem extends UpgradeItem {
 
     protected boolean supportsNbtMatch() {
         return true;
+    }
+    
+    protected boolean defaultsToDenyList() {
+        return false;
     }
 
     public static ItemStackHandler getInventory(ItemStack stack) {

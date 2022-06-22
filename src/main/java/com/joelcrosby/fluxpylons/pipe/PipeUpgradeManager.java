@@ -1,11 +1,11 @@
 package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
-import com.joelcrosby.fluxpylons.util.FluidHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +17,6 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
@@ -118,29 +117,12 @@ public class PipeUpgradeManager {
                 .filterItems()
                 .stream()
                 .anyMatch(filterItem ->  {
-
                     if (filterItem.getItem() instanceof TagFilterItem) {
                         var tags = TagFilterItem.getTags(filterItem);
                         return itemStack.getTags().map(t -> t.location().toString()).anyMatch(tags::contains);
                     } else {
                         var inventory = BaseFilterItem.getInventory(filterItem);
-                        var isMatch = false;
-
-                        for (var i = 0; i < inventory.getSlots(); i++) {
-                            var slotStack = inventory.getStackInSlot(i);
-
-                            if (slotStack.isEmpty()) continue;
-
-                            if (matchNbt) {
-                                isMatch = ItemHandlerHelper.canItemStacksStack(itemStack, slotStack);
-                            } else {
-                                isMatch = itemStack.sameItem(slotStack);
-                            }
-
-                            if (isMatch) break;
-                        }
-
-                        return isMatch;
+                        return Utility.matchesFilterInventory(inventory, itemStack, matchNbt);
                     }
                 });
         
@@ -163,25 +145,8 @@ public class PipeUpgradeManager {
                 .filterFluids()
                 .stream()
                 .anyMatch(filterItem ->  {
-
                     var inventory = BaseFilterItem.getInventory(filterItem);
-                    var isMatch = false;
-
-                    for (var i = 0; i < inventory.getSlots(); i++) {
-                        var slotStack = inventory.getStackInSlot(i);
-
-                        if (slotStack.isEmpty()) continue;
-
-                        var slotFluidStack = FluidHelper.getFromStack(slotStack, true).getValue();
-                        
-                        if (slotFluidStack == null) continue;
-                        
-                        isMatch = slotFluidStack.isFluidEqual(fluidStack);
-
-                        if (isMatch) break;
-                    }
-
-                    return isMatch;
+                    return Utility.matchesFilterInventory(inventory, fluidStack);
                 });
 
         return isDenyList != anyMatch;

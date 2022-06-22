@@ -1,15 +1,62 @@
 package com.joelcrosby.fluxpylons.item.upgrade.extract;
 
-import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
+import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.Utility;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterStackHandler;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphDestinationType;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNodeType;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.NetworkHooks;
 
-public class FluidExtractItem extends UpgradeItem {
+public class FluidExtractItem extends BaseFilterItem {
+    
+    @Override
+    public ItemStackHandler getItemStackHandler(ItemStack stack) {
+        return new FluidFilterStackHandler(10, stack);
+    }
+
+    @Override
+    protected boolean defaultsToDenyList() {
+        return true;
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+        var stack = player.getItemInHand(interactionHand);
+
+        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+
+        var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
+
+        NetworkHooks.openGui((ServerPlayer) player,
+                new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
+                        new FluidFilterContainerMenu(windowId, player, stack), containerName),
+                (buffer -> buffer.writeItem(stack))
+        );
+
+        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+    }
+
+    @Override
+    protected boolean supportsNbtMatch() {
+        return false;
+    }
+    
     @Override
     public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {
         var level = node.getLevel();
@@ -23,6 +70,9 @@ public class FluidExtractItem extends UpgradeItem {
 
         if (fluidHandler == null) return;
 
+        var isDenyList = itemStack.getOrCreateTag().getBoolean("is-deny-list");
+        var inventory = BaseFilterItem.getInventory(itemStack);
+        
         var rate = nodeType.getFluidTransferRate();
         
         Tanks:
@@ -32,6 +82,11 @@ public class FluidExtractItem extends UpgradeItem {
                 continue;
             }
 
+            var matchesFilter = Utility.matchesFilterInventory(inventory, availableFluid);
+            if (isDenyList == matchesFilter) {
+                continue;
+            }
+            
             var simulatedExtract = fluidHandler.drain(rate, IFluidHandler.FluidAction.SIMULATE);
             if (simulatedExtract.isEmpty()) {
                 continue;
