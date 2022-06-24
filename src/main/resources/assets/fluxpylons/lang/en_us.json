@@ -11,6 +11,7 @@
   "item.fluxpylons.upgrade_filter": "Filter Card",
   "item.fluxpylons.upgrade_fluid_filter": "Fluid Filter Card",
   "item.fluxpylons.upgrade_tag_filter": "Tag Filter Card",
+  "item.fluxpylons.upgrade_retriever": "Retriever Card",
 
   "item.fluxpylons.filter.tooltip.allow": "Allow List",
   "item.fluxpylons.filter.tooltip.deny": "Deny List",
@@ -25,6 +26,7 @@
   "container.fluxpylons.upgrade_tag_filter": "Tag Filter Card",
   "container.fluxpylons.upgrade_extract": "Extract Card",
   "container.fluxpylons.upgrade_fluid_extract": "Fluid Extract Card",
+  "container.fluxpylons.upgrade_retriever": "Retriever Card",
 
   "info.fluxpylons.shift": "Hold Shift for more info",
   "info.fluxpylons.crate": "Simple storage crate",

@@ -3,6 +3,7 @@ package com.joelcrosby.fluxpylons;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
+import com.joelcrosby.fluxpylons.item.upgrade.extract.RetrieverItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
@@ -27,4 +28,7 @@ public class FluxPylonsItems
     
     @ObjectHolder(FluxPylons.ID + ":upgrade_fluid_extract")
     public static final FluidExtractItem UPGRADE_FLUID_EXTRACT = null;
+    
+    @ObjectHolder(FluxPylons.ID + ":upgrade_retriever")
+    public static final RetrieverItem UPGRADE_RETRIEVER = null;
 }

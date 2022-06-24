@@ -9,6 +9,7 @@ import com.joelcrosby.fluxpylons.crate.CrateContainerMenu;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
+import com.joelcrosby.fluxpylons.item.upgrade.extract.RetrieverItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.BasicFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterContainerMenu;
@@ -58,6 +59,7 @@ public class Common {
 
         registry.register(new WrenchItem().setRegistryName("wrench"));
         registry.register(new ExtractItem().setRegistryName("upgrade_extract"));
+        registry.register(new RetrieverItem().setRegistryName("upgrade_retriever"));
         registry.register(new FluidExtractItem().setRegistryName("upgrade_fluid_extract"));
         registry.register(new BasicFilterItem().setRegistryName("upgrade_filter"));
         registry.register(new FluidFilterItem().setRegistryName("upgrade_fluid_filter"));

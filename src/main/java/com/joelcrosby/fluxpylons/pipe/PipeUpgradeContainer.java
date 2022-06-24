@@ -2,6 +2,7 @@ package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
+import com.joelcrosby.fluxpylons.item.upgrade.extract.RetrieverItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.BasicFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
@@ -56,6 +57,7 @@ public class PipeUpgradeContainer implements Container {
         var extractFluids = new ArrayList<ItemStack>();
         var filterItems = new ArrayList<ItemStack>();
         var filterFluids = new ArrayList<ItemStack>();
+        var retrieverItems = new ArrayList<ItemStack>();
 
         for (var i = 0; i < items.getSlots(); i++) {
             var stack = items.getStackInSlot(i);
@@ -74,9 +76,11 @@ public class PipeUpgradeContainer implements Container {
                 filterItems.add(stack);
             if (item instanceof FluidFilterItem)
                 filterFluids.add(stack);
+            if (item instanceof RetrieverItem)
+                retrieverItems.add(stack);
         }
         
-        return new PipeUpgrades(extractItems, extractFluids, filterItems, filterFluids);
+        return new PipeUpgrades(extractItems, extractFluids, filterItems, filterFluids, retrieverItems);
     }
     
     @Override

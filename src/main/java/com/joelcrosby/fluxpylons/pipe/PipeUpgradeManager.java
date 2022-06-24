@@ -55,6 +55,12 @@ public class PipeUpgradeManager {
                 upgradeItem.update(upgrade, node, dir, node.getNodeType());
             }
         }
+
+        for (var upgrade : upgrades.retrieverItems()) {
+            if (!upgrade.isEmpty() && upgrade.getItem() instanceof UpgradeItem upgradeItem) {
+                upgradeItem.update(upgrade, node, dir, node.getNodeType());
+            }
+        }
     }
     
     public List<ItemStack> getFilterUpgrades() {
