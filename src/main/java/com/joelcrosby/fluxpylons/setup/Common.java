@@ -17,6 +17,8 @@ import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
 import com.joelcrosby.fluxpylons.pipe.*;
+import com.joelcrosby.fluxpylons.pylon.PylonBlock;
+import com.joelcrosby.fluxpylons.pylon.PylonBlockEntity;
 import com.joelcrosby.fluxpylons.util.ClearNbtRecipe;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
@@ -49,7 +51,8 @@ public class Common {
         event.getRegistry().registerAll(
                 new CrateBlock().setRegistryName("crate"),
                 new PipeBlock(PipeType.BASIC).setRegistryName("pipe"),
-                new PipeBlock(PipeType.ADVANCED).setRegistryName("adv_pipe")
+                new PipeBlock(PipeType.ADVANCED).setRegistryName("adv_pipe"),
+                new PylonBlock().setRegistryName("pylon")
         );
     }
 
@@ -68,6 +71,7 @@ public class Common {
         registry.register(new BlockItem(FluxPylonsBlocks.CRATE, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.CRATE.getRegistryName()));
         registry.register(new BlockItem(FluxPylonsBlocks.BASIC_PIPE, new Item.Properties().rarity(Rarity.UNCOMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.BASIC_PIPE.getRegistryName()));
         registry.register(new BlockItem(FluxPylonsBlocks.ADV_PIPE, new Item.Properties().rarity(Rarity.RARE).tab(TAB)).setRegistryName(FluxPylonsBlocks.ADV_PIPE.getRegistryName()));
+        registry.register(new BlockItem(FluxPylonsBlocks.PYLON, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.PYLON.getRegistryName()));
     }
 
     @SubscribeEvent
@@ -75,7 +79,8 @@ public class Common {
         event.getRegistry().registerAll(
                 BlockEntityType.Builder.of(CrateBlockEntity::new, FluxPylonsBlocks.CRATE).build(null).setRegistryName("crate"),
                 BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.BASIC), FluxPylonsBlocks.BASIC_PIPE).build(null).setRegistryName("pipe"),
-                BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.ADVANCED), FluxPylonsBlocks.ADV_PIPE).build(null).setRegistryName("adv_pipe")
+                BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.ADVANCED), FluxPylonsBlocks.ADV_PIPE).build(null).setRegistryName("adv_pipe"),
+                BlockEntityType.Builder.of(PylonBlockEntity::new, FluxPylonsBlocks.PYLON).build(null).setRegistryName("pylon")
         );
     }
 

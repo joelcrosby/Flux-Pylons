@@ -3,6 +3,7 @@
   "values": [
     "fluxpylons:crate",
     "fluxpylons:pipe",
-    "fluxpylons:adv_pipe"
+    "fluxpylons:adv_pipe",
+    "fluxpylons:pylon"
   ]
 }

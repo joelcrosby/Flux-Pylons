@@ -4,6 +4,7 @@
   "block.fluxpylons.crate": "Crate",
   "block.fluxpylons.pipe": "Dynamic Pipe",
   "block.fluxpylons.adv_pipe": "Advanced Dynamic Pipe",
+  "block.fluxpylons.pylon": "Flux Pylon",
   
   "item.fluxpylons.wrench": "Dynamic Wrench",
   "item.fluxpylons.upgrade_extract": "Extract Card",
@@ -19,6 +20,7 @@
   "item.fluxpylons.filter.tooltip.ignore-nbt": "Ignore NBT",
   
   "container.fluxpylons.crate": "Crate",
+  "container.fluxpylons.pylon": "Flux Pylon",
   "container.fluxpylons.pipe": "Dynamic Pipe",
   "container.fluxpylons.adv_pipe": "Advanced Dynamic Pipe",
   "container.fluxpylons.upgrade_filter": "Filter Card",
