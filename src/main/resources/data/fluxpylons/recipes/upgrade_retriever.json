@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "GQG",
-    "GPG",
+    "IPI",
     "GQG"
   ],
   "key": {
-    "R": {
-      "item": "minecraft:redstone"
-    },
     "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "I": {
       "item": "minecraft:gold_ingot"
     },
     "P": {
