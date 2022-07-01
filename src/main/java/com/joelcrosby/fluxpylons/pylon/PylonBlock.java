@@ -107,10 +107,6 @@ public class PylonBlock extends BaseEntityBlock {
         if (shape == null) {
             shape = DIR_SHAPES.get(state.getValue(BlockStateProperties.FACING));
             
-            if (null != null) {
-                shape = ((Function<VoxelShape, VoxelShape>) null).apply(shape);
-            }
-
             if (coverShape != null) {
                 shape = Shapes.or(shape, coverShape);
             }
