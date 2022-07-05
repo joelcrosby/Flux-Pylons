@@ -7,9 +7,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.Queue;
 
@@ -22,8 +20,6 @@ public class PylonRenderer {
         while (tiles.size() > 0) {
             var tile = tiles.remove();
             var startPos = tile.getBlockPos();
-            var blockState = tile.getBlockState();
-            var facingDir = blockState.getValue(BlockStateProperties.FACING);
 
             var level = tile.getLevel();
             var gameTime = level.getGameTime();
@@ -40,16 +36,15 @@ public class PylonRenderer {
             var startVec = new Vector3f(.5f, .5f, .5f);
             var thickness = 1f / 16;
             
-            for (var dir : Direction.values()) {
-                if (dir == facingDir || dir == facingDir.getOpposite()) continue;
-                
-                var endPos = startPos.relative(dir, 12);
-                var diffX = endPos.getX() + .5f - startPos.getX();
-                var diffY = endPos.getY() + .5f - startPos.getY();
-                var diffZ = endPos.getZ() + .5f - startPos.getZ();
+            var connections = tile.getConnections();
+            
+            for (var connection : connections) {
+                var diffX = connection.getX() + .5f - startPos.getX();
+                var diffY = connection.getY() + .5f - startPos.getY();
+                var diffZ = connection.getZ() + .5f - startPos.getZ();
                 var endVec = new Vector3f(diffX, diffY, diffZ);
                 
-                drawBeam(builder, positionMatrix, endVec, startVec, 1, 0, 0, 0.6f, thickness, v, v + diffY * 1.5, tile);
+                drawBeam(builder, positionMatrix, endVec, startVec, 1, 0, 0, 0.72f, thickness, v, v + diffY * 1.5, tile);
             }
             
             matrixStack.popPose();

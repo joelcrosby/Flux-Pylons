@@ -19,6 +19,7 @@ import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerM
 import com.joelcrosby.fluxpylons.pipe.*;
 import com.joelcrosby.fluxpylons.pylon.PylonBlock;
 import com.joelcrosby.fluxpylons.pylon.PylonBlockEntity;
+import com.joelcrosby.fluxpylons.pylon.network.graph.PylonGraphNodeType;
 import com.joelcrosby.fluxpylons.util.ClearNbtRecipe;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
@@ -80,7 +81,7 @@ public class Common {
                 BlockEntityType.Builder.of(CrateBlockEntity::new, FluxPylonsBlocks.CRATE).build(null).setRegistryName("crate"),
                 BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.BASIC), FluxPylonsBlocks.BASIC_PIPE).build(null).setRegistryName("pipe"),
                 BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.ADVANCED), FluxPylonsBlocks.ADV_PIPE).build(null).setRegistryName("adv_pipe"),
-                BlockEntityType.Builder.of(PylonBlockEntity::new, FluxPylonsBlocks.PYLON).build(null).setRegistryName("pylon")
+                BlockEntityType.Builder.of((pos, state) -> new PylonBlockEntity(pos, state, PylonGraphNodeType.BASIC), FluxPylonsBlocks.PYLON).build(null).setRegistryName("pylon")
         );
     }
 

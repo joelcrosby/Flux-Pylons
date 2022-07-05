@@ -1,7 +1,7 @@
-package com.joelcrosby.fluxpylons.pipe.network;
+package com.joelcrosby.fluxpylons.pylon.network;
 
 import com.joelcrosby.fluxpylons.energy.NetworkEnergyStorage;
-import com.joelcrosby.fluxpylons.pipe.network.graph.*;
+import com.joelcrosby.fluxpylons.pylon.network.graph.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -11,8 +11,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.List;
 
-public class Network {
-    private final Graph graph;
+public class PylonNetwork {
+    private final PylonGraph graph;
 
     private BlockPos originPos;
     private boolean didDoInitialScan;
@@ -20,17 +20,16 @@ public class Network {
     private final NetworkEnergyStorage storage;
     private final LazyOptional<IEnergyStorage> lazyStorage;
     
-    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final Level level;
     
     private final String id;
-    private final GraphNodeType nodeType;
+    private final PylonGraphNodeType nodeType;
 
-    public Network(String id, BlockPos originPos, Level level, GraphNodeType nodeType) {
+    public PylonNetwork(String id, BlockPos originPos, Level level, PylonGraphNodeType nodeType) {
         this.id = id;
         this.level = level;
         this.nodeType = nodeType;
-        this.graph = new Graph(this, this.nodeType);
+        this.graph = new PylonGraph(this, this.nodeType);
 
         this.storage = new NetworkEnergyStorage(nodeType.getCapacity(), nodeType.getEnergyTransferRate(), nodeType.getEnergyTransferRate());
         this.lazyStorage = LazyOptional.of(() -> this.storage);
@@ -59,12 +58,12 @@ public class Network {
         return tag;
     }
 
-    public static Network fromNBT(Level level, CompoundTag nbt) {
+    public static PylonNetwork fromNBT(Level level, CompoundTag nbt) {
         var networkBlockPos = BlockPos.of(nbt.getLong("origin"));
         var networkId = nbt.getString("id");
         var nodeTypeValue = nbt.getInt("type");
-        var nodeType = GraphNodeType.values()[nodeTypeValue];
-        var network = new Network(networkId, networkBlockPos, level, nodeType);
+        var nodeType = PylonGraphNodeType.values()[nodeTypeValue];
+        var network = new PylonNetwork(networkId, networkBlockPos, level, nodeType);
 
         network.storage.setEnergyStored(nbt.getInt("energy"));
         
@@ -75,20 +74,19 @@ public class Network {
         return lazyStorage;
     }
 
-    @SuppressWarnings("unused")
-    public GraphNode getNode(BlockPos pos) {
+    public PylonGraphNode getNode(BlockPos pos) {
         return graph.getNodes().stream().filter(p -> p.getPos().equals(pos)).findFirst().orElse(null);
     }
 
-    public List<GraphDestination> getDestinations(GraphDestinationType type) {
+    public List<PylonGraphDestination> getDestinations(PylonGraphDestinationType type) {
         return graph.getDestinations(type);
     }
 
-    public List<GraphDestination> getRelativeDestinations(GraphDestinationType type, BlockPos pos) {
+    public List<PylonGraphDestination> getRelativeDestinations(PylonGraphDestinationType type, BlockPos pos) {
         return graph.getRelativeDestinations(type, pos);
     }
     
-    public GraphScannerResult scanGraph(Level level, BlockPos pos) {
+    public PylonGraphScannerResult scanGraph(Level level, BlockPos pos) {
         var result =  graph.scan(level, pos);
 
         var firstNode = result.foundNodes().stream().findFirst();
@@ -102,7 +100,7 @@ public class Network {
         return result;
     }
 
-    public void onMergedWith(Network mainNetwork) {
+    public void onMergedWith(PylonNetwork mainNetwork) {
         var mainEnergy = mainNetwork.storage.getEnergyStored();
         var mergedEnergy = storage.getEnergyStored();
         
@@ -115,9 +113,7 @@ public class Network {
 
             scanGraph(level, originPos);
         }
-
-        graph.getNodes().forEach(GraphNode::update);
-
+        
         updateEnergy();
     }
 
@@ -126,13 +122,9 @@ public class Network {
             return;
         }
 
-        var energyDestinations = graph.getDestinations(GraphDestinationType.ENERGY);
+        var destinations = graph.getDestinations(PylonGraphDestinationType.ENERGY);
 
-        if (energyDestinations.isEmpty()) {
-            return;
-        }
-
-        for (var destination : energyDestinations) {
+        for (var destination : destinations) {
             var blockEntity = destination.getConnectedBlockEntity();
             if (blockEntity == null) {
                 continue;

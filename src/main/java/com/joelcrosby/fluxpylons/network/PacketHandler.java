@@ -2,6 +2,7 @@ package com.joelcrosby.fluxpylons.network;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.network.packets.PacketGhostSlot;
+import com.joelcrosby.fluxpylons.network.packets.PacketUpdateConnections;
 import com.joelcrosby.fluxpylons.network.packets.PacketUpdateFilter;
 import com.joelcrosby.fluxpylons.network.packets.PacketUpdateTagFilter;
 import net.minecraft.network.protocol.Packet;
@@ -31,6 +32,7 @@ public class PacketHandler {
         HANDLER.registerMessage(id++, PacketGhostSlot.class, PacketGhostSlot::encode, PacketGhostSlot::decode, PacketGhostSlot.Handler::handle);
         HANDLER.registerMessage(id++, PacketUpdateFilter.class, PacketUpdateFilter::encode, PacketUpdateFilter::decode, PacketUpdateFilter.Handler::handle);
         HANDLER.registerMessage(id++, PacketUpdateTagFilter.class, PacketUpdateTagFilter::encode, PacketUpdateTagFilter::decode, PacketUpdateTagFilter.Handler::handle);
+        HANDLER.registerMessage(id++, PacketUpdateConnections.class, PacketUpdateConnections::encode, PacketUpdateConnections::decode, PacketUpdateConnections.Handler::handle);
     }
 
     public static void sendTo(Object msg, ServerPlayer player) {

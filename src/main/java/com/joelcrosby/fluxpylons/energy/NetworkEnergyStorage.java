@@ -1,4 +1,4 @@
-package com.joelcrosby.fluxpylons.pipe.network;
+package com.joelcrosby.fluxpylons.energy;
 
 import net.minecraftforge.energy.EnergyStorage;
 

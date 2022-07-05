@@ -1,7 +1,6 @@
 package com.joelcrosby.fluxpylons.pipe.network.graph;
 
 import com.joelcrosby.fluxpylons.pipe.PipeBlock;
-import com.joelcrosby.fluxpylons.pipe.network.NetworkEnergyStorage;
 import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -106,11 +105,7 @@ public class GraphScanner {
             }
             
             blockEntity.getCapability(CapabilityEnergy.ENERGY, facingDirection)
-                .ifPresent(handler -> {
-                    if (!(handler instanceof NetworkEnergyStorage)) {
-                        destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.ENERGY));
-                    }
-                });
+                .ifPresent(handler -> destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.ENERGY)));
             
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facingDirection)
                 .ifPresent(handler -> destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.ITEMS)));
