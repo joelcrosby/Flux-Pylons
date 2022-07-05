@@ -20,7 +20,7 @@ import java.util.List;
 
 public abstract class UpgradeItem extends Item {
     public UpgradeItem() {
-        super(new Item.Properties().stacksTo(1).tab(Common.TAB));
+        super(new Item.Properties().tab(Common.TAB));
     }
 
     public abstract void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType);
