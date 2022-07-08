@@ -1,8 +1,6 @@
 package com.joelcrosby.fluxpylons.pylon.network;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
-import com.joelcrosby.fluxpylons.Utility;
-import com.joelcrosby.fluxpylons.pylon.PylonBlockEntity;
 import com.joelcrosby.fluxpylons.pylon.network.graph.PylonGraphNode;
 import com.joelcrosby.fluxpylons.pylon.network.graph.PylonGraphNodeType;
 import net.minecraft.core.BlockPos;
@@ -30,7 +28,6 @@ public class PylonNetworkManager extends SavedData {
     private final Level level;
     private final HashMap<String, PylonNetwork> networks = new HashMap<>();
     private final HashMap<BlockPos, PylonGraphNode> nodes = new HashMap<>();
-    private final HashMap<BlockPos, HashSet<BlockPos>> connections = new HashMap<>();
 
     public PylonNetworkManager(Level level) {
         this.level = level;
@@ -77,9 +74,8 @@ public class PylonNetworkManager extends SavedData {
         var network = new PylonNetwork(networkId, pos, level, nodeType);
 
         addNetwork(network);
+        network.scanGraph(level, pos);
 
-        connections.putAll(network.scanGraph(level, pos).connections());
-        
         LOGGER.debug("Formed network at {}", pos);
     }
 
@@ -109,7 +105,7 @@ public class PylonNetworkManager extends SavedData {
             removeNetwork(otherNetwork.getId());
         }
 
-        connections.putAll(mainNetwork.scanGraph(level, pos).connections());
+        mainNetwork.scanGraph(level, pos);
 
         mergedNetworks.forEach(n -> {
             n.onMergedWith(mainNetwork);
@@ -118,7 +114,7 @@ public class PylonNetworkManager extends SavedData {
         });
     }
 
-    public void addNode(PylonGraphNode node, PylonBlockEntity entity) {
+    public void addNode(PylonGraphNode node) {
         if (nodes.containsKey(node.getPos())) {
             throw new RuntimeException("Node at " + node.getPos() + " already exists");
         }
@@ -136,8 +132,6 @@ public class PylonNetworkManager extends SavedData {
         } else {
             mergeNetworksIntoOne(adjacentNodes, node.getLevel(), node.getPos());
         }
-        
-        entity.updateConnections(connections.getOrDefault(node.getPos(), new HashSet<>()));
     }
 
     public void removeNode(BlockPos pos) {
@@ -171,12 +165,6 @@ public class PylonNetworkManager extends SavedData {
                 throw new RuntimeException("Adjacent node has no network");
             }
 
-            var entity = Utility.getBlockEntity(PylonBlockEntity.class, level, adjacent.getPos());
-            
-            if (entity != null) {
-                entity.updateConnections(connections.getOrDefault(adjacent.getPos(), new HashSet<>()));
-            }
-
             if (adjacent.getNetwork() != originNode.getNetwork()) {
                 LOGGER.debug("The origin node network is different than the adjacent node network");
                 return;
@@ -200,8 +188,6 @@ public class PylonNetworkManager extends SavedData {
             // For sanity checking
             var foundRemovedNode = false;
 
-            connections.putAll(result.connections());
-            
             for (var removed : result.removedNodes()) {
                 // It's obvious that our removed node is removed.
                 // We don't want to create a new split network for this one.

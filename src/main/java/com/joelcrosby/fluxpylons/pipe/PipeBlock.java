@@ -52,6 +52,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +84,15 @@ public class PipeBlock extends BaseEntityBlock {
             .put(Direction.SOUTH, box(4, 4, 11, 12, 12, 16))
             .put(Direction.EAST, box(11, 4, 4, 16, 12, 12))
             .put(Direction.WEST, box(0, 4, 4, 5, 12, 12))
+            .build();
+
+    public static final Map<Direction, VoxelShape> DIR_SHAPES_END_ADV = ImmutableMap.<Direction, VoxelShape>builder()
+            .put(Direction.UP, Shapes.join(box(4, 13, 4, 12, 16, 12), box(6, 11, 6, 10, 13, 10), BooleanOp.OR))
+            .put(Direction.DOWN, Shapes.join(box(4, 0, 4, 12, 3, 12), box(6, 3, 6, 10, 5, 10), BooleanOp.OR))
+            .put(Direction.NORTH, Shapes.join(box(4, 4, 0, 12, 12, 3), box(6, 6, 3, 10, 10, 5), BooleanOp.OR))
+            .put(Direction.SOUTH, Shapes.join(box(4, 4, 13, 12, 12, 16), box(6, 6, 11, 10, 10, 13), BooleanOp.OR))
+            .put(Direction.EAST, Shapes.join(box(13, 4, 4, 16, 12, 12), box(11, 6, 6, 13, 10, 10), BooleanOp.OR))
+            .put(Direction.WEST, Shapes.join(box(0, 4, 4, 3, 12, 12), box(3, 6, 6, 5, 10, 10), BooleanOp.OR))
             .build();
 
     static {
@@ -269,7 +279,11 @@ public class PipeBlock extends BaseEntityBlock {
                 var connectionType = state.getValue(entry.getValue());
                 
                 if (connectionType.isEnd()) {
-                    shape = Shapes.or(shape, DIR_SHAPES_END.get(entry.getKey()));
+                    if (pipeType == PipeType.BASIC) {
+                        shape = Shapes.or(shape, DIR_SHAPES_END.get(entry.getKey()));
+                    } else {
+                        shape = Shapes.or(shape, DIR_SHAPES_END_ADV.get(entry.getKey()));
+                    }
                 } else if (connectionType.isConnected()) {
                     shape = Shapes.or(shape, DIR_SHAPES.get(entry.getKey()));
                 }
@@ -377,8 +391,10 @@ public class PipeBlock extends BaseEntityBlock {
         var energyRate = this.pipeType.getNodeType().getEnergyTransferRate();
         var fluidRate = this.pipeType.getNodeType().getFluidTransferRate();
         var itemRate = this.pipeType.getNodeType().getItemTransferRate();
+
+        var formatter = new DecimalFormat("#,###");
         
-        var energyText = I18n.get("terms." + FluxPylons.ID + ".energy") + " " + energyRate + " FE/t";
+        var energyText = I18n.get("terms." + FluxPylons.ID + ".energy") + " " + formatter.format(energyRate) + " FE/t";
         var fluidText = I18n.get("terms." + FluxPylons.ID + ".fluids") + " " +  fluidRate + " MB/t";
         var itemText = itemRate + " " + I18n.get("terms." + FluxPylons.ID + ".items") + "/0.5s";
         

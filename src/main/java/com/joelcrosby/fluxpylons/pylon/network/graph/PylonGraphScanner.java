@@ -1,9 +1,9 @@
 package com.joelcrosby.fluxpylons.pylon.network.graph;
 
 import com.google.common.collect.Sets;
-import com.joelcrosby.fluxpylons.network.PacketHandler;
-import com.joelcrosby.fluxpylons.network.packets.PacketUpdateConnections;
+import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.pylon.PylonBlock;
+import com.joelcrosby.fluxpylons.pylon.PylonBlockEntity;
 import com.joelcrosby.fluxpylons.pylon.network.PylonNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,11 +32,6 @@ public class PylonGraphScanner {
         this.removedNodes.addAll(currentNodes);
         this.connections = new Hashtable<>();
     }
-
-    private void addRequest(PylonGraphScannerRequest request) {
-        requests.add(request);
-        allRequests.add(request);
-    }
     
     public PylonGraphScannerResult scanAt(Level level, BlockPos pos) {
         addRequest(new PylonGraphScannerRequest(level, pos, null, null, null, null));
@@ -59,9 +54,18 @@ public class PylonGraphScanner {
         );
     }
 
+    private void addRequest(PylonGraphScannerRequest request) {
+        requests.add(request);
+        allRequests.add(request);
+    }
+    
     private void updateNodeConnections(Collection<PylonGraphNode> nodes) {
         for (var n : nodes ) {
-            PacketHandler.sendToAll(new PacketUpdateConnections(n.getPos(), connections.getOrDefault(n.getPos(), new HashSet<>())), n.getLevel());
+            var entity = Utility.getExistingBlockEntity(PylonBlockEntity.class, n.level, n.getPos());
+            
+            if (entity instanceof PylonBlockEntity) {
+                entity.updateConnections(connections.getOrDefault(n.getPos(), new HashSet<>()));
+            }
         }
     }
 
@@ -69,7 +73,11 @@ public class PylonGraphScanner {
         var node = PylonNetworkManager.get(request.getLevel()).getNode(request.getPos());
         
         if (node != null) {
-            if (request.getParent() != null && request.getParent().getNode() != null) {
+            if (!this.nodeType.equals(node.nodeType)) {
+                return;
+            }
+
+            if (request.getParent() != null) {
                 var key = request.getParent().getPos();
                 var value = node.getPos();
 
@@ -83,10 +91,6 @@ public class PylonGraphScanner {
                 }
             }
             
-            if (!this.nodeType.equals(node.nodeType)) {
-                return;
-            }
-            
             if (!foundNodes.add(node)) {
                 return;
             }
@@ -98,7 +102,7 @@ public class PylonGraphScanner {
             removedNodes.remove(node);
 
             request.setSuccessful(true);
-
+            
             var level = node.getLevel();
             var facing = node.getDirection();
             

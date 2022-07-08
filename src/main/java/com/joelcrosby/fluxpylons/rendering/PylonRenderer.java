@@ -44,7 +44,7 @@ public class PylonRenderer {
                 var diffZ = connection.getZ() + .5f - startPos.getZ();
                 var endVec = new Vector3f(diffX, diffY, diffZ);
                 
-                drawBeam(builder, positionMatrix, endVec, startVec, 1, 0, 0, 0.72f, thickness, v, v + diffY * 1.5, tile);
+                drawBeam(builder, positionMatrix, endVec, startVec, 0, 0, 1, 0.72f, thickness, v, v + diffY * 1.5, tile);
             }
             
             matrixStack.popPose();

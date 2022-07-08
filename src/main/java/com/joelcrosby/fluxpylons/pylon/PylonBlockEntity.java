@@ -98,13 +98,15 @@ public class PylonBlockEntity extends BlockEntity {
                     .getOptionalValue(BlockStateProperties.FACING)
                     .orElse(Direction.DOWN);
             
-            manager.addNode(new PylonGraphNode(level, worldPosition, dir, nodeType), this);
+            manager.addNode(new PylonGraphNode(level, worldPosition, dir, nodeType));
         }
     }
 
     @Override
     public final CompoundTag getUpdateTag() {
-        return this.saveWithoutMetadata();
+        var tag = new CompoundTag();
+        saveAdditional(tag);
+        return tag;
     }
 
     @Override
@@ -112,6 +114,11 @@ public class PylonBlockEntity extends BlockEntity {
         this.load(tag);
     }
 
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+    
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         this.load(pkt.getTag());
@@ -146,6 +153,10 @@ public class PylonBlockEntity extends BlockEntity {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+        if (side != getBlockState().getValue(BlockStateProperties.FACING)) {
+            return LazyOptional.empty();
+        }
+        
         if (cap == CapabilityEnergy.ENERGY) {
             if (!level.isClientSide) {
                 var node = PylonNetworkManager.get(level).getNode(this.worldPosition);

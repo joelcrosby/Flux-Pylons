@@ -72,8 +72,9 @@ public class NetworkManager extends SavedData {
         var network = new Network(networkId, pos, level, nodeType);
 
         addNetwork(network);
-
         network.scanGraph(level, pos);
+
+        LOGGER.debug("Formed network at {}", pos);
     }
 
     public void mergeNetworksIntoOne(Set<GraphNode> candidates, Level level, BlockPos pos) {

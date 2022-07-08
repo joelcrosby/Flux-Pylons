@@ -12,22 +12,22 @@ public enum GraphNodeType {
 
     public int getEnergyTransferRate() {
         return switch (this) {
-            case BASIC -> 512;
-            case ADVANCED -> 1024 * 4;
+            case BASIC -> 1024;
+            case ADVANCED -> 1024 * 16;
         };
     }
 
     public int getFluidTransferRate() {
         return switch (this) {
-            case BASIC -> 20;
-            case ADVANCED -> 200;
+            case BASIC -> 1000;
+            case ADVANCED -> 8000;
         };
     }
     
     public int getItemTransferRate() {
         return switch (this) {
-            case BASIC -> 8;
-            case ADVANCED -> 32;
+            case BASIC -> 16;
+            case ADVANCED -> 128;
         };
     }
     

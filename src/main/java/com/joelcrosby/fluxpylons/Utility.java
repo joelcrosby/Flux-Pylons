@@ -41,6 +41,11 @@ public class Utility {
         return type.isInstance(tile) ? (T) tile : null;
     }
 
+    public static <T extends BlockEntity> T getExistingBlockEntity(Class<T> type, BlockGetter world, BlockPos pos) {
+        var tile = world.getExistingBlockEntity(pos);
+        return type.isInstance(tile) ? (T) tile : null;
+    }
+    
     public static ItemStack transferStackInSlot(AbstractContainerMenu container, IMergeItemStack merge, Player player, int slotIndex, Function<ItemStack, Pair<Integer, Integer>> predicate) {
         var inventoryStream = container.slots.stream().filter(slot -> slot.container != player.getInventory());
         var inventoryStart = (int) inventoryStream.count();

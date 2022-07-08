@@ -126,13 +126,13 @@ public class Network {
             return;
         }
 
-        var energyDestinations = graph.getDestinations(GraphDestinationType.ENERGY);
+        var destinations = graph.getDestinations(GraphDestinationType.ENERGY);
 
-        if (energyDestinations.isEmpty()) {
+        if (destinations.isEmpty()) {
             return;
         }
 
-        for (var destination : energyDestinations) {
+        for (var destination : destinations) {
             var blockEntity = destination.getConnectedBlockEntity();
             if (blockEntity == null) {
                 continue;
