@@ -27,6 +27,12 @@ public class TagFilterItem extends BaseFilterItem {
 
         if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 
+        openGui(player, stack);
+
+        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+    }
+
+    public void openGui(Player player, ItemStack stack) {
         var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
 
         NetworkHooks.openGui((ServerPlayer) player,
@@ -34,10 +40,8 @@ public class TagFilterItem extends BaseFilterItem {
                         new TagFilterContainerMenu(windowId, player, stack), containerName),
                 (buffer -> buffer.writeItem(stack))
         );
-
-        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
-    
+
     @Override
     protected boolean supportsNbtMatch() {
         return false;

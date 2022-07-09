@@ -42,6 +42,12 @@ public class FluidExtractItem extends BaseFilterItem {
 
         if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 
+        openGui(player, stack);
+
+        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+    }
+
+    public void openGui(Player player, ItemStack stack) {
         var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
 
         NetworkHooks.openGui((ServerPlayer) player,
@@ -49,8 +55,6 @@ public class FluidExtractItem extends BaseFilterItem {
                         new FluidFilterContainerMenu(windowId, player, stack), containerName),
                 (buffer -> buffer.writeItem(stack))
         );
-
-        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
 
     @Override

@@ -43,6 +43,12 @@ public class RetrieverItem extends BaseFilterItem {
 
         if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 
+        openGui(player, stack);
+
+        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+    }
+
+    public void openGui(Player player, ItemStack stack) {
         var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
 
         NetworkHooks.openGui((ServerPlayer) player,
@@ -50,10 +56,8 @@ public class RetrieverItem extends BaseFilterItem {
                         new ItemFilterContainerMenu(windowId, player, stack), containerName),
                 (buffer -> buffer.writeItem(stack))
         );
-
-        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
-    
+
     @Override
     public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {
         var level = node.getLevel();

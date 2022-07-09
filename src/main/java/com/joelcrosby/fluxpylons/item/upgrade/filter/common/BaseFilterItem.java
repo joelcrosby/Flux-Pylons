@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -29,6 +30,8 @@ import java.util.List;
 public abstract class BaseFilterItem extends UpgradeItem {
     
     protected abstract ItemStackHandler getItemStackHandler(ItemStack stack);
+
+    public abstract void openGui(Player player, ItemStack stack);
     
     @Override
     public void update(ItemStack itemStack, GraphNode node, Direction dir, GraphNodeType nodeType) {
@@ -39,7 +42,7 @@ public abstract class BaseFilterItem extends UpgradeItem {
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return false;
     }
-
+    
     public static void setIsDenyList(ItemStack stack, boolean isDenyList) {
         stack.getOrCreateTag().putBoolean("is-deny-list", isDenyList);
     }

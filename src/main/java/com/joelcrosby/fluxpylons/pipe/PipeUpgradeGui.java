@@ -1,6 +1,8 @@
 package com.joelcrosby.fluxpylons.pipe;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.network.PacketHandler;
+import com.joelcrosby.fluxpylons.network.packets.PacketOpenScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -35,5 +37,16 @@ public class PipeUpgradeGui extends AbstractContainerScreen<PipeUpgradeContainer
         this.font.draw(poseStack, this.title.getString(), 8, 6, 4210752);
 
         renderTooltip(poseStack, mouseX - leftPos, mouseY - topPos);
+    }
+
+    @Override
+    public boolean mouseClicked(double x, double y, int btn) {
+        if (btn == 1 && hoveredSlot != null) {
+            var slot = hoveredSlot.getSlotIndex();
+            PacketHandler.sendToServer(new PacketOpenScreen(slot));
+            return true;
+        }
+        
+        return super.mouseClicked(x, y, btn);
     }
 }
