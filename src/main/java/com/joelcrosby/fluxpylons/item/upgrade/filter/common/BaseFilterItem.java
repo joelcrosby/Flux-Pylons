@@ -137,12 +137,12 @@ public abstract class BaseFilterItem extends UpgradeItem {
             var divider = new TextComponent(" | ").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_GRAY));
             
             tooltip.add(isDenyComponent.append(supportsNbtMatch() ? divider.append(matchNbtComponent) : TextComponent.EMPTY));
-            tooltip.add(new TextComponent(""));
             
             if (stack.getItem() instanceof TagFilterItem) {
                 var tags = getTags(stack);
 
                 for (var tag : tags) {
+                    tooltip.add(new TextComponent(""));
                     tooltip.add(new TranslatableComponent(tag).withStyle(ChatFormatting.DARK_AQUA));
                 }
             } else {
@@ -151,12 +151,21 @@ public abstract class BaseFilterItem extends UpgradeItem {
 
                     if (stackInSlot.isEmpty()) continue;
 
+                    if (i == 0) {
+                        tooltip.add(new TextComponent(""));
+                    }
+                    
                     tooltip.add(new TranslatableComponent(stackInSlot.getItem().getDescriptionId()).withStyle(ChatFormatting.GOLD));
                 }
             }
             
         } else {
-            tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".shift").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+            tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".hold").withStyle(ChatFormatting.GRAY)
+                   .append(new TextComponent(" "))
+                   .append(new TranslatableComponent("info." + FluxPylons.ID + ".shift").withStyle(ChatFormatting.AQUA)
+                   .append(new TextComponent(" "))
+                   .append(new TranslatableComponent("info." + FluxPylons.ID + ".more_info").withStyle(ChatFormatting.GRAY)
+           )));
         }
     }
 }

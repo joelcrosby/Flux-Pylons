@@ -40,29 +40,25 @@ public class PipeUpgradeManager {
     public void update() {
         var upgrades = pipeUpgradeContainer.getUpgrades();
         
-        for (var upgrade : upgrades.extractFluids()) {
-            if (!upgrade.isEmpty() && upgrade.getItem() instanceof UpgradeItem upgradeItem) {
-                upgradeItem.update(upgrade, node, dir, node.getNodeType());
-            }
-        }
+        updateUpgradeItems(upgrades.extractFluids());
+        updateUpgradeItems(upgrades.retrieverFluids());
         
         if (tickInterval != 0 && (ticks++) % tickInterval != 0) {
             return;
         }
         
-        for (var upgrade : upgrades.extractItems()) {
-            if (!upgrade.isEmpty() && upgrade.getItem() instanceof UpgradeItem upgradeItem) {
-                upgradeItem.update(upgrade, node, dir, node.getNodeType());
-            }
-        }
+        updateUpgradeItems(upgrades.extractItems());
+        updateUpgradeItems(upgrades.retrieverItems());
+    }
 
-        for (var upgrade : upgrades.retrieverItems()) {
+    private void updateUpgradeItems(List<ItemStack> upgrades) {
+        for (var upgrade : upgrades) {
             if (!upgrade.isEmpty() && upgrade.getItem() instanceof UpgradeItem upgradeItem) {
                 upgradeItem.update(upgrade, node, dir, node.getNodeType());
             }
         }
     }
-    
+
     public List<ItemStack> getFilterUpgrades() {
         return this.pipeUpgradeContainer.getUpgrades().filterItems();
     }

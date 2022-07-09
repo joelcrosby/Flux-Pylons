@@ -9,6 +9,7 @@ public record PipeUpgrades(
         List<ItemStack> extractFluids,
         List<ItemStack> filterItems,
         List<ItemStack> filterFluids,
-        List<ItemStack> retrieverItems
+        List<ItemStack> retrieverItems,
+        List<ItemStack> retrieverFluids
 ) {
 }
