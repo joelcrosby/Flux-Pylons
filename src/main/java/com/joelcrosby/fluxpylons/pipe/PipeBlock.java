@@ -15,6 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
@@ -164,16 +165,23 @@ public class PipeBlock extends BaseEntityBlock {
     @SuppressWarnings("deprecation")
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
-            var entity = level.getBlockEntity(pos);
-
-            if (entity instanceof PipeBlockEntity) {
-                for (var dir : Direction.values()) {
-                    ((PipeBlockEntity)entity).getUpgradeManager(dir).dropContents(level, pos);
-                }
-            }
-
             super.onRemove(state, level, pos, newState, isMoving);
         }
+    }
+
+    @Override
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        var tile = Utility.getBlockEntity(PipeBlockEntity.class, level, pos);
+        if (tile != null && level instanceof ServerLevel) {
+            for (var dir : Direction.values()) {
+                tile.getUpgradeManager(dir).dropContents(level, pos);
+            }
+            
+            if (tile.cover != null)
+                tile.removeCover(player, InteractionHand.MAIN_HAND);
+        }
+        
+        super.playerWillDestroy(level, pos, state, player);
     }
     
     @Override
@@ -394,13 +402,20 @@ public class PipeBlock extends BaseEntityBlock {
 
         var formatter = new DecimalFormat("#,###");
         
-        var energyText = I18n.get("terms." + FluxPylons.ID + ".energy") + " " + formatter.format(energyRate) + " FE/t";
-        var fluidText = I18n.get("terms." + FluxPylons.ID + ".fluids") + " " +  fluidRate + " MB/t";
-        var itemText = itemRate + " " + I18n.get("terms." + FluxPylons.ID + ".items") + "/0.5s";
+        var energyRateText = formatter.format(energyRate) + " FE/t";
+        var fluidRateText = fluidRate + " MB/t";
+        var itemRateText = itemRate + " /0.5s";
         
-        var energyComponent = new TextComponent(energyText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
-        var fluidComponent = new TextComponent(fluidText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
-        var itemComponent = new TextComponent(itemText).setStyle((Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
+        var energyText = I18n.get("terms." + FluxPylons.ID + ".energy").concat(" ");
+        var fluidText = I18n.get("terms." + FluxPylons.ID + ".fluids").concat(" ");
+        var itemText = I18n.get("terms." + FluxPylons.ID + ".items").concat(" ");
+        
+        var energyComponent = new TextComponent(energyText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE))
+                .append(new TextComponent(energyRateText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+        var fluidComponent = new TextComponent(fluidText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE))
+                .append(new TextComponent(fluidRateText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+        var itemComponent = new TextComponent(itemText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE))
+                .append(new TextComponent(itemRateText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
         
         List<Component> components = Arrays.asList(energyComponent, fluidComponent, itemComponent);
         

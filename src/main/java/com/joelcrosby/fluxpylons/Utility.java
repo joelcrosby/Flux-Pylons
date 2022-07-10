@@ -138,7 +138,12 @@ public class Utility {
                 tooltip.add(new TextComponent(s).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
         } else {
             tooltip.addAll(textComponents);
-            tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".shift").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+            tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".hold").withStyle(ChatFormatting.GRAY)
+                    .append(new TextComponent(" "))
+                    .append(new TranslatableComponent("info." + FluxPylons.ID + ".shift").withStyle(ChatFormatting.AQUA)
+                    .append(new TextComponent(" "))
+                    .append(new TranslatableComponent("info." + FluxPylons.ID + ".more_info").withStyle(ChatFormatting.GRAY)
+            )));
         }
     }
 

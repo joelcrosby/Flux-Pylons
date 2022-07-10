@@ -69,6 +69,8 @@ public class RetrieverItem extends BaseFilterItem {
         var source = level.getBlockEntity(node.getPos().relative(dir));
 
         if (source == null) return;
+
+        
         
         var isDenyList = BaseFilterItem.getIsDenyList(itemStack);
         var matchNbt = BaseFilterItem.getMatchNbt(itemStack);
@@ -90,6 +92,8 @@ public class RetrieverItem extends BaseFilterItem {
 
         Outer:
         for (var destination : destinations) {
+            if (!destination.canExtract()) continue;
+            
             var destinationEntity = destination.getConnectedBlockEntity();
             if (destinationEntity == null) continue;
 

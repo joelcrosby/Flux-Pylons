@@ -32,4 +32,12 @@ public record GraphDestination(BlockPos receiver, Direction incomingDirection, G
     public int hashCode() {
         return Objects.hash(receiver, incomingDirection, connectedNode.getPos(), destinationType);
     }
+
+    public boolean canExtract() {
+        return connectedNode.getUpgradeManager(incomingDirection).canExtract();
+    }
+
+    public boolean canInsert() {
+        return connectedNode.getUpgradeManager(incomingDirection).canInsert();
+    }
 }

@@ -109,6 +109,8 @@ public class FluidExtractItem extends BaseFilterItem {
                     .getRelativeDestinations(GraphDestinationType.FLUIDS, source.getBlockPos());
             
             for (var destination : destinations) {
+                if (!destination.canInsert()) continue;
+                
                 var destinationEntity = destination.getConnectedBlockEntity();
                 if (destinationEntity == null) continue;
 

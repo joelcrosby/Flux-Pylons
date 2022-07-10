@@ -116,6 +116,10 @@ public class PipeUpgradeManager {
     }
     
     public boolean IsValidDestination(ItemStack itemStack) {
+        if (this.pipeIoMode == PipeIoMode.DISABLED || this.pipeIoMode == PipeIoMode.EXTRACT) {
+            return false;
+        }
+        
         var isFiltered = !getFilterUpgrades().isEmpty();
         if (!isFiltered) {
             return true;
@@ -145,6 +149,10 @@ public class PipeUpgradeManager {
     }
 
     public boolean IsValidDestination(FluidStack fluidStack) {
+        if (this.pipeIoMode == PipeIoMode.DISABLED || this.pipeIoMode == PipeIoMode.EXTRACT) {
+            return false;
+        }
+        
         var isFiltered = !getFluidFilterUpgrades().isEmpty();
         if (!isFiltered) {
             return true;
@@ -165,5 +173,13 @@ public class PipeUpgradeManager {
                 });
 
         return isDenyList != anyMatch;
+    }
+
+    public boolean canExtract() {
+        return this.pipeIoMode == PipeIoMode.EXTRACT || this.pipeIoMode == PipeIoMode.INSERT_EXTRACT;
+    }
+
+    public boolean canInsert() {
+        return this.pipeIoMode == PipeIoMode.INSERT_EXTRACT || this.pipeIoMode == PipeIoMode.INSERT;
     }
 }

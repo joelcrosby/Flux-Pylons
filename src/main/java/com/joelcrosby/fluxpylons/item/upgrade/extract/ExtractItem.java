@@ -106,6 +106,8 @@ public class ExtractItem extends BaseFilterItem {
                     .getRelativeDestinations(GraphDestinationType.ITEMS, source.getBlockPos());
 
             for (var destination : destinations) {
+                if (!destination.canInsert()) continue;
+                
                 var destinationEntity = destination.getConnectedBlockEntity();
                 if (destinationEntity == null) continue;
 

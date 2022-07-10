@@ -89,6 +89,8 @@ public class FluidRetrieverItem extends BaseFilterItem {
 
         Outer:
         for (var destination : destinations) {
+            if (!destination.canExtract()) continue;
+            
             var destinationEntity = destination.getConnectedBlockEntity();
             if (destinationEntity == null) continue;
 

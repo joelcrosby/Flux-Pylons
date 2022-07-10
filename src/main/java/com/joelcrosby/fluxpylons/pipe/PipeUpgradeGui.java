@@ -110,7 +110,7 @@ public class PipeUpgradeGui extends AbstractContainerScreen<PipeUpgradeContainer
 
     @Override
     protected void renderTooltip(PoseStack poseStack, ItemStack itemStack, int mouseX, int mouseY) {
-        if (mouseY > this.imageHeight - 96 + 2 && mouseX > this.imageWidth - 8 - 36) {
+        if (mouseY > this.imageHeight - 96 + 2 || mouseX > this.imageWidth - 8 - 36) {
             super.renderTooltip(poseStack, itemStack, mouseX, mouseY);
             return;
         } 
