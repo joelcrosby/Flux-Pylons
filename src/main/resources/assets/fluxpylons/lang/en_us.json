@@ -22,6 +22,11 @@
   "item.fluxpylons.filter.tooltip.match-nbt": "Match NBT",
   "item.fluxpylons.filter.tooltip.ignore-nbt": "Ignore NBT",
 
+  "item.fluxpylons.filter.tooltip.io_mode_insert_extract": "IO Mode: Insert & Extract",
+  "item.fluxpylons.filter.tooltip.io_mode_insert": "IO Mode: Insert Only",
+  "item.fluxpylons.filter.tooltip.io_mode_extract": "IO Mode: Extract Only",
+  "item.fluxpylons.filter.tooltip.io_mode_disabled": "IO Mode: Disabled",
+
   "item.fluxpylons.filter.tooltip.interaction-side-off": "Interaction Side: Default",
   "item.fluxpylons.filter.tooltip.interaction-side-down": "Interaction Side: Down",
   "item.fluxpylons.filter.tooltip.interaction-side-up": "Interaction Side: Up",

@@ -15,15 +15,17 @@ import org.apache.commons.lang3.tuple.Pair;
 public class PipeUpgradeContainerMenu extends BaseContainerMenu {
 
     private final ItemStackHandler itemStackHandler;
-    private final PipeUpgradeManager upgradeManager;
+    public final PipeUpgradeManager upgradeManager;
+    public final PipeIoMode pipeIoMode;
 
     public PipeUpgradeContainerMenu(int id, Player player, ItemStackHandler itemStackHandler, FriendlyByteBuf data) {
-        this(id, player, itemStackHandler, data.readBlockPos(), Direction.values()[data.readByte()]);
+        this(id, player, itemStackHandler, data.readBlockPos(), Direction.values()[data.readByte()], PipeIoMode.values()[data.readByte()]);
     }
 
-    public PipeUpgradeContainerMenu(int id, Player player, ItemStackHandler itemStackHandler, BlockPos pos,  Direction dir) {
+    public PipeUpgradeContainerMenu(int id, Player player, ItemStackHandler itemStackHandler, BlockPos pos, Direction dir, PipeIoMode pipeIoMode) {
         super(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, id, player);
         this.itemStackHandler = itemStackHandler;
+        this.pipeIoMode = pipeIoMode;
         this.upgradeManager = player.level.isClientSide() ? null : NetworkManager.get(player.level).getNode(pos).getUpgradeManager(dir);
 
         this.addOwnSlots();

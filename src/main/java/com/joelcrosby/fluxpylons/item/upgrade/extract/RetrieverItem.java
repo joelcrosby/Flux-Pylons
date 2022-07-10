@@ -82,8 +82,6 @@ public class RetrieverItem extends BaseFilterItem {
                 .orElse(null);
 
         if (itemHandler == null) return;
-
-
         
         var rate = nodeType.getItemTransferRate();
 

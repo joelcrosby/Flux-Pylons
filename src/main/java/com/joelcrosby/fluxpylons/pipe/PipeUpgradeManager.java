@@ -5,6 +5,7 @@ import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.item.upgrade.UpgradeItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
+import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,6 +31,8 @@ public class PipeUpgradeManager {
     private static final int tickInterval = 10;
 
     public final PipeUpgradeContainer pipeUpgradeContainer;
+    
+    private PipeIoMode pipeIoMode = PipeIoMode.INSERT_EXTRACT;
     
     public PipeUpgradeManager(GraphNode node, Direction dir) {
         this.node = node;
@@ -59,6 +62,11 @@ public class PipeUpgradeManager {
         }
     }
 
+    public void setPipeIoMode(PipeIoMode ioMode) {
+        this.pipeIoMode = ioMode;
+        NetworkManager.get(node.getLevel()).setDirty();
+    }
+    
     public List<ItemStack> getFilterUpgrades() {
         return this.pipeUpgradeContainer.getUpgrades().filterItems();
     }
@@ -72,11 +80,13 @@ public class PipeUpgradeManager {
         
         NetworkHooks.openGui(player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
-                        new PipeUpgradeContainerMenu(windowId, player, pipeUpgradeContainer.getItems(), node.getPos(), dir), containerName),
+                        new PipeUpgradeContainerMenu(windowId, player, pipeUpgradeContainer.getItems(), node.getPos(), dir, this.pipeIoMode), containerName),
                 buffer -> {
                     buffer.writeBlockPos(node.getPos());
                     buffer.writeByte(dir.ordinal());
-        });
+                    buffer.writeByte(pipeIoMode.ordinal());
+                }
+        );
     }
     
     public void dropContents(Level level, BlockPos pos) {
@@ -90,6 +100,7 @@ public class PipeUpgradeManager {
     public Tag serializeNBT() {
         var tag = new CompoundTag();
         tag.put("upgradeItems", pipeUpgradeContainer.getItems().serializeNBT());
+        tag.putInt("io-mode", pipeIoMode.ordinal());
         
         return tag;
     }
@@ -98,6 +109,8 @@ public class PipeUpgradeManager {
         if (tag == null) {
             return;
         }
+        
+        this.pipeIoMode = PipeIoMode.values()[tag.getInt("io-mode")];
         
         pipeUpgradeContainer.getItems().deserializeNBT(tag.getCompound("upgradeItems"));
     }
