@@ -9,6 +9,7 @@ public class BasicButton extends Button {
     private static final int sizeX = 16;
     private static final int sizeY = 16;
 
+    
     public BasicButton(int x, int y, OnPress onPress) {
         super(x, y, sizeX, sizeY, TextComponent.EMPTY, onPress);
     }
@@ -20,6 +21,10 @@ public class BasicButton extends Button {
         }
     }
 
+    public void onRenderToolTip(PoseStack stack, int x, int y) {
+        super.renderToolTip(stack, x, y);
+    }
+    
     @Override
     public void onClick(double x, double y) {
         super.onClick(x, y);

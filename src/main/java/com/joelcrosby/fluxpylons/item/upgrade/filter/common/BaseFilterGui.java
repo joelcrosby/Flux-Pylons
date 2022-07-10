@@ -1,6 +1,8 @@
 package com.joelcrosby.fluxpylons.item.upgrade.filter.common;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.gui.BasicButton;
+import com.joelcrosby.fluxpylons.gui.InteractionSideButton;
 import com.joelcrosby.fluxpylons.gui.ToggleButton;
 import com.joelcrosby.fluxpylons.network.PacketHandler;
 import com.joelcrosby.fluxpylons.network.packets.PacketGhostSlot;
@@ -8,6 +10,7 @@ import com.joelcrosby.fluxpylons.network.packets.PacketUpdateFilter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,6 +26,7 @@ public class BaseFilterGui<TContainerMenu extends BaseFilterContainerMenu> exten
 
     protected boolean isDenyList;
     protected boolean matchNbt;
+    protected Direction interactionSide;
     
     public BaseFilterGui(TContainerMenu container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
@@ -78,13 +82,33 @@ public class BaseFilterGui<TContainerMenu extends BaseFilterContainerMenu> exten
             ((ToggleButton) btn).setTexturePosition(matchNbt ? 1 : 0);
         });
 
+        interactionSide = BaseFilterItem.getInteractionSide(filterItem);
+
+        var interactionSideX = getGuiLeft() + 8 + 18;
+        var interactionSideY = getGuiTop() + 18;
+
+        var interactionSideBtn = new InteractionSideButton(this, interactionSideX, interactionSideY, interactionSide, (btn) -> interactionSide = ((InteractionSideButton) btn).next());
+
         addRenderableWidget(allowDenyBtn);
         
         if (item.supportsNbtMatch()) {
             addRenderableWidget(matchNbtBtn);
         }
+
+        if (item.supportsInteractionSide()) {
+            addRenderableWidget(interactionSideBtn);
+        }
     }
-    
+
+    @Override
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(poseStack, mouseX, mouseY, partialTicks);
+
+        this.renderables.stream()
+                .filter(widget -> widget instanceof BasicButton)
+                .forEach(widget -> ((BasicButton) widget).onRenderToolTip(poseStack, mouseX, mouseY));
+    }
+
     @Override
     protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
         renderBackground(poseStack);
@@ -125,7 +149,7 @@ public class BaseFilterGui<TContainerMenu extends BaseFilterContainerMenu> exten
 
     @Override
     public void onClose() {
-        PacketHandler.sendToServer(new PacketUpdateFilter(isDenyList, matchNbt));
+        PacketHandler.sendToServer(new PacketUpdateFilter(isDenyList, matchNbt, interactionSide));
         super.onClose();
     }
 }

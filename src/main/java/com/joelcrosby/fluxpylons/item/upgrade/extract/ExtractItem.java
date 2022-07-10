@@ -36,6 +36,11 @@ public class ExtractItem extends BaseFilterItem {
     protected boolean defaultsToDenyList() {
         return true;
     }
+
+    @Override
+    protected boolean supportsInteractionSide() {
+        return true;
+    }
     
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
@@ -65,15 +70,18 @@ public class ExtractItem extends BaseFilterItem {
 
         if (source == null) return;
 
-        var itemHandler = source
-                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite())
-                .orElse(null);
-
-        if (itemHandler == null) return;
-
         var isDenyList = BaseFilterItem.getIsDenyList(itemStack);
         var matchNbt = BaseFilterItem.getMatchNbt(itemStack);
         var inventory = BaseFilterItem.getInventory(itemStack);
+        var interactionDir = BaseFilterItem.getInteractionSide(itemStack);
+        
+        var handlerDir = interactionDir == null ? dir.getOpposite() : interactionDir;
+        
+        var itemHandler = source
+                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, handlerDir)
+                .orElse(null);
+
+        if (itemHandler == null) return;
 
         var rate = nodeType.getItemTransferRate();
         

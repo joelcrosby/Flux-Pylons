@@ -88,6 +88,15 @@ public abstract class BaseFilterItem extends UpgradeItem {
         return compound.getBoolean("match-nbt");
     }
 
+    public static void setInteractionSide(ItemStack stack, @Nullable Direction direction) {
+        stack.getOrCreateTag().putString("interaction-side", direction == null ? "" : direction.getName());
+    }
+
+    public static Direction getInteractionSide(ItemStack stack) {
+        var compound = stack.getOrCreateTag();
+        return Direction.byName(compound.getString("interaction-side"));
+    }
+
     public static ItemStackHandler setInventory(ItemStack stack, ItemStackHandler handler) {
         stack.getOrCreateTag().put("inventory", handler.serializeNBT());
         return handler;
@@ -95,6 +104,10 @@ public abstract class BaseFilterItem extends UpgradeItem {
 
     protected boolean supportsNbtMatch() {
         return true;
+    }
+    
+    protected boolean supportsInteractionSide() {
+        return false;
     }
     
     protected boolean defaultsToDenyList() {

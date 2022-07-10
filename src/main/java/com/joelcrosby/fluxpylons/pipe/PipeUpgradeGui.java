@@ -5,10 +5,18 @@ import com.joelcrosby.fluxpylons.network.PacketHandler;
 import com.joelcrosby.fluxpylons.network.packets.PacketOpenScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+
+import java.util.Optional;
 
 public class PipeUpgradeGui extends AbstractContainerScreen<PipeUpgradeContainerMenu> {
 
@@ -48,5 +56,19 @@ public class PipeUpgradeGui extends AbstractContainerScreen<PipeUpgradeContainer
         }
         
         return super.mouseClicked(x, y, btn);
+    }
+
+    @Override
+    protected void renderTooltip(PoseStack poseStack, ItemStack itemStack, int mouseX, int mouseY) {
+        if (mouseY > this.imageHeight - 96 + 2) {
+            super.renderTooltip(poseStack, itemStack, mouseX, mouseY);
+            return;
+        } 
+        
+        var components = itemStack.getTooltipLines(minecraft.player, TooltipFlag.Default.NORMAL);
+        components.add(new TextComponent(""));
+        components.add(new TranslatableComponent("item.fluxpylons.filter.tooltip.open-menu").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_GRAY)));
+        
+        renderTooltip(poseStack, components, Optional.empty(), mouseX, mouseY); 
     }
 }

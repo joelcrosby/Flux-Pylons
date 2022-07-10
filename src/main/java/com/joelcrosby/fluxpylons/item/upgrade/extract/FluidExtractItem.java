@@ -37,6 +37,11 @@ public class FluidExtractItem extends BaseFilterItem {
     }
 
     @Override
+    protected boolean supportsInteractionSide() {
+        return true;
+    }
+    
+    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         var stack = player.getItemInHand(interactionHand);
 
@@ -68,16 +73,19 @@ public class FluidExtractItem extends BaseFilterItem {
         var source = level.getBlockEntity(node.getPos().relative(dir));
 
         if (source == null) return;
-
+        
+        var isDenyList = BaseFilterItem.getIsDenyList(itemStack);
+        var inventory = BaseFilterItem.getInventory(itemStack);
+        var interactionDir = BaseFilterItem.getInteractionSide(itemStack);
+        
+        var handlerDir = interactionDir == null ? dir.getOpposite() : interactionDir;
+        
         var fluidHandler = source
-                .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite())
+                .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, handlerDir)
                 .orElse(null);
 
         if (fluidHandler == null) return;
 
-        var isDenyList = BaseFilterItem.getIsDenyList(itemStack);
-        var inventory = BaseFilterItem.getInventory(itemStack);
-        
         var rate = nodeType.getFluidTransferRate();
         
         Tanks:
