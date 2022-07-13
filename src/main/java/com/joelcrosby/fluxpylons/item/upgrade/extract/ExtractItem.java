@@ -84,58 +84,63 @@ public class ExtractItem extends BaseFilterItem {
         if (itemHandler == null) return;
 
         var rate = nodeType.getItemTransferRate();
-        
-        Slots:
-        for (var i = 0; i < itemHandler.getSlots(); i++) {
-            var slot = itemHandler.getStackInSlot(i);
-            if (slot.isEmpty()) {
-                continue;
-            }
 
-            var matchesFilter = Utility.matchesFilterInventory(inventory, slot, matchNbt);
-            if (isDenyList == matchesFilter) {
-                continue;
-            }
+        var iterations = node.getNodeType() == GraphNodeType.ADVANCED ? 4 : 1;
+
+        for (var j = 0; j < iterations; j++) {
             
-            var simulatedExtract = itemHandler.extractItem(i, rate, true);
-            if (simulatedExtract.isEmpty()) {
-                continue;
-            }
-
-            var destinations = node.getNetwork()
-                    .getRelativeDestinations(GraphDestinationType.ITEMS, source.getBlockPos());
-
-            for (var destination : destinations) {
-                if (!destination.canInsert()) continue;
-                
-                var destinationEntity = destination.getConnectedBlockEntity();
-                if (destinationEntity == null) continue;
-
-                if (destination.getConnectedBlockEntity().getBlockPos() == source.getBlockPos()) {
-                    throw new RuntimeException("destination cannot be the same as source");
-                }
-
-                var incomingDirection = destination.incomingDirection().getOpposite();
-                var destinationHandler = destinationEntity
-                        .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection)
-                        .orElse(null);
-
-                if (destinationHandler == null) continue;
-                
-                var upgradeManager = destination.getConnectedUpgradeManager();
-                if (!upgradeManager.IsValidDestination(simulatedExtract)) {
+            Slots:
+            for (var i = 0; i < itemHandler.getSlots(); i++) {
+                var slot = itemHandler.getStackInSlot(i);
+                if (slot.isEmpty()) {
                     continue;
                 }
 
-                var remainder = ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true).getCount();
-                var amountToExtract = simulatedExtract.getCount() - remainder;
-                
-                if (amountToExtract == 0) continue;
-                
-                var extracted = itemHandler.extractItem(i, amountToExtract, false);
-                ItemHandlerHelper.insertItem(destinationHandler, extracted, false);
+                var matchesFilter = Utility.matchesFilterInventory(inventory, slot, matchNbt);
+                if (isDenyList == matchesFilter) {
+                    continue;
+                }
 
-                break Slots;
+                var simulatedExtract = itemHandler.extractItem(i, rate, true);
+                if (simulatedExtract.isEmpty()) {
+                    continue;
+                }
+
+                var destinations = node.getNetwork()
+                        .getRelativeDestinations(GraphDestinationType.ITEMS, source.getBlockPos());
+
+                for (var destination : destinations) {
+                    if (!destination.canInsert()) continue;
+
+                    var destinationEntity = destination.getConnectedBlockEntity();
+                    if (destinationEntity == null) continue;
+
+                    if (destination.getConnectedBlockEntity().getBlockPos() == source.getBlockPos()) {
+                        throw new RuntimeException("destination cannot be the same as source");
+                    }
+
+                    var incomingDirection = destination.incomingDirection().getOpposite();
+                    var destinationHandler = destinationEntity
+                            .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection)
+                            .orElse(null);
+
+                    if (destinationHandler == null) continue;
+
+                    var upgradeManager = destination.getConnectedUpgradeManager();
+                    if (!upgradeManager.IsValidDestination(simulatedExtract)) {
+                        continue;
+                    }
+
+                    var remainder = ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true).getCount();
+                    var amountToExtract = simulatedExtract.getCount() - remainder;
+
+                    if (amountToExtract == 0) continue;
+
+                    var extracted = itemHandler.extractItem(i, amountToExtract, false);
+                    ItemHandlerHelper.insertItem(destinationHandler, extracted, false);
+
+                    break Slots;
+                }
             }
         }
     }

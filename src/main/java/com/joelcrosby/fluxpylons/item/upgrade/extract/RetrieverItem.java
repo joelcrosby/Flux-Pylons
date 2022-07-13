@@ -69,8 +69,6 @@ public class RetrieverItem extends BaseFilterItem {
         var source = level.getBlockEntity(node.getPos().relative(dir));
 
         if (source == null) return;
-
-        
         
         var isDenyList = BaseFilterItem.getIsDenyList(itemStack);
         var matchNbt = BaseFilterItem.getMatchNbt(itemStack);
@@ -90,49 +88,54 @@ public class RetrieverItem extends BaseFilterItem {
         var destinations = node.getNetwork()
                 .getRelativeDestinations(GraphDestinationType.ITEMS, source.getBlockPos());
 
-        Outer:
-        for (var destination : destinations) {
-            if (!destination.canExtract()) continue;
+        var iterations = node.getNodeType() == GraphNodeType.ADVANCED ? 4 : 1;
+        
+        for (var j = 0; j < iterations; j++) {
             
-            var destinationEntity = destination.getConnectedBlockEntity();
-            if (destinationEntity == null) continue;
+            Outer:
+            for (var destination : destinations) {
+                if (!destination.canExtract()) continue;
 
-            if (destination.getConnectedBlockEntity().getBlockPos() == source.getBlockPos()) {
-                throw new RuntimeException("destination cannot be the same as source");
-            }
+                var destinationEntity = destination.getConnectedBlockEntity();
+                if (destinationEntity == null) continue;
 
-            var incomingDirection = destination.incomingDirection().getOpposite();
-            var destinationHandler = destinationEntity
-                    .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection)
-                    .orElse(null);
-
-            if (destinationHandler == null) continue;
-            
-            for (var i = 0; i < destinationHandler.getSlots(); i++) {
-                var slot = destinationHandler.getStackInSlot(i);
-                if (slot.isEmpty()) {
-                    continue;
+                if (destination.getConnectedBlockEntity().getBlockPos() == source.getBlockPos()) {
+                    throw new RuntimeException("destination cannot be the same as source");
                 }
 
-                var matchesFilter = Utility.matchesFilterInventory(inventory, slot, matchNbt);
-                if (isDenyList == matchesFilter) {
-                    continue;
+                var incomingDirection = destination.incomingDirection().getOpposite();
+                var destinationHandler = destinationEntity
+                        .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection)
+                        .orElse(null);
+
+                if (destinationHandler == null) continue;
+
+                for (var i = 0; i < destinationHandler.getSlots(); i++) {
+                    var slot = destinationHandler.getStackInSlot(i);
+                    if (slot.isEmpty()) {
+                        continue;
+                    }
+
+                    var matchesFilter = Utility.matchesFilterInventory(inventory, slot, matchNbt);
+                    if (isDenyList == matchesFilter) {
+                        continue;
+                    }
+
+                    var simulatedExtract = destinationHandler.extractItem(i, rate, true);
+                    if (simulatedExtract.isEmpty()) {
+                        continue;
+                    }
+
+                    var remainder = ItemHandlerHelper.insertItem(itemHandler, simulatedExtract, true).getCount();
+                    var amountToExtract = simulatedExtract.getCount() - remainder;
+
+                    if (amountToExtract == 0) continue;
+
+                    var extracted = destinationHandler.extractItem(i, amountToExtract, false);
+                    ItemHandlerHelper.insertItem(itemHandler, extracted, false);
+
+                    break Outer;
                 }
-
-                var simulatedExtract = destinationHandler.extractItem(i, rate, true);
-                if (simulatedExtract.isEmpty()) {
-                    continue;
-                }
-
-                var remainder = ItemHandlerHelper.insertItem(itemHandler, simulatedExtract, true).getCount();
-                var amountToExtract = simulatedExtract.getCount() - remainder;
-
-                if (amountToExtract == 0) continue;
-
-                var extracted = destinationHandler.extractItem(i, amountToExtract, false);
-                ItemHandlerHelper.insertItem(itemHandler, extracted, false);
-
-                break Outer;
             }
         }
     }
