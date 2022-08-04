@@ -4,6 +4,7 @@ import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.pylon.network.graph.PylonGraphNode;
 import com.joelcrosby.fluxpylons.pylon.network.graph.PylonGraphNodeType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -16,8 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class PylonNetworkManager extends SavedData {
     private static final String NAME = FluxPylons.ID + "_pylon_networks";
@@ -76,7 +75,7 @@ public class PylonNetworkManager extends SavedData {
         addNetwork(network);
         network.scanGraph(level, pos);
 
-        LOGGER.debug("Formed network at {}", pos);
+        LOGGER.debug("Formed network {} at {}", network.getId(), pos);
     }
 
     public void mergeNetworksIntoOne(Set<PylonGraphNode> candidates, Level level, BlockPos pos) {
@@ -218,24 +217,36 @@ public class PylonNetworkManager extends SavedData {
     }
 
     private Set<PylonGraphNode> findAdjacentNodes(PylonGraphNode node) {
-        var startPos = node.getPos();
-        
-        var sx = startPos.getX();
-        var sy = startPos.getY();
-        var sz = startPos.getZ();
-        
-        return this.nodes.values()
-                .stream()
-                .filter(n -> {
-                    
-                    var targetPos = n.getPos();
-                    var x = targetPos.getX();
-                    var y = targetPos.getY();
-                    var z = targetPos.getZ();
-                    
-                    return Stream.of(x == sx, y == sy, z == sz).filter(m -> m).count() == 2;
-                })
-                .collect(Collectors.toSet());
+        var adjacentNodes = new HashSet<PylonGraphNode>();
+
+        for (var dir : Direction.values()) {
+            if (dir == node.getDirection()) continue;
+            
+            for (var i = 0; i < CONNECTION_RANGE; i++) {
+                var adjNode = getNode(node.getPos().relative(dir, i + 1));
+
+                if (adjNode == null) {
+                    continue;
+                }
+
+                if (adjNode.getDirection() == node.getDirection() && adjNode.getDirection() == dir) {
+                    continue;
+                }
+                
+                if (adjNode.getNetwork() != node.getNetwork()) {
+                    continue;
+                }
+                
+                if (adjNode.getNodeType() != node.getNodeType()) {
+                    continue;
+                }
+
+                adjacentNodes.add(adjNode);
+                break;
+            }
+        }
+
+        return adjacentNodes;
     }
 
     @Nullable

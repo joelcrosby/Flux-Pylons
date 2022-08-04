@@ -11,7 +11,6 @@ import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.model.BakedModel;
@@ -49,7 +48,9 @@ public class FluidStackRenderer extends ItemRenderer {
         
         var fluidHandlerLazyOptional = FluidUtil.getFluidHandler(stack);
         var fluidStack = FluidStack.EMPTY;
-        var fluidHandler = fluidHandlerLazyOptional.resolve().get();
+        var fluidHandler = fluidHandlerLazyOptional.resolve().orElseGet(null);
+        
+        if (fluidHandler == null) return;
         
         for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
             fluidStack = fluidHandler.getFluidInTank(tank);
@@ -68,7 +69,7 @@ public class FluidStackRenderer extends ItemRenderer {
         var green = (float) (fluidColor >> 8 & 255) / 255.0F;
         var blue = (float) (fluidColor & 255) / 255.0F;
 
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 
         var poseStack = RenderSystem.getModelViewStack();
         poseStack.pushPose();
@@ -105,10 +106,10 @@ public class FluidStackRenderer extends ItemRenderer {
                 return false;
         }
 
-        if (!(Utility.inBounds(boundsTopLeft.x,
-                boundsTopLeft.y,
-                boundsBottomRight.x - boundsTopLeft.x,
-                boundsBottomRight.y - boundsTopLeft.y,
+        if (!(Utility.inBounds(boundsTopLeft.x(),
+                boundsTopLeft.y(),
+                boundsBottomRight.x() - boundsTopLeft.x(),
+                boundsBottomRight.y() - boundsTopLeft.y(),
                 x,
                 y))) {
             return false;
@@ -121,7 +122,9 @@ public class FluidStackRenderer extends ItemRenderer {
         }
         
         var fluidStack = FluidStack.EMPTY;
-        var fluidHandler = fluidHandlerLazyOptional.resolve().get();
+        var fluidHandler = fluidHandlerLazyOptional.resolve().orElseGet(null);
+        
+        if (fluidHandler == null) return false;
         
         for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
             fluidStack = fluidHandler.getFluidInTank(tank);

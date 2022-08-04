@@ -8,6 +8,7 @@ import com.joelcrosby.fluxpylons.pylon.network.PylonNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -77,6 +78,10 @@ public class PylonGraphScanner {
                 return;
             }
 
+            if (!foundNodes.add(node)) {
+                return;
+            }
+            
             if (request.getParent() != null) {
                 var key = request.getParent().getPos();
                 var value = node.getPos();
@@ -91,10 +96,6 @@ public class PylonGraphScanner {
                 }
             }
             
-            if (!foundNodes.add(node)) {
-                return;
-            }
-            
             if (!currentNodes.contains(node)) {
                 newNodes.add(node);
             }
@@ -107,23 +108,21 @@ public class PylonGraphScanner {
             var facing = node.getDirection();
             
             for (var dir : Direction.values()) {
-                addRequest(new PylonGraphScannerRequest(
-                        request.getLevel(),
-                        request.getPos().relative(dir),
-                        dir,
-                        request,
-                        facing,
-                        node
-                ));
                 
                 if (dir == facing) continue;
                 
-                for (var i = 1; i < PylonNetworkManager.CONNECTION_RANGE + 1; i++) {
-                    var targetPos = node.getPos().relative(dir, i);
+                for (var i = 0; i < PylonNetworkManager.CONNECTION_RANGE; i++) {
+                    var targetPos = node.getPos().relative(dir, i + 1);
                     var targetBlockState = level.getBlockState(targetPos);
                     var targetBlock = targetBlockState.getBlock();
-
+                    
                     if (targetBlock instanceof PylonBlock) {
+                        var targetFacing = targetBlockState.getValue(BlockStateProperties.FACING);
+                        
+                        if (targetFacing == facing && targetFacing == dir) {
+                            continue;
+                        }
+                        
                         addRequest(new PylonGraphScannerRequest(
                             request.getLevel(),
                             targetPos,

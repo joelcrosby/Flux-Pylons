@@ -20,9 +20,7 @@ public class Network {
     private final NetworkEnergyStorage storage;
     private final LazyOptional<IEnergyStorage> lazyStorage;
     
-    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final Level level;
-    
     private final String id;
     private final GraphNodeType nodeType;
 
@@ -80,6 +78,7 @@ public class Network {
         return graph.getNodes().stream().filter(p -> p.getPos().equals(pos)).findFirst().orElse(null);
     }
 
+    @SuppressWarnings("unused")
     public List<GraphDestination> getDestinations(GraphDestinationType type) {
         return graph.getDestinations(type);
     }

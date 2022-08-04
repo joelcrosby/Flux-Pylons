@@ -15,7 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public abstract class BaseFilterContainerMenu extends BaseContainerMenu {
     protected final ItemStackHandler itemStackHandler;
 
-    public ItemStack filterItem;
+    public final ItemStack filterItem;
 
     @SuppressWarnings("unused")
     public BaseFilterContainerMenu(MenuType<?> menuType, int windowId, Inventory playerInventory, Player player, FriendlyByteBuf data) {

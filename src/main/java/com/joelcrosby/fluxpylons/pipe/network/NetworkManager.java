@@ -233,6 +233,7 @@ public class NetworkManager extends SavedData {
         var nodes = new HashSet<GraphNode>();
 
         for (var dir : Direction.values()) {
+            
             var adjNode = getNode(node.getPos().relative(dir));
 
             if (adjNode == null) {

@@ -6,7 +6,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemFilterStackHandler extends ItemStackHandler  {
-    public ItemStack stack;
+    public final ItemStack stack;
 
     public ItemFilterStackHandler(int size, ItemStack itemStack) {
         super(size);

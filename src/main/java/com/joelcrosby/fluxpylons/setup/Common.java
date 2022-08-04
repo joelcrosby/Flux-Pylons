@@ -45,7 +45,7 @@ public class Common {
         }
     };
     
-    public static Capability<IPipeConnectable> pipeConnectableCapability = CapabilityManager.get(
+    public static final Capability<IPipeConnectable> pipeConnectableCapability = CapabilityManager.get(
             new CapabilityToken<>() {});
     
     @SubscribeEvent

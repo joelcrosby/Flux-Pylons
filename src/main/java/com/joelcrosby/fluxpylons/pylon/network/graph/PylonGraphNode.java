@@ -5,38 +5,27 @@ import com.joelcrosby.fluxpylons.pylon.network.PylonNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashSet;
 import java.util.Objects;
 
 public class PylonGraphNode {
     protected final Level level;
     protected final BlockPos pos;
     protected final Direction direction;
+    protected final PylonGraphNodeType nodeType;
     
     protected PylonNetwork network;
-    protected PylonGraphNodeType nodeType;
 
     public static final ResourceLocation ID = new ResourceLocation(FluxPylons.ID, "pylon-node");
     
     private final Logger logger = LogManager.getLogger(getClass());
 
     public PylonGraphNode(Level level, BlockPos pos, Direction direction, PylonGraphNodeType nodeType) {
-        this.level = level;
-        this.pos = pos;
-        this.direction = direction;
-
-        this.nodeType = nodeType;
-    }
-
-    public PylonGraphNode(Level level, BlockPos pos, Direction direction, PylonGraphNodeType nodeType, HashSet<BlockPos> connections) {
         this.level = level;
         this.pos = pos;
         this.direction = direction;
@@ -95,21 +84,8 @@ public class PylonGraphNode {
         var nodeType = PylonGraphNodeType.values()[nodeTypeValue];
         var dirValue = tag.getInt("direction");
         var dir = Direction.values()[dirValue];
-        var connections = readConnectionsFromNbt(tag);
         
-        return new PylonGraphNode(level, pos, dir, nodeType, connections);
-    }
-    
-    private static HashSet<BlockPos> readConnectionsFromNbt(CompoundTag tag) {
-        var connections = new HashSet<BlockPos>();
-        var connectionsCompound = tag.getList("connections", Tag.TAG_COMPOUND);
-        
-        for (var i = 0; i < connectionsCompound.size(); i++) {
-            var connection = NbtUtils.readBlockPos(connectionsCompound.getCompound(i));
-            connections.add(connection);
-        }
-        
-        return connections;
+        return new PylonGraphNode(level, pos, dir, nodeType);
     }
     
     public CompoundTag writeToNbt(CompoundTag tag) {

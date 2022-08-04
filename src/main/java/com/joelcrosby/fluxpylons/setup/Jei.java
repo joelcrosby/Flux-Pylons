@@ -35,7 +35,8 @@ public class Jei implements IModPlugin {
             FluxPylonsItems.UPGRADE_FILTER,
             FluxPylonsItems.UPGRADE_FLUID_FILTER,
             FluxPylonsItems.UPGRADE_TAG_FILTER,
-            FluxPylonsItems.UPGRADE_RETRIEVER
+            FluxPylonsItems.UPGRADE_RETRIEVER,
+            FluxPylonsItems.UPGRADE_FLUID_RETRIEVER
         );
         
         for (var item : itemNames) {

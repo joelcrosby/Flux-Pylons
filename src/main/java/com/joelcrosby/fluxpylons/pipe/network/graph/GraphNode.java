@@ -19,8 +19,9 @@ import java.util.Objects;
 public class GraphNode {
     protected final Level level;
     protected final BlockPos pos;
+    protected final GraphNodeType nodeType;
+    
     protected Network network;
-    protected GraphNodeType nodeType;
 
     public static final ResourceLocation ID = new ResourceLocation(FluxPylons.ID, "energy");
     
