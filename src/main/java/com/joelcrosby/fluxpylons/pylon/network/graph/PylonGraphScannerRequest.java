@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 public class PylonGraphScannerRequest {
     private final Level level;
     private final BlockPos pos;
+    private final boolean ignoreNodes;
+    
     private boolean successful;
 
     @Nullable
@@ -25,13 +27,15 @@ public class PylonGraphScannerRequest {
                                     @Nullable Direction direction,
                                     @Nullable PylonGraphScannerRequest parent,
                                     @Nullable Direction pylonDirection,
-                                    @Nullable PylonGraphNode node) {
+                                    @Nullable PylonGraphNode node,
+                                    boolean ignoreNodes) {
         this.level = level;
         this.pos = pos;
         this.direction = direction;
         this.parent = parent;
         this.pylonDirection = pylonDirection;
         this.node = node;
+        this.ignoreNodes = ignoreNodes;
     }
 
     public Level getLevel() {
@@ -65,6 +69,10 @@ public class PylonGraphScannerRequest {
     @SuppressWarnings("unused")
     public boolean isSuccessful() {
         return successful;
+    }
+    
+    public boolean ignoreNodes() {
+        return ignoreNodes;
     }
 
     public void setSuccessful(boolean successful) {

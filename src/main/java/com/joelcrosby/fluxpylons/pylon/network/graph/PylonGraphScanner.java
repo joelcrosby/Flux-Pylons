@@ -35,7 +35,7 @@ public class PylonGraphScanner {
     }
     
     public PylonGraphScannerResult scanAt(Level level, BlockPos pos) {
-        addRequest(new PylonGraphScannerRequest(level, pos, null, null, null, null));
+        addRequest(new PylonGraphScannerRequest(level, pos, null, null, null, null, false));
 
         PylonGraphScannerRequest request;
         
@@ -73,7 +73,7 @@ public class PylonGraphScanner {
     private void singleScanAt(PylonGraphScannerRequest request) {
         var node = PylonNetworkManager.get(request.getLevel()).getNode(request.getPos());
         
-        if (node != null) {
+        if (node != null && !request.ignoreNodes()) {
             if (!this.nodeType.equals(node.nodeType)) {
                 return;
             }
@@ -109,7 +109,19 @@ public class PylonGraphScanner {
             
             for (var dir : Direction.values()) {
                 
-                if (dir == facing) continue;
+                if (dir == facing) {
+                    addRequest(new PylonGraphScannerRequest(
+                            request.getLevel(),
+                            node.getPos().relative(dir),
+                            dir,
+                            request,
+                            facing,
+                            node,
+                            true
+                    ));
+                    
+                    continue;
+                }
                 
                 for (var i = 0; i < PylonNetworkManager.CONNECTION_RANGE; i++) {
                     var targetPos = node.getPos().relative(dir, i + 1);
@@ -129,7 +141,8 @@ public class PylonGraphScanner {
                             dir,
                             request,
                             facing,
-                            node
+                            node,
+                            false
                         ));
 
                         break;
