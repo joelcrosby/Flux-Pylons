@@ -1,0 +1,32 @@
+{
+  "type": "fluxpylons:smelting",
+  "ingredients": [
+    {
+      "value": [
+        {
+          "tag": "forge:ingots/copper"
+        },
+        {
+          "tag": "forge:dusts/copper"
+        }
+      ]
+    },
+    {
+      "value": [
+        {
+          "item": "minecraft:redstone"
+        },
+        {
+          "tag": "forge:dusts/redstone"
+        }
+      ]
+    }
+  ],
+  "result": [
+    {
+      "item": "fluxpylons:ingot_conductive_alloy",
+      "count": 1
+    }
+  ],
+  "energy": 9600
+}

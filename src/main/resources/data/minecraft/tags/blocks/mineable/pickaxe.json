@@ -4,6 +4,8 @@
     "fluxpylons:crate",
     "fluxpylons:pipe",
     "fluxpylons:adv_pipe",
-    "fluxpylons:pylon"
+    "fluxpylons:pylon",
+    "fluxpylons:chamber",
+    "fluxpylons:smelter"
   ]
 }

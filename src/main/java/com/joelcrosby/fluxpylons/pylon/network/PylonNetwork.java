@@ -1,6 +1,6 @@
 package com.joelcrosby.fluxpylons.pylon.network;
 
-import com.joelcrosby.fluxpylons.energy.NetworkEnergyStorage;
+import com.joelcrosby.fluxpylons.energy.FluxEnergyStorage;
 import com.joelcrosby.fluxpylons.pylon.network.graph.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +17,7 @@ public class PylonNetwork {
     private BlockPos originPos;
     private boolean didDoInitialScan;
     
-    private final NetworkEnergyStorage storage;
+    private final FluxEnergyStorage storage;
     private final LazyOptional<IEnergyStorage> lazyStorage;
     
     private final Level level;
@@ -31,7 +31,7 @@ public class PylonNetwork {
         this.nodeType = nodeType;
         this.graph = new PylonGraph(this, this.nodeType);
 
-        this.storage = new NetworkEnergyStorage(nodeType.getCapacity(), nodeType.getEnergyTransferRate(), nodeType.getEnergyTransferRate());
+        this.storage = new FluxEnergyStorage(nodeType.getCapacity(), nodeType.getEnergyTransferRate(), nodeType.getEnergyTransferRate());
         this.lazyStorage = LazyOptional.of(() -> this.storage);
         
         this.setOriginPos(originPos);

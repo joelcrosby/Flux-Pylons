@@ -2,9 +2,9 @@ package com.joelcrosby.fluxpylons.energy;
 
 import net.minecraftforge.energy.EnergyStorage;
 
-public class NetworkEnergyStorage extends EnergyStorage {
+public class FluxEnergyStorage extends EnergyStorage {
 
-    public NetworkEnergyStorage(int capacity, int maxReceive, int maxExtract) {
+    public FluxEnergyStorage(int capacity, int maxReceive, int maxExtract) {
         super(capacity, maxReceive, maxExtract);
     }
 

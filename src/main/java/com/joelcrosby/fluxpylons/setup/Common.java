@@ -6,6 +6,7 @@ import com.joelcrosby.fluxpylons.FluxPylonsItems;
 import com.joelcrosby.fluxpylons.crate.CrateBlock;
 import com.joelcrosby.fluxpylons.crate.CrateBlockEntity;
 import com.joelcrosby.fluxpylons.crate.CrateContainerMenu;
+import com.joelcrosby.fluxpylons.item.IngotItem;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
@@ -17,6 +18,7 @@ import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
+import com.joelcrosby.fluxpylons.machine.*;
 import com.joelcrosby.fluxpylons.pipe.*;
 import com.joelcrosby.fluxpylons.pylon.PylonBlock;
 import com.joelcrosby.fluxpylons.pylon.PylonBlockEntity;
@@ -54,7 +56,9 @@ public class Common {
                 new CrateBlock().setRegistryName("crate"),
                 new PipeBlock(PipeType.BASIC).setRegistryName("pipe"),
                 new PipeBlock(PipeType.ADVANCED).setRegistryName("adv_pipe"),
-                new PylonBlock().setRegistryName("pylon")
+                new PylonBlock().setRegistryName("pylon"),
+                new ChamberBlock().setRegistryName("chamber"),
+                new SmelterBlock().setRegistryName("smelter")
         );
     }
 
@@ -70,17 +74,22 @@ public class Common {
         registry.register(new BasicFilterItem().setRegistryName("upgrade_filter"));
         registry.register(new FluidFilterItem().setRegistryName("upgrade_fluid_filter"));
         registry.register(new TagFilterItem().setRegistryName("upgrade_tag_filter"));
+        registry.register(new IngotItem().setRegistryName("ingot_conductive_alloy"));
 
         registry.register(new BlockItem(FluxPylonsBlocks.CRATE, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.CRATE.getRegistryName()));
         registry.register(new BlockItem(FluxPylonsBlocks.BASIC_PIPE, new Item.Properties().rarity(Rarity.UNCOMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.BASIC_PIPE.getRegistryName()));
         registry.register(new BlockItem(FluxPylonsBlocks.ADV_PIPE, new Item.Properties().rarity(Rarity.RARE).tab(TAB)).setRegistryName(FluxPylonsBlocks.ADV_PIPE.getRegistryName()));
         registry.register(new BlockItem(FluxPylonsBlocks.PYLON, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.PYLON.getRegistryName()));
+        registry.register(new BlockItem(FluxPylonsBlocks.CHAMBER, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.CHAMBER.getRegistryName()));
+        registry.register(new BlockItem(FluxPylonsBlocks.SMELTER, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.SMELTER.getRegistryName()));
     }
 
     @SubscribeEvent
     public static void registerBlockEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
         event.getRegistry().registerAll(
                 BlockEntityType.Builder.of(CrateBlockEntity::new, FluxPylonsBlocks.CRATE).build(null).setRegistryName("crate"),
+                BlockEntityType.Builder.of(ChamberBlockEntity::new, FluxPylonsBlocks.CHAMBER).build(null).setRegistryName("chamber"),
+                BlockEntityType.Builder.of(SmelterBlockEntity::new, FluxPylonsBlocks.SMELTER).build(null).setRegistryName("smelter"),
                 BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.BASIC), FluxPylonsBlocks.BASIC_PIPE).build(null).setRegistryName("pipe"),
                 BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.ADVANCED), FluxPylonsBlocks.ADV_PIPE).build(null).setRegistryName("adv_pipe"),
                 BlockEntityType.Builder.of((pos, state) -> new PylonBlockEntity(pos, state, PylonGraphNodeType.BASIC), FluxPylonsBlocks.PYLON).build(null).setRegistryName("pylon")
@@ -94,6 +103,7 @@ public class Common {
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new ItemFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("filter"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new FluidFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("fluid_filter"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new TagFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("tag_filter"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new SmelterContainerMenu(windowId, inv.player, data.readBlockPos())).setRegistryName("smelter"));
     }
 
     public static void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {

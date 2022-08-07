@@ -5,6 +5,8 @@
   "block.fluxpylons.pipe": "Dynamic Conduit",
   "block.fluxpylons.adv_pipe": "Advanced Dynamic Conduit",
   "block.fluxpylons.pylon": "Flux Pylon",
+  "block.fluxpylons.chamber": "Chamber",
+  "block.fluxpylons.smelter": "Smelter",
   
   "item.fluxpylons.wrench": "Dynamic Wrench",
   "item.fluxpylons.upgrade_extract": "Extract Card",
@@ -15,6 +17,8 @@
   "item.fluxpylons.upgrade_retriever": "Retriever Card",
   "item.fluxpylons.upgrade_fluid_retriever": "Fluid Retriever Card",
 
+  "item.fluxpylons.ingot_conductive_alloy": "Conductive Alloy Ingot",
+  
   "item.fluxpylons.filter.tooltip.open-menu": "Right click to open Card menu",
   
   "item.fluxpylons.filter.tooltip.allow": "Allow List",
@@ -36,6 +40,8 @@
   "item.fluxpylons.filter.tooltip.interaction-side-east": "Interaction Side: East",
   
   "container.fluxpylons.crate": "Crate",
+  "container.fluxpylons.chamber": "Chamber",
+  "container.fluxpylons.smelter": "Smelter",
   "container.fluxpylons.pylon": "Flux Pylon",
   "container.fluxpylons.pipe": "Dynamic Conduit",
   "container.fluxpylons.adv_pipe": "Advanced Dynamic Conduit",

@@ -1,6 +1,6 @@
 package com.joelcrosby.fluxpylons.pipe.network;
 
-import com.joelcrosby.fluxpylons.energy.NetworkEnergyStorage;
+import com.joelcrosby.fluxpylons.energy.FluxEnergyStorage;
 import com.joelcrosby.fluxpylons.pipe.network.graph.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +17,7 @@ public class Network {
     private BlockPos originPos;
     private boolean didDoInitialScan;
     
-    private final NetworkEnergyStorage storage;
+    private final FluxEnergyStorage storage;
     private final LazyOptional<IEnergyStorage> lazyStorage;
     
     private final Level level;
@@ -30,7 +30,7 @@ public class Network {
         this.nodeType = nodeType;
         this.graph = new Graph(this, this.nodeType);
 
-        this.storage = new NetworkEnergyStorage(nodeType.getCapacity(), nodeType.getEnergyTransferRate(), nodeType.getEnergyTransferRate());
+        this.storage = new FluxEnergyStorage(nodeType.getCapacity(), nodeType.getEnergyTransferRate(), nodeType.getEnergyTransferRate());
         this.lazyStorage = LazyOptional.of(() -> this.storage);
         
         this.setOriginPos(originPos);

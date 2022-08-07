@@ -5,6 +5,7 @@ import com.joelcrosby.fluxpylons.crate.CrateGui;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.BasicFilterGui;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterGui;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterGui;
+import com.joelcrosby.fluxpylons.machine.SmelterGui;
 import com.joelcrosby.fluxpylons.network.PacketHandler;
 import com.joelcrosby.fluxpylons.pipe.PipeRenderer;
 import com.joelcrosby.fluxpylons.pipe.PipeUpgradeGui;
@@ -40,6 +41,7 @@ public final class Client {
         MenuScreens.register(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, BasicFilterGui::new);
         MenuScreens.register(FluxPylonsContainerMenus.UPGRADE_FLUID_FILTER_CONTAINER_MENU, FluidFilterGui::new);
         MenuScreens.register(FluxPylonsContainerMenus.UPGRADE_TAG_FILTER_CONTAINER_MENU, TagFilterGui::new);
+        MenuScreens.register(FluxPylonsContainerMenus.SMELTER_CONTAINER_MENU, SmelterGui::new);
     }
 
     @SubscribeEvent

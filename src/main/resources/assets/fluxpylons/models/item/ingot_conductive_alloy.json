@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "fluxpylons:item/ingot_conductive_alloy"
+  }
+}

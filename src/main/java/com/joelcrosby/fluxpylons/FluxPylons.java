@@ -18,5 +18,7 @@ public class FluxPylons
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(Client::setup));
         bus.addGenericListener(RecipeSerializer.class, Common::registerRecipeSerializers);
+
+        FluxPylonsRecipes.RECIPE_SERIALIZERS.register(bus);
     }
 }

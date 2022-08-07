@@ -23,6 +23,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -227,5 +229,18 @@ public class Utility {
 
     public interface IMergeItemStack {
         boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection);
+    }
+
+    public static VoxelShape rotateShape(Direction from, Direction to, VoxelShape shape) {
+        VoxelShape[] buffer = new VoxelShape[]{ shape, Shapes.empty() };
+
+        int times = (to.getStepZ() - from.getStepZ() + 4) % 4;
+        for (int i = 0; i < times; i++) {
+            buffer[0].forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> buffer[1] = Shapes.or(buffer[1], Shapes.create(1-maxZ, minY, minX, 1-minZ, maxY, maxX)));
+            buffer[0] = buffer[1];
+            buffer[1] = Shapes.empty();
+        }
+
+        return buffer[0];
     }
 }

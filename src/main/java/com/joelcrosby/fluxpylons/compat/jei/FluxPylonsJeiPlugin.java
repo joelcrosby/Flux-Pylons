@@ -1,22 +1,30 @@
-package com.joelcrosby.fluxpylons.setup;
+package com.joelcrosby.fluxpylons.compat.jei;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.FluxPylonsItems;
+import com.joelcrosby.fluxpylons.FluxPylonsRecipes;
+import com.joelcrosby.fluxpylons.compat.jei.category.SmeltingCategory;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @JeiPlugin
-public class Jei implements IModPlugin {
-
+public class FluxPylonsJeiPlugin implements IModPlugin {
+    public static final ResourceLocation SMELTING_UID = new ResourceLocation(FluxPylons.ID, "plugin/smelting");
+    
     @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
@@ -47,5 +55,23 @@ public class Jei implements IModPlugin {
         }
 
         recipeRegistry.hideRecipes(RecipeTypes.CRAFTING, hiddenRecipes);
+    }
+
+    @Override
+    public void registerCategories(IRecipeCategoryRegistration registration) {
+        var guiHelper = registration.getJeiHelpers().getGuiHelper();
+        
+        registration.addRecipeCategories(new SmeltingCategory(guiHelper));
+    }
+
+    @Override
+    public void registerRecipes(IRecipeRegistration registration) {
+        registration.addRecipes(SmeltingCategory.RECIPE_TYPE, getRecipesOfType(FluxPylonsRecipes.FluxPylonsRecipeTypes.SMELTING));
+    }
+
+    private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {
+        return Minecraft.getInstance().level.getRecipeManager().getRecipes().stream()
+                .filter(recipe -> recipe.getType() == recipeType)
+                .collect(Collectors.toList());
     }
 }

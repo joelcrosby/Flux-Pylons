@@ -15,12 +15,12 @@ public class ClearNbtRecipe extends ShapelessRecipe {
 
     public static class Serializer extends ShapelessRecipe.Serializer {
         public ClearNbtRecipe fromJson(ResourceLocation resourceLocation, JsonObject jsonObject) {
-            ShapelessRecipe vanilla = super.fromJson(resourceLocation, jsonObject);
+            var vanilla = super.fromJson(resourceLocation, jsonObject);
             return new ClearNbtRecipe(vanilla.getId(), vanilla.getGroup(), vanilla.getResultItem(), vanilla.getIngredients());
         }
 
         public ClearNbtRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf byteBuf) {
-            ShapelessRecipe vanilla = super.fromNetwork(resourceLocation, byteBuf);
+            var vanilla = super.fromNetwork(resourceLocation, byteBuf);
             return new ClearNbtRecipe(vanilla.getId(), vanilla.getGroup(), vanilla.getResultItem(), vanilla.getIngredients());
         }
 
