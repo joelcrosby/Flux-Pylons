@@ -11,7 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,8 +33,10 @@ public class SmelterBlockEntity extends MachineBlockEntity {
         return new SmelterContainerMenu(window, player, worldPosition);
     }
     
-    public void tick() {
+    public void tick(Level level, BlockPos pos, BlockState state) {
         sendClientUpdate();
+
+        BlockState blockstate;
         
         var input = inventory.getStackInSlot(0).copy();
         var container = new SimpleContainer(6);
@@ -46,6 +50,10 @@ public class SmelterBlockEntity extends MachineBlockEntity {
         var recipe = SmelterRecipe.getRecipe(level, container);
         
         if (recipe == null) {
+            if (state.getValue(BlockStateProperties.LIT) == Boolean.TRUE) {
+                blockstate = state.setValue(BlockStateProperties.LIT, Boolean.FALSE);
+                level.setBlock(pos, blockstate, 3);
+            }
             return;
         }
         
@@ -59,7 +67,7 @@ public class SmelterBlockEntity extends MachineBlockEntity {
         }
         
         if (output.getCount() + recipe.getOutputItemsCount(0) < 64 && canConsumeEnergy()) {
-            if (state == MachineState.COMPLETE) { // The processing is about to be complete
+            if (machineState == MachineState.COMPLETE) { // The processing is about to be complete
                 // Extract the inputted item
                 
                 for (var i = 0; i < recipe.inputItems.size(); i++) {
@@ -83,31 +91,39 @@ public class SmelterBlockEntity extends MachineBlockEntity {
                     inventory.insertItem(6, output.copy(), false); // Place the new output stack on top of the old one
                 }
                 
-                state = MachineState.IDLE;
+                machineState = MachineState.IDLE;
                 consumedEnergy = 0;
                 
                 consumeEnergy(energy);
                 setChanged();
-            } else if (state == MachineState.PROCESSING) { // In progress
+            } else if (machineState == MachineState.PROCESSING) { // In progress
                 consumeEnergy(energy);
                 
                 if (consumedEnergy >= recipe.energy) {
-                    state = MachineState.COMPLETE;
+                    machineState = MachineState.COMPLETE;
                 }
             } else { // Check if we should start processing
                 if (output.isEmpty() || output.getItem() == recipe.outputItems.get(0).getItem()) {
-                    state = MachineState.PROCESSING;
+                    machineState = MachineState.PROCESSING;
+                    blockstate = state.setValue(BlockStateProperties.LIT, Boolean.TRUE);
                 } else {
-                    state = MachineState.IDLE;
+                    machineState = MachineState.IDLE;
+                    blockstate = state.setValue(BlockStateProperties.LIT, Boolean.FALSE);
                 }
+                    
+                level.setBlock(pos, blockstate, 3);
+                this.setChanged();
             }
         } else { // This is if we reach the maximum in the slots; or no power
             if (!canConsumeEnergy()){ // if no power
-                state = MachineState.IDLE;
+                machineState = MachineState.IDLE;
             } else { // zero in other cases
-                state = MachineState.IDLE;
+                machineState = MachineState.IDLE;
                 consumedEnergy = 0;
             }
+            
+            blockstate = state.setValue(BlockStateProperties.LIT, Boolean.FALSE);
+            level.setBlock(pos, blockstate, 3);
             
             this.setChanged();
         }

@@ -31,7 +31,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     
     private final BlockEntityType<?> type;
 
-    protected MachineState state = MachineState.IDLE;
+    protected MachineState machineState = MachineState.IDLE;
     
     protected int consumedEnergy = 0;
     protected int maxEnergy = 0;
@@ -69,10 +69,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return LazyOptional.empty();
     }
     
-    public abstract void tick();
+    public abstract void tick(Level level, BlockPos pos, BlockState state);
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, MachineBlockEntity entity) {
-        entity.tick();
+        entity.tick(level, pos, state);
     }
 
     public void sendClientUpdate() {
@@ -129,7 +129,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
         maxEnergy = compound.getInt("maxEnergy");
         consumedEnergy = compound.getInt("consumedEnergy");
-        state = MachineState.values()[compound.getInt("state")];
+        machineState = MachineState.values()[compound.getInt("state")];
         
         super.load(compound);
     }
@@ -147,6 +147,6 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         
         compound.putInt("maxEnergy", maxEnergy);
         compound.putInt("consumedEnergy", consumedEnergy);
-        compound.putInt("state", state.ordinal());
+        compound.putInt("state", machineState.ordinal());
     }
 }
