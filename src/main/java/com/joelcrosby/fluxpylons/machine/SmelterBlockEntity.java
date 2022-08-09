@@ -45,10 +45,13 @@ public class SmelterBlockEntity extends MachineBlockEntity {
         var output = inventory.getStackInSlot(7).copy();
         var recipe = SmelterRecipe.getRecipe(level, container);
         
-        if (recipe == null) return;
+        if (recipe == null) {
+            return;
+        }
         
         var energy = 20;
-        
+
+        maxEnergy = recipe.energy;
         inputItemStack.set(input.copy());
 
         if (input.isEmpty()) {
@@ -81,6 +84,7 @@ public class SmelterBlockEntity extends MachineBlockEntity {
                 }
                 
                 state = MachineState.IDLE;
+                consumedEnergy = 0;
                 
                 consumeEnergy(energy);
                 setChanged();
@@ -102,7 +106,10 @@ public class SmelterBlockEntity extends MachineBlockEntity {
                 state = MachineState.IDLE;
             } else { // zero in other cases
                 state = MachineState.IDLE;
+                consumedEnergy = 0;
             }
+            
+            this.setChanged();
         }
     }
 

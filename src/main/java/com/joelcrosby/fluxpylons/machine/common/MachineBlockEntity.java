@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,6 +22,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class MachineBlockEntity extends BlockEntity implements MenuProvider {
 
@@ -32,6 +34,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     protected MachineState state = MachineState.IDLE;
     
     protected int consumedEnergy = 0;
+    protected int maxEnergy = 0;
     
     public MachineBlockEntity(BlockEntityType<?> type,  BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -52,17 +55,15 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
         if (cap == CapabilityEnergy.ENERGY) {
-            if (!level.isClientSide) {
-                return lazyStorage.cast();
-            }
+            return lazyStorage.cast();
         }
 
         var itemHandler = getItemStackHandler();
         
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-                if (itemHandler != null) {
-                    return LazyOptional.of(() -> itemHandler).cast();
-                }
+            if (itemHandler != null) {
+                return LazyOptional.of(() -> itemHandler).cast();
+            }
         }
 
         return LazyOptional.empty();
@@ -95,16 +96,40 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return lazyStorage.map(e -> e.getEnergyStored() > 0).orElse(false);
     }
     
+    public int getProgress() {
+        if (maxEnergy <= 0) return 0;
+        if (consumedEnergy > maxEnergy) return 100;
+        return (int) Math.floor(((float)consumedEnergy / (float)maxEnergy) * 100);
+    }
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+    
+    @Nonnull
+    @Override
+    public CompoundTag getUpdateTag() {
+        var compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
+    }
+    
     @Override
     public void load(CompoundTag compound) {
         this.energyStorage.setEnergyStored(compound.getInt("energy"));
 
-        var inv = compound.getCompound("inv");
+        var inventory = compound.getCompound("inventory");
         var handler = getItemStackHandler();
 
         if (handler != null) {
-            handler.deserializeNBT(inv);
+            handler.deserializeNBT(inventory);
         }
+
+        maxEnergy = compound.getInt("maxEnergy");
+        consumedEnergy = compound.getInt("consumedEnergy");
+        state = MachineState.values()[compound.getInt("state")];
         
         super.load(compound);
     }
@@ -119,5 +144,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             var inventory = ((INBTSerializable<CompoundTag>)handler).serializeNBT();
             compound.put("inventory", inventory);
         }
+        
+        compound.putInt("maxEnergy", maxEnergy);
+        compound.putInt("consumedEnergy", consumedEnergy);
+        compound.putInt("state", state.ordinal());
     }
 }
