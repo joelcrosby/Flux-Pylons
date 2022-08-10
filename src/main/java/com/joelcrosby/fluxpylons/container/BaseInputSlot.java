@@ -11,7 +11,7 @@ public class BaseInputSlot extends SlotItemHandler {
     public BaseInputSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
     }
-
+    
     public <C extends Container, T extends Recipe<C>> boolean checkRecipe(BaseRecipe recipe, ItemStack stack) {
         if (recipe == null) return false;
 

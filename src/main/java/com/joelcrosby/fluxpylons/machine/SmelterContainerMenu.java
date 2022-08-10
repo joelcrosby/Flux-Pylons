@@ -1,27 +1,18 @@
 package com.joelcrosby.fluxpylons.machine;
 
 import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
-import com.joelcrosby.fluxpylons.Utility;
-import com.joelcrosby.fluxpylons.container.BaseContainerMenu;
 import com.joelcrosby.fluxpylons.container.BaseEnergySlot;
 import com.joelcrosby.fluxpylons.container.BaseInputSlot;
 import com.joelcrosby.fluxpylons.container.BaseOutputSlot;
+import com.joelcrosby.fluxpylons.machine.common.MachineContainerMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.CapabilityItemHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
-public class SmelterContainerMenu extends BaseContainerMenu {
-
-    public final SmelterBlockEntity tile;
+public class SmelterContainerMenu extends MachineContainerMenu<SmelterBlockEntity> {
 
     public SmelterContainerMenu(int id, Player player, BlockPos pos) {
-        super(FluxPylonsContainerMenus.SMELTER_CONTAINER_MENU, id, player);
-
-        this.tile = Utility.getBlockEntity(SmelterBlockEntity.class, player.level, pos);
-
-        this.addOwnSlots();
-        this.addPlayerInventory();
+        super(SmelterBlockEntity.class, FluxPylonsContainerMenus.SMELTER_CONTAINER_MENU, id, player, pos);
     }
 
     @Override
@@ -30,17 +21,7 @@ public class SmelterContainerMenu extends BaseContainerMenu {
     }
 
     @Override
-    protected Pair<Integer, Integer> getPlayerInventoryPosition() {
-        return Pair.of(8, 84);
-    }
-    
-
-    @Override
-    public boolean stillValid(Player player) {
-        return true;
-    }
-
-    protected void addOwnSlots() {
+    public void addOwnSlots() {
         tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
             addSlot(new BaseInputSlot(handler, 0, 30, 25));
             addSlot(new BaseInputSlot(handler, 1, 48, 25));

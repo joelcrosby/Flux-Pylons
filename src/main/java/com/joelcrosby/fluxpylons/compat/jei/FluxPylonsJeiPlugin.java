@@ -1,17 +1,23 @@
 package com.joelcrosby.fluxpylons.compat.jei;
 
 import com.joelcrosby.fluxpylons.FluxPylons;
+import com.joelcrosby.fluxpylons.FluxPylonsBlocks;
 import com.joelcrosby.fluxpylons.FluxPylonsItems;
 import com.joelcrosby.fluxpylons.FluxPylonsRecipes;
 import com.joelcrosby.fluxpylons.compat.jei.category.SmeltingCategory;
+import com.joelcrosby.fluxpylons.compat.jei.container.SmelterContainerHandler;
+import com.joelcrosby.fluxpylons.machine.SmelterGui;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -69,6 +75,16 @@ public class FluxPylonsJeiPlugin implements IModPlugin {
         registration.addRecipes(SmeltingCategory.RECIPE_TYPE, getRecipesOfType(FluxPylonsRecipes.FluxPylonsRecipeTypes.SMELTING));
     }
 
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addGuiContainerHandler(SmelterGui.class, new SmelterContainerHandler());
+    }
+    
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(new ItemStack(FluxPylonsBlocks.SMELTER).copy(), SmeltingCategory.RECIPE_TYPE);
+    }
+    
     private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {
         return Minecraft.getInstance().level.getRecipeManager().getRecipes().stream()
                 .filter(recipe -> recipe.getType() == recipeType)

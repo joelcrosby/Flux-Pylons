@@ -73,6 +73,14 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, MachineBlockEntity entity) {
         entity.tick(level, pos, state);
+        
+        if (entity.getEnergyItemCapability() != null) {
+            var itemEnergyStorage = entity.getEnergyItemCapability();
+            
+            if (entity.energyStorage.getEnergyStored() < entity.energyStorage.getMaxEnergyStored()) {
+                entity.energyStorage.receiveEnergy(itemEnergyStorage.extractEnergy(200, false), false);
+            }
+        }
     }
 
     public void sendClientUpdate() {
@@ -87,9 +95,30 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     }
     
     public void consumeEnergy(int amount) {
-        lazyStorage.ifPresent(e -> {
-            consumedEnergy = consumedEnergy + ((FluxEnergyStorage)e).extractInternal(amount, false);
-        });
+        var toExtract = amount;
+        
+        var itemCap = getEnergyItemCapability();
+        if (itemCap != null) {
+            toExtract = toExtract - itemCap.extractEnergy(toExtract, false);
+        } 
+        
+        var internalCap = lazyStorage.orElse(null);
+        if (internalCap != null) {
+            toExtract = toExtract - ((FluxEnergyStorage)internalCap).extractInternal(toExtract, false);
+        }
+
+        consumedEnergy = consumedEnergy + amount - toExtract;
+    }
+    
+    
+    
+    @Nullable
+    public IEnergyStorage getEnergyItemCapability() {
+        var handler = getItemStackHandler();
+        var energySlot = handler.getSlots() - 1;
+        var energyStack = handler.getStackInSlot(energySlot);
+        
+        return energyStack.getCapability(CapabilityEnergy.ENERGY).orElse(null);
     }
     
     public boolean canConsumeEnergy() {

@@ -1,14 +1,17 @@
 package com.joelcrosby.fluxpylons.machine.common;
 
+import com.joelcrosby.fluxpylons.Utility;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -20,9 +23,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class MachineBlock extends BaseEntityBlock {
     public MachineBlock(Block.Properties props) {
@@ -52,7 +58,30 @@ public abstract class MachineBlock extends BaseEntityBlock {
 
         return InteractionResult.SUCCESS;
     }
-    
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            var entity = world.getBlockEntity(pos);
+
+            if (entity instanceof MachineBlockEntity machine) {
+                var handler = machine.getItemStackHandler();
+                var container = new SimpleContainer(machine.getItemStackHandler().getSlots());
+                
+                for (var i = 0; i < handler.getSlots(); i++) {
+                    var stack = handler.getStackInSlot(i);
+                    container.addItem(stack);
+                }
+                
+                Containers.dropContents(world, pos, container);
+                world.updateNeighbourForOutputSignal(pos, this);
+            }
+
+            super.onRemove(state, world, pos, newState, isMoving);
+        }
+    }
+
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
@@ -72,5 +101,11 @@ public abstract class MachineBlock extends BaseEntityBlock {
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends MachineBlockEntity> entityType) {
         return level.isClientSide ? null : createTickerHelper(passedBlockEntity, entityType, MachineBlockEntity::serverTick);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        Utility.addTooltip(this.getRegistryName().getPath(), tooltip);
     }
 }
