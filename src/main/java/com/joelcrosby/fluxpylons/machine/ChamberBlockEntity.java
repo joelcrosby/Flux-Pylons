@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +31,11 @@ public class ChamberBlockEntity extends MachineBlockEntity {
 
     @Override
     public ItemStackHandler getItemStackHandler() {
+        return null;
+    }
+
+    @Override
+    public IFluidHandler getFluidHandler() {
         return null;
     }
 }

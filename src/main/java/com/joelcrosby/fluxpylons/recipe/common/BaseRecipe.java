@@ -24,8 +24,8 @@ public abstract class BaseRecipe implements Recipe<Container> {
     public final List<ItemStack> outputItems = new ArrayList<>();
     public final List<FluidStack> outputFluids = new ArrayList<>();
     
-    public BaseRecipe(ResourceLocation recipeId, RecipeData data) {
-        this.recipeId = recipeId;
+    public BaseRecipe(RecipeData data) {
+        this.recipeId = data.recipeId;
 
         this.energy = data.energy;
         

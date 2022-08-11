@@ -12,17 +12,17 @@ import net.minecraft.world.level.Level;
 import java.util.HashMap;
 
 
-public class SmelterRecipe extends BaseRecipe {
-    public static final BaseRecipeSerializer<SmelterRecipe> SERIALIZER = new BaseRecipeSerializer<>(SmelterRecipe::new);
-    public static final RecipeType<SmelterRecipe> RECIPE_TYPE = FluxPylonsRecipes.FluxPylonsRecipeTypes.SMELTING;
+public class WasherRecipe extends BaseRecipe {
+    public static final BaseRecipeSerializer<WasherRecipe> SERIALIZER = new BaseRecipeSerializer<>(WasherRecipe::new);
+    public static final RecipeType<WasherRecipe> RECIPE_TYPE = FluxPylonsRecipes.FluxPylonsRecipeTypes.WASHING;
 
-    public SmelterRecipe(RecipeData data) {
+    public WasherRecipe(RecipeData data) {
         super(data);
     }
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return new BaseRecipeSerializer<>(SmelterRecipe::new);
+        return new BaseRecipeSerializer<>(WasherRecipe::new);
     }
 
     @Override
@@ -30,14 +30,14 @@ public class SmelterRecipe extends BaseRecipe {
         return RECIPE_TYPE;
     }
 
-    protected static final HashMap<Integer, SmelterRecipe> recipeHashMap = new HashMap<>();
+    protected static final HashMap<Integer, WasherRecipe> recipeHashMap = new HashMap<>();
     
-    public static SmelterRecipe getRecipe(Level level, Container container) {
+    public static WasherRecipe getRecipe(Level level, Container container) {
             for (var recipe : level.getRecipeManager().getRecipes()) {
-                if (recipe instanceof SmelterRecipe smelterRecipe) {
-                    if (smelterRecipe.matches(container, level)) {
+                if (recipe instanceof WasherRecipe washerRecipe) {
+                    if (washerRecipe.matches(container, level)) {
                         var hash = container.hashCode();
-                        recipeHashMap.put(hash, smelterRecipe);
+                        recipeHashMap.put(hash, washerRecipe);
                     }
                 }
             }

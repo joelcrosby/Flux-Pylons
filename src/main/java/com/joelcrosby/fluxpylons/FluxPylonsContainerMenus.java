@@ -5,6 +5,7 @@ import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.FluidFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
 import com.joelcrosby.fluxpylons.machine.SmelterContainerMenu;
+import com.joelcrosby.fluxpylons.machine.WasherContainerMenu;
 import com.joelcrosby.fluxpylons.pipe.PipeUpgradeContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.ObjectHolder;
@@ -23,6 +24,8 @@ public class FluxPylonsContainerMenus {
 
     @ObjectHolder(FluxPylons.ID + ":smelter")
     public static final MenuType<SmelterContainerMenu> SMELTER_CONTAINER_MENU = null;
+    @ObjectHolder(FluxPylons.ID + ":washer")
+    public static final MenuType<WasherContainerMenu> WASHER_CONTAINER_MENU = null;
     
     public static final int BaseFilterContainerSlots = 14;
 }

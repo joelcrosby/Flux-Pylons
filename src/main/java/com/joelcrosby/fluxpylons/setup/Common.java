@@ -58,7 +58,8 @@ public class Common {
                 new PipeBlock(PipeType.ADVANCED).setRegistryName("adv_pipe"),
                 new PylonBlock().setRegistryName("pylon"),
                 new ChamberBlock().setRegistryName("chamber"),
-                new SmelterBlock().setRegistryName("smelter")
+                new SmelterBlock().setRegistryName("smelter"),
+                new WasherBlock().setRegistryName("washer")
         );
     }
 
@@ -82,6 +83,7 @@ public class Common {
         registry.register(new BlockItem(FluxPylonsBlocks.PYLON, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.PYLON.getRegistryName()));
         registry.register(new BlockItem(FluxPylonsBlocks.CHAMBER, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.CHAMBER.getRegistryName()));
         registry.register(new BlockItem(FluxPylonsBlocks.SMELTER, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.SMELTER.getRegistryName()));
+        registry.register(new BlockItem(FluxPylonsBlocks.WASHER, new Item.Properties().rarity(Rarity.COMMON).tab(TAB)).setRegistryName(FluxPylonsBlocks.WASHER.getRegistryName()));
     }
 
     @SubscribeEvent
@@ -90,6 +92,7 @@ public class Common {
                 BlockEntityType.Builder.of(CrateBlockEntity::new, FluxPylonsBlocks.CRATE).build(null).setRegistryName("crate"),
                 BlockEntityType.Builder.of(ChamberBlockEntity::new, FluxPylonsBlocks.CHAMBER).build(null).setRegistryName("chamber"),
                 BlockEntityType.Builder.of(SmelterBlockEntity::new, FluxPylonsBlocks.SMELTER).build(null).setRegistryName("smelter"),
+                BlockEntityType.Builder.of(WasherBlockEntity::new, FluxPylonsBlocks.WASHER).build(null).setRegistryName("washer"),
                 BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.BASIC), FluxPylonsBlocks.BASIC_PIPE).build(null).setRegistryName("pipe"),
                 BlockEntityType.Builder.of((pos, state) -> new PipeBlockEntity(pos, state, PipeType.ADVANCED), FluxPylonsBlocks.ADV_PIPE).build(null).setRegistryName("adv_pipe"),
                 BlockEntityType.Builder.of((pos, state) -> new PylonBlockEntity(pos, state, PylonGraphNodeType.BASIC), FluxPylonsBlocks.PYLON).build(null).setRegistryName("pylon")
@@ -104,6 +107,7 @@ public class Common {
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new FluidFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("fluid_filter"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new TagFilterContainerMenu(windowId, inv.player, data.readItem())).setRegistryName("tag_filter"));
         event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new SmelterContainerMenu(windowId, inv.player, data.readBlockPos())).setRegistryName("smelter"));
+        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new WasherContainerMenu(windowId, inv.player, data.readBlockPos())).setRegistryName("washer"));
     }
 
     public static void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {

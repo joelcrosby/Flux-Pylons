@@ -18,6 +18,9 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -44,13 +47,16 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         this.lazyStorage = LazyOptional.of(() -> energyStorage);
     }
 
+    public abstract ItemStackHandler getItemStackHandler();
+    
+    public abstract IFluidHandler getFluidHandler();
+
     @Override
     public Component getDisplayName() {
         var name = BlockEntityType.getKey(type).getPath();
         return new TranslatableComponent("container." + FluxPylons.ID + "." + name);
     }
-
-
+    
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
@@ -59,10 +65,17 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         }
 
         var itemHandler = getItemStackHandler();
+        var fluidHandler = getFluidHandler();
         
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if (itemHandler != null) {
                 return LazyOptional.of(() -> itemHandler).cast();
+            }
+        }
+
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            if (fluidHandler != null) {
+                return LazyOptional.of(() -> fluidHandler).cast();
             }
         }
 
@@ -87,8 +100,6 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         if (level == null) return;
         level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1);
     }
-    
-    public abstract ItemStackHandler getItemStackHandler();
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return lazyStorage;
@@ -109,8 +120,6 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
         consumedEnergy = consumedEnergy + amount - toExtract;
     }
-    
-    
     
     @Nullable
     public IEnergyStorage getEnergyItemCapability() {
@@ -151,11 +160,16 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
         var inventory = compound.getCompound("inventory");
         var handler = getItemStackHandler();
-
         if (handler != null) {
             handler.deserializeNBT(inventory);
         }
 
+        var fluidInventory = compound.getCompound("fluidInventory");
+        var fluidHandler = getFluidHandler();
+        if (fluidHandler != null) {
+            ((FluidTank)fluidHandler).readFromNBT(fluidInventory);
+        }
+        
         maxEnergy = compound.getInt("maxEnergy");
         consumedEnergy = compound.getInt("consumedEnergy");
         machineState = MachineState.values()[compound.getInt("state")];
@@ -172,6 +186,13 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         if (handler != null) {
             var inventory = ((INBTSerializable<CompoundTag>)handler).serializeNBT();
             compound.put("inventory", inventory);
+        }
+
+        var fluidHandler = getFluidHandler();
+        if (fluidHandler != null) {
+            var fluidTag = new CompoundTag();
+            ((FluidTank)fluidHandler).writeToNBT(fluidTag);
+            compound.put("fluidInventory", fluidTag);
         }
         
         compound.putInt("maxEnergy", maxEnergy);

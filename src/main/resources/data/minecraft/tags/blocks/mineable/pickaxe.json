@@ -6,6 +6,7 @@
     "fluxpylons:adv_pipe",
     "fluxpylons:pylon",
     "fluxpylons:chamber",
-    "fluxpylons:smelter"
+    "fluxpylons:smelter",
+    "fluxpylons:washer"
   ]
 }

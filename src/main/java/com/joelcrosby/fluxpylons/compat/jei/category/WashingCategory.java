@@ -3,10 +3,11 @@ package com.joelcrosby.fluxpylons.compat.jei.category;
 import com.joelcrosby.fluxpylons.FluxPylons;
 import com.joelcrosby.fluxpylons.FluxPylonsBlocks;
 import com.joelcrosby.fluxpylons.compat.jei.FluxPylonsJeiPlugin;
-import com.joelcrosby.fluxpylons.machine.SmelterGui;
-import com.joelcrosby.fluxpylons.recipe.SmelterRecipe;
+import com.joelcrosby.fluxpylons.machine.WasherGui;
+import com.joelcrosby.fluxpylons.recipe.WasherRecipe;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -23,8 +24,9 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class SmeltingCategory implements IRecipeCategory<SmelterRecipe> {
+public class WashingCategory implements IRecipeCategory<WasherRecipe> {
     private final IDrawable background;
     private final IDrawable icon;
     
@@ -35,13 +37,13 @@ public class SmeltingCategory implements IRecipeCategory<SmelterRecipe> {
     private final IDrawable arrow;
     
     @SuppressWarnings("rawtypes")
-    public static final RecipeType RECIPE_TYPE = new RecipeType<>(FluxPylonsJeiPlugin.SMELTING_UID, SmelterRecipe.class);
+    public static final RecipeType RECIPE_TYPE = new RecipeType<>(FluxPylonsJeiPlugin.WASHING_UID, WasherRecipe.class);
 
-    public SmeltingCategory(IGuiHelper guiHelper) {
-        background = guiHelper.drawableBuilder(SmelterGui.TEXTURE, 27, 22, 144, 40).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FluxPylonsBlocks.SMELTER));
+    public WashingCategory(IGuiHelper guiHelper) {
+        background = guiHelper.drawableBuilder(WasherGui.TEXTURE, 40, 16, 132, 53).build();
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FluxPylonsBlocks.WASHER));
         slotDrawable = guiHelper.getSlotDrawable();
-        arrow = guiHelper.drawableBuilder(SmelterGui.TEXTURE, 176, 0, 22, 15).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
+        arrow = guiHelper.drawableBuilder(WasherGui.TEXTURE, 176, 0, 22, 15).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @SuppressWarnings("rawtypes")
@@ -52,7 +54,7 @@ public class SmeltingCategory implements IRecipeCategory<SmelterRecipe> {
     
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("container." + FluxPylons.ID + "." + "smelter");
+        return new TranslatableComponent("container." + FluxPylons.ID + "." + "washer");
     }
 
     @Override
@@ -67,31 +69,37 @@ public class SmeltingCategory implements IRecipeCategory<SmelterRecipe> {
 
     @Override
     public ResourceLocation getUid() {
-        return FluxPylonsJeiPlugin.SMELTING_UID;
+        return FluxPylonsJeiPlugin.WASHING_UID;
     }
 
     @Override
-    public Class<? extends SmelterRecipe> getRecipeClass() {
-        return SmelterRecipe.class;
+    public Class<? extends WasherRecipe> getRecipeClass() {
+        return WasherRecipe.class;
     }
 
     @Override
-    public void draw(SmelterRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack, 62, 12);
+    public void draw(WasherRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+        arrow.draw(matrixStack, 49, 18);
     }
     
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, SmelterRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, WasherRecipe recipe, IFocusGroup focusGroup) {
         for (var i = 0; i < recipe.inputItems.size(); i++) {
-            var handler = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 3 + i * 18, 3);
+            var handler = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 26 + i * 18, 19);
             handler.setSlotName(new TranslatableComponent("terms.fluxpylons.input_slot").getString());
             handler.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.inputItems.get(i).getItems()).toList());
         }
 
+        for (var i = 0; i < recipe.inputFluids.size(); i++) {
+            var handler = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 2 + i * 18, 34);
+            handler.setSlotName(new TranslatableComponent("terms.fluxpylons.input_slot").getString());
+            handler.addIngredients(ForgeTypes.FLUID_STACK, Arrays.stream(recipe.inputFluids.get(i).getFluids()).toList());
+        }
+
         for (var i = 0; i < recipe.outputItems.size(); i++) {
-            var handler = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 101 + i * 18, 13);
+            var handler = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 87 + i * 18, 19);
             handler.setSlotName(new TranslatableComponent("terms.fluxpylons.output_slot").getString());
-            handler.addIngredients(VanillaTypes.ITEM_STACK, recipe.outputItems);
+            handler.addIngredients(VanillaTypes.ITEM_STACK, List.of(recipe.outputItems.get(i)));
         }
     }
 }

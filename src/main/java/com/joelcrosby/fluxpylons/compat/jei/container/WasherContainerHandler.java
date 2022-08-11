@@ -1,8 +1,8 @@
 package com.joelcrosby.fluxpylons.compat.jei.container;
 
 import com.google.common.collect.Lists;
-import com.joelcrosby.fluxpylons.compat.jei.category.SmeltingCategory;
-import com.joelcrosby.fluxpylons.machine.SmelterGui;
+import com.joelcrosby.fluxpylons.compat.jei.category.WashingCategory;
+import com.joelcrosby.fluxpylons.machine.WasherGui;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class SmelterContainerHandler implements IGuiContainerHandler<SmelterGui> {
+public class WasherContainerHandler implements IGuiContainerHandler<WasherGui> {
     @Override
-    public Collection<IGuiClickableArea> getGuiClickableAreas(SmelterGui containerScreen, double guiMouseX, double guiMouseY) {
+    public Collection<IGuiClickableArea> getGuiClickableAreas(WasherGui containerScreen, double guiMouseX, double guiMouseY) {
         List<IGuiClickableArea> areas = new ArrayList<>();
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(90, 34, 22, 15);
+                return new Rect2i(90, 35, 22, 15);
             }
 
             @Override
@@ -35,7 +35,7 @@ public class SmelterContainerHandler implements IGuiContainerHandler<SmelterGui>
 
             @Override
             public void onClick(IFocusFactory focusFactory, IRecipesGui recipesGui) {
-                recipesGui.showTypes(Lists.newArrayList(SmeltingCategory.RECIPE_TYPE));
+                recipesGui.showTypes(Lists.newArrayList(WashingCategory.RECIPE_TYPE));
             }
         });
 

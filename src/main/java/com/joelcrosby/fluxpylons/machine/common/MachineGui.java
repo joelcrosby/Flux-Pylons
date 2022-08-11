@@ -2,7 +2,6 @@ package com.joelcrosby.fluxpylons.machine.common;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -45,19 +44,11 @@ public abstract class MachineGui<T extends MachineContainerMenu<E>, E extends Ma
             }));
         }
 
-        if (isHovering(89, 33, 25, 20, mouseX, mouseY)) {
-            renderTooltip(matrixStack, Component.nullToEmpty(this.tile.getProgress() + " %"), mouseX, mouseY);
-        }
-
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
     public List<Component> getTooltips() {
         return List.of(Component.nullToEmpty(this.tile.getProgress() + " %"));
-    }
-    
-    public Rect2i getTooltipArea() {
-        return new Rect2i(79, 31, 17, 24);
     }
     
     public int getProgressBar(int widthPx) {

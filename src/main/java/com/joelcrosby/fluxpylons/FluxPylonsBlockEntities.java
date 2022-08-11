@@ -3,6 +3,7 @@ package com.joelcrosby.fluxpylons;
 import com.joelcrosby.fluxpylons.crate.CrateBlockEntity;
 import com.joelcrosby.fluxpylons.machine.ChamberBlockEntity;
 import com.joelcrosby.fluxpylons.machine.SmelterBlockEntity;
+import com.joelcrosby.fluxpylons.machine.WasherBlockEntity;
 import com.joelcrosby.fluxpylons.pipe.PipeBlockEntity;
 import com.joelcrosby.fluxpylons.pylon.PylonBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -23,4 +24,6 @@ public class FluxPylonsBlockEntities
     public static final BlockEntityType<ChamberBlockEntity> CHAMBER = null;
     @ObjectHolder(FluxPylons.ID + ":smelter")
     public static final BlockEntityType<SmelterBlockEntity> SMELTER = null;
+    @ObjectHolder(FluxPylons.ID + ":washer")
+    public static final BlockEntityType<WasherBlockEntity> WASHER = null;
 }

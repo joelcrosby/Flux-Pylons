@@ -14,6 +14,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -132,5 +133,10 @@ public class SmelterBlockEntity extends MachineBlockEntity {
     @Override
     public ItemStackHandler getItemStackHandler() {
         return inventory;
+    }
+
+    @Override
+    public IFluidHandler getFluidHandler() {
+        return null;
     }
 }

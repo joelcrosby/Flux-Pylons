@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "fluxpylons:block/machine_top",
+    "front": "fluxpylons:block/washer_on",
+    "side": "fluxpylons:block/machine_side"
+  }
+}

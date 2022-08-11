@@ -32,6 +32,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -152,6 +153,24 @@ public class Utility {
                             .append(new TranslatableComponent("info." + FluxPylons.ID + ".more_info").withStyle(ChatFormatting.GRAY)
             )));
         }
+    }
+
+    public static List<Component> tankTooltip(FluidStack fluidStack, int tankCapacity) {
+        var amount = fluidStack.getAmount();
+        var name = fluidStack.getTranslationKey();
+        
+        var tooltip = new ArrayList<Component>();
+        var formatter = new DecimalFormat("#,###");
+        var stringAmount = formatter.format(amount);
+        var stringTankCapacity = formatter.format(tankCapacity);
+
+        if (!fluidStack.isEmpty()) {
+            tooltip.add(new TranslatableComponent(name));
+        }
+        
+        tooltip.add(Component.nullToEmpty(stringAmount + " mB / " + stringTankCapacity + " mB"));
+        
+        return tooltip;
     }
 
     public static ListTag stringListToTag(List<String> list) {

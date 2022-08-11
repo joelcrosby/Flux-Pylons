@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
 
     private final RecipeConstructor<T> recipeConstructor;
-    private ResourceLocation resourceLocation;
 
     public BaseRecipeSerializer(RecipeConstructor<T> recipeConstructor) {
         this.recipeConstructor = recipeConstructor;
@@ -59,7 +58,7 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
         
         var jsonObject = element.getAsJsonObject();
 
-        var count = jsonObject.get("count").getAsInt();
+        var count = jsonObject.has("count") ? jsonObject.get("count").getAsInt() : 1;
         var itemJson = jsonObject.get("item").getAsString();
         
         var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemJson));
@@ -96,7 +95,12 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
         var ingredientsJson = json.get("ingredients");
         
         if (ingredientJson != null && ingredientJson.isJsonObject()) {
-            inputItems.add(ingredient(ingredientJson)); 
+            var object = ingredientJson.getAsJsonObject();
+            if (object.has("fluid")) {
+                inputFluids.add(fluidIngredient(object));
+            } else {
+                inputItems.add(ingredient(object));
+            }
         } else if (ingredientsJson != null && ingredientsJson.isJsonArray()) {
             for (var in : ingredientsJson.getAsJsonArray()) {
                 if (in.isJsonObject()) {
@@ -146,7 +150,7 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
             }
         }
 
-        return recipeConstructor.create(new RecipeData(energy, inputItems, inputFluids, outputItems, outputFluids));
+        return recipeConstructor.create(new RecipeData(recipeId, energy, inputItems, inputFluids, outputItems, outputFluids));
     }
 
     @Nullable
@@ -179,7 +183,7 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
             outputFluids.add(buffer.readFluidStack());
         }
         
-        return recipeConstructor.create(new RecipeData(energy, inputItems, inputFluids, outputItems, outputFluids));
+        return recipeConstructor.create(new RecipeData(recipeId, energy, inputItems, inputFluids, outputItems, outputFluids));
     }
 
     @Override
