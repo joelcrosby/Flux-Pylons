@@ -6,7 +6,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.*;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -25,6 +28,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -51,12 +56,51 @@ public abstract class MachineBlock extends BaseEntityBlock {
             return InteractionResult.FAIL;
         }
 
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer && entity instanceof MachineBlockEntity) {
-            NetworkHooks.openGui(serverPlayer, (MenuProvider) entity, entity.getBlockPos());
+        if (entity instanceof MachineBlockEntity machine) {
+            if (!player.isCrouching() && itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
+                return getFluidItemInteractionResult(level, player, hand, itemStack, machine);
+            } else if (!level.isClientSide && player instanceof ServerPlayer serverPlayer ) {
+                NetworkHooks.openGui(serverPlayer, machine, machine.getBlockPos());
+            }
+            
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
-
+        
         return InteractionResult.SUCCESS;
+    }
+
+    @Nullable
+    private static InteractionResult getFluidItemInteractionResult(Level level, Player player, InteractionHand hand, ItemStack itemStack, MachineBlockEntity entity) {
+        var result = InteractionResult.sidedSuccess(level.isClientSide);
+        
+        var itemCap = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElse(null);
+        var machineCap = entity.getFluidHandler();
+        
+        var toDrain = machineCap.getTankCapacity(0) - machineCap.getFluidInTank(0).getAmount();
+        var simulatedDrain = itemCap.drain(toDrain, IFluidHandler.FluidAction.SIMULATE);
+        
+        if (simulatedDrain.getAmount() == itemCap.getFluidInTank(0).getAmount()) {
+            var drained = itemCap.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
+            machineCap.fill(drained, IFluidHandler.FluidAction.EXECUTE);
+            
+            var container = itemCap.getContainer();
+            
+            if (itemStack.getCount() == 1) {
+                player.setItemInHand(hand, container);
+            } else if (itemStack.getCount() > 1 && player.getInventory().add(container)) {
+                itemStack.shrink(1);
+            } else {
+                player.drop(container, false, true);
+                itemStack.shrink(1);
+            }
+            
+            player.getInventory().setChanged();
+        } else {
+            var drained = itemCap.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
+            machineCap.fill(drained, IFluidHandler.FluidAction.EXECUTE);
+        }
+
+        return result;
     }
 
     @Override
