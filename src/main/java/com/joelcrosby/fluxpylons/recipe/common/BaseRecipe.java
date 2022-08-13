@@ -4,7 +4,6 @@ import cofh.lib.fluid.FluidIngredient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -12,14 +11,13 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class BaseRecipe implements Recipe<Container> {
     public final ResourceLocation recipeId;
     public int energy;
 
-    public final List<Ingredient> inputItems = new ArrayList<>();
+    public final List<ItemStackIngredient> inputItems = new ArrayList<>();
     public final List<FluidIngredient> inputFluids = new ArrayList<>();
     public final List<ItemStack> outputItems = new ArrayList<>();
     public final List<FluidStack> outputFluids = new ArrayList<>();
@@ -57,14 +55,10 @@ public abstract class BaseRecipe implements Recipe<Container> {
     public boolean matches(Container inv, Level worldIn) {
         if (inv.isEmpty()) return false;
         
-        for (var inputItem : inputItems) {
-            var item = Arrays.stream(inputItem.getItems()).findFirst().orElse(null).getItem();
+        for (var i = 0; i < inputItems.size(); i++) {
+            var inputItem = inputItems.get(i);
             
-            if (item == null) {
-                return false;
-            }
-            
-            if (inv.countItem(item) == 0) {
+            if (!isValidItemStack(inputItem, inv.getItem(i))) {
                 return false;
             }
         }
@@ -72,6 +66,20 @@ public abstract class BaseRecipe implements Recipe<Container> {
         return true;
     }
 
+    private boolean isValidItemStack(ItemStackIngredient ingredient, ItemStack toMatch) {
+        var itemStacks = ingredient.getItems();
+        
+        for (var stack : itemStacks) {
+            var isSameItem = stack.sameItem(toMatch);
+
+            if (isSameItem && toMatch.getCount() >= ingredient.getAmount()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     @Override
     public ItemStack assemble(Container inv) {
         return ItemStack.EMPTY;

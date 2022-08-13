@@ -2,7 +2,11 @@ package com.joelcrosby.fluxpylons.machine;
 
 import com.joelcrosby.fluxpylons.FluxPylonsBlockEntities;
 import com.joelcrosby.fluxpylons.machine.common.MachineBlockEntity;
+import com.joelcrosby.fluxpylons.machine.common.MachineItemStackHandler;
+import com.joelcrosby.fluxpylons.recipe.WasherRecipe;
+import com.joelcrosby.fluxpylons.recipe.common.BaseRecipe;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -12,11 +16,10 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class WasherBlockEntity extends MachineBlockEntity {
-    private final ItemStackHandler inventory = new ItemStackHandler(4);
+    private final MachineItemStackHandler inventory = new MachineItemStackHandler(1, 2, true);
     
     private final IFluidHandler fluidInventory = new FluidTank(FluidAttributes.BUCKET_VOLUME * 10) {
         @Override
@@ -37,14 +40,8 @@ public class WasherBlockEntity extends MachineBlockEntity {
         return new WasherContainerMenu(window, player, worldPosition);
     }
 
-
     @Override
-    public void tick(Level level, BlockPos pos, BlockState state) {
-        sendClientUpdate();
-    }
-
-    @Override
-    public ItemStackHandler getItemStackHandler() {
+    public MachineItemStackHandler getItemStackHandler() {
         return inventory;
     }
 
@@ -52,7 +49,12 @@ public class WasherBlockEntity extends MachineBlockEntity {
     public IFluidHandler getFluidHandler() {
         return fluidInventory;
     }
-    
+
+    @Override
+    public BaseRecipe getRecipe(Level level, Container container) {
+        return WasherRecipe.getRecipe(level, container);
+    }
+
     public FluidStack getFluidStack() {
         return fluidInventory.getFluidInTank(0);
     }

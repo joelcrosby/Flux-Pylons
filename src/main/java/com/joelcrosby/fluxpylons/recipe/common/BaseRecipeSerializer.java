@@ -23,18 +23,23 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
         this.recipeConstructor = recipeConstructor;
     }
     
-    private Ingredient ingredient(JsonElement element) {
+    private ItemStackIngredient ingredient(JsonElement element) {
         if (element == null || element.isJsonNull() || !element.isJsonObject()) {
-            return Ingredient.of(ItemStack.EMPTY);
+            return ItemStackIngredient.of(ItemStack.EMPTY);
         }
 
         var object = element.getAsJsonObject();
+        var count = 1;
         
-        if (object.has("value")) {
-            return Ingredient.fromJson(object.get("value"));
+        if (object.has("count")) {
+            count = object.get("count").getAsInt();
         }
         
-        return Ingredient.fromJson(element);
+        if (object.has("value")) {
+            return ItemStackIngredient.fromJson(object.get("value"), count);
+        }
+        
+        return ItemStackIngredient.fromJson(element, count);
     }
 
     private FluidIngredient fluidIngredient(JsonElement element) {
@@ -86,7 +91,7 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
 
         var energy = json.get("energy").getAsInt();
 
-        var inputItems = new ArrayList<Ingredient>();
+        var inputItems = new ArrayList<ItemStackIngredient>();
         var inputFluids = new ArrayList<FluidIngredient>();
         var outputItems = new ArrayList<ItemStack>();
         var outputFluids = new ArrayList<FluidStack>();
@@ -160,9 +165,9 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
         var energy = buffer.readVarInt();
         
         var inputItemCount = buffer.readVarInt();
-        var inputItems = new ArrayList<Ingredient>(inputItemCount);
+        var inputItems = new ArrayList<ItemStackIngredient>(inputItemCount);
         for (int i = 0; i < inputItemCount; ++i) {
-            inputItems.add(Ingredient.fromNetwork(buffer));
+            inputItems.add(new ItemStackIngredient(Ingredient.fromNetwork(buffer), buffer.readVarInt()));
         }
 
         var inputFluidCount = buffer.readVarInt();
@@ -193,6 +198,7 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
         buffer.writeVarInt(recipe.inputItems.size());
         for (var item : recipe.inputItems) {
             item.toNetwork(buffer);
+            buffer.writeVarInt(item.getAmount());
         }
 
         buffer.writeVarInt(recipe.inputFluids.size());

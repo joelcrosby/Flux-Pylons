@@ -2,28 +2,22 @@ package com.joelcrosby.fluxpylons.machine;
 
 import com.joelcrosby.fluxpylons.FluxPylonsBlockEntities;
 import com.joelcrosby.fluxpylons.machine.common.MachineBlockEntity;
-import com.joelcrosby.fluxpylons.machine.common.MachineState;
+import com.joelcrosby.fluxpylons.machine.common.MachineItemStackHandler;
 import com.joelcrosby.fluxpylons.recipe.SmelterRecipe;
+import com.joelcrosby.fluxpylons.recipe.common.BaseRecipe;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class SmelterBlockEntity extends MachineBlockEntity {
 
-    private final ItemStackHandler inventory = new ItemStackHandler(9);
-    private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private final MachineItemStackHandler inventory = new MachineItemStackHandler(6, 2, true);
     
     public SmelterBlockEntity(BlockPos pos, BlockState state) {
         super(FluxPylonsBlockEntities.SMELTER, pos, state);
@@ -33,110 +27,19 @@ public class SmelterBlockEntity extends MachineBlockEntity {
     public AbstractContainerMenu createMenu(int window, Inventory inventory, Player player) {
         return new SmelterContainerMenu(window, player, worldPosition);
     }
-    
-    public void tick(Level level, BlockPos pos, BlockState state) {
-        sendClientUpdate();
-
-        BlockState blockstate;
-        
-        var input = inventory.getStackInSlot(0).copy();
-        var container = new SimpleContainer(6);
-        
-        for (var i = 0; i < 6; i++) {
-            var inputStack = inventory.getStackInSlot(i);
-            container.addItem(inputStack);
-        }
-        
-        var output = inventory.getStackInSlot(7).copy();
-        var recipe = SmelterRecipe.getRecipe(level, container);
-        
-        if (recipe == null) {
-            if (state.getValue(BlockStateProperties.LIT) == Boolean.TRUE) {
-                blockstate = state.setValue(BlockStateProperties.LIT, Boolean.FALSE);
-                level.setBlock(pos, blockstate, 3);
-            }
-            return;
-        }
-        
-        var energy = 20;
-
-        maxEnergy = recipe.energy;
-        inputItemStack.set(input.copy());
-
-        if (input.isEmpty()) {
-            return;
-        }
-        
-        if (output.getCount() + recipe.getOutputItemsCount(0) < 64 && canConsumeEnergy()) {
-            if (machineState == MachineState.COMPLETE) { // The processing is about to be complete
-                // Extract the inputted item
-                
-                for (var i = 0; i < recipe.inputItems.size(); i++) {
-                    inventory.extractItem(i, 1, false);
-                }
-
-                // Get output stack from the recipe
-                var newOutputStack = recipe.outputItems.get(0).copy();
-
-
-                // Manipulating the Output slot
-                if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
-                    if (output.getItem() == Items.AIR) { // Fix air > 1 jamming slots
-                        output.setCount(1);
-                    }
-                    
-                    newOutputStack.setCount(recipe.getOutputItemsCount(0));
-                    inventory.insertItem(6, newOutputStack.copy(), false); // CRASH the game if this is not empty!
-                } else { // Assuming the recipe output item is already in the output slot
-                    output.setCount(recipe.getOutputItemsCount(0)); // Simply change the stack to equal the output amount
-                    inventory.insertItem(6, output.copy(), false); // Place the new output stack on top of the old one
-                }
-                
-                machineState = MachineState.IDLE;
-                consumedEnergy = 0;
-                
-                consumeEnergy(energy);
-                setChanged();
-            } else if (machineState == MachineState.PROCESSING) { // In progress
-                consumeEnergy(energy);
-                
-                if (consumedEnergy >= recipe.energy) {
-                    machineState = MachineState.COMPLETE;
-                }
-            } else { // Check if we should start processing
-                if (output.isEmpty() || output.getItem() == recipe.outputItems.get(0).getItem()) {
-                    machineState = MachineState.PROCESSING;
-                    blockstate = state.setValue(BlockStateProperties.LIT, Boolean.TRUE);
-                } else {
-                    machineState = MachineState.IDLE;
-                    blockstate = state.setValue(BlockStateProperties.LIT, Boolean.FALSE);
-                }
-                    
-                level.setBlock(pos, blockstate, 3);
-                this.setChanged();
-            }
-        } else { // This is if we reach the maximum in the slots; or no power
-            if (!canConsumeEnergy()){ // if no power
-                machineState = MachineState.IDLE;
-            } else { // zero in other cases
-                machineState = MachineState.IDLE;
-                consumedEnergy = 0;
-            }
-            
-            blockstate = state.setValue(BlockStateProperties.LIT, Boolean.FALSE);
-            level.setBlock(pos, blockstate, 3);
-            
-            this.setChanged();
-        }
-    }
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public MachineItemStackHandler getItemStackHandler() {
         return inventory;
     }
 
     @Override
     public IFluidHandler getFluidHandler() {
         return null;
+    }
+
+    @Override
+    public BaseRecipe getRecipe(Level level, Container container) {
+        return SmelterRecipe.getRecipe(level, container);
     }
 }

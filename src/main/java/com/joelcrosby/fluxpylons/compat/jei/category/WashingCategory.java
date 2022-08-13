@@ -84,17 +84,14 @@ public class WashingCategory implements IRecipeCategory<WasherRecipe> {
     
     @Override
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, WasherRecipe recipe, IFocusGroup focusGroup) {
-        for (var i = 0; i < recipe.inputItems.size(); i++) {
-            var handler = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 26 + i * 18, 19);
-            handler.setSlotName(new TranslatableComponent("terms.fluxpylons.input_slot").getString());
-            handler.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.inputItems.get(i).getItems()).toList());
-        }
+        var inputSlot = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 26, 19);
+        inputSlot.setSlotName(new TranslatableComponent("terms.fluxpylons.input_slot").getString());
+        inputSlot.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.inputItems.get(0).getItems()).toList());
 
-        for (var i = 0; i < recipe.inputFluids.size(); i++) {
-            var handler = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 2 + i * 18, 34);
-            handler.setSlotName(new TranslatableComponent("terms.fluxpylons.input_slot").getString());
-            handler.addIngredients(ForgeTypes.FLUID_STACK, Arrays.stream(recipe.inputFluids.get(i).getFluids()).toList());
-        }
+        var fluidSlot = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 2, 3);
+        fluidSlot.setSlotName(new TranslatableComponent("terms.fluxpylons.input_slot").getString());
+        fluidSlot.addIngredients(ForgeTypes.FLUID_STACK, Arrays.stream(recipe.inputFluids.get(0).getFluids()).toList());
+        fluidSlot.setFluidRenderer(10_000, true, 16, 47);
 
         for (var i = 0; i < recipe.outputItems.size(); i++) {
             var handler = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 87 + i * 18, 19);

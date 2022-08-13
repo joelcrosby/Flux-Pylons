@@ -48,6 +48,12 @@ public abstract class MachineGui<T extends MachineContainerMenu<E>, E extends Ma
     }
 
     public List<Component> getTooltips() {
+        var progress = this.tile.getProgress();
+        
+        if (progress == 0) {
+            return List.of();
+        }
+        
         return List.of(Component.nullToEmpty(this.tile.getProgress() + " %"));
     }
     
