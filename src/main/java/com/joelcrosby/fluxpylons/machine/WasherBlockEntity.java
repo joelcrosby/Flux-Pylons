@@ -2,6 +2,8 @@ package com.joelcrosby.fluxpylons.machine;
 
 import com.joelcrosby.fluxpylons.FluxPylonsBlockEntities;
 import com.joelcrosby.fluxpylons.machine.common.MachineBlockEntity;
+import com.joelcrosby.fluxpylons.machine.common.MachineCapabilityHandler;
+import com.joelcrosby.fluxpylons.machine.common.MachineFluidHandler;
 import com.joelcrosby.fluxpylons.machine.common.MachineItemStackHandler;
 import com.joelcrosby.fluxpylons.recipe.WasherRecipe;
 import com.joelcrosby.fluxpylons.recipe.common.BaseRecipe;
@@ -12,21 +14,31 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.Nullable;
 
 public class WasherBlockEntity extends MachineBlockEntity {
-    private final MachineItemStackHandler inventory = new MachineItemStackHandler(1, 2, true);
     
-    private final IFluidHandler fluidInventory = new FluidTank(FluidAttributes.BUCKET_VOLUME * 10) {
+    private final MachineCapabilityHandler capabilityHandler = new MachineCapabilityHandler() {
+        private final MachineItemStackHandler inventory = new MachineItemStackHandler(1, 2, true);
+        private final MachineFluidHandler fluidInventory = new MachineFluidHandler(1, 0) {
+            @Override
+            public boolean isFluidValid(int tank, FluidStack stack) {
+                var name = stack.getFluid().getRegistryName().getPath();
+                return name.equals("water");
+            }
+        };
+        
+        @Nullable
         @Override
-        public boolean isFluidValid(FluidStack stack) {
-            var name = stack.getFluid().getRegistryName().getPath();
-            if (!name.equals("water")) return false;
-            return super.isFluidValid(stack);
+        public MachineItemStackHandler items() {
+            return inventory;
+        }
+
+        @Nullable
+        @Override
+        public MachineFluidHandler fluids() {
+            return fluidInventory;
         }
     };
     
@@ -34,32 +46,27 @@ public class WasherBlockEntity extends MachineBlockEntity {
         super(FluxPylonsBlockEntities.WASHER, pos, state);
     }
 
+    @Override
+    public MachineCapabilityHandler getCapabilityHandler() {
+        return capabilityHandler;
+    }
+    
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int window, Inventory inventory, Player player) {
         return new WasherContainerMenu(window, player, worldPosition);
     }
-
-    @Override
-    public MachineItemStackHandler getItemStackHandler() {
-        return inventory;
-    }
-
-    @Override
-    public IFluidHandler getFluidHandler() {
-        return fluidInventory;
-    }
-
+    
     @Override
     public BaseRecipe getRecipe(Level level, Container container) {
         return WasherRecipe.getRecipe(level, container);
     }
 
     public FluidStack getFluidStack() {
-        return fluidInventory.getFluidInTank(0);
+        return capabilityHandler.fluids().getFluidInTank(0);
     }
 
     public int getFluidTankCapacity() {
-        return fluidInventory.getTankCapacity(0);
+        return capabilityHandler.fluids().getTankCapacity(0);
     }
 }

@@ -19,14 +19,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -53,12 +51,8 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         this.lazyStorage = LazyOptional.of(() -> energyStorage);
     }
 
-    @Nullable
-    public abstract MachineItemStackHandler getItemStackHandler();
+    public abstract MachineCapabilityHandler getCapabilityHandler();
     
-    @Nullable
-    public abstract IFluidHandler getFluidHandler();
-
     @Nullable
     public abstract BaseRecipe getRecipe(Level level, Container container) ;
     
@@ -75,8 +69,8 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             return lazyStorage.cast();
         }
 
-        var itemHandler = getItemStackHandler();
-        var fluidHandler = getFluidHandler();
+        var itemHandler = getCapabilityHandler().items();
+        var fluidHandler = getCapabilityHandler().fluids();
         
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if (itemHandler != null) {
@@ -98,8 +92,8 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
         BlockState blockstate;
 
-        var inventory = getItemStackHandler();
-        var fluidInventory = getFluidHandler();
+        var inventory = getCapabilityHandler().items();
+        var fluidInventory = getCapabilityHandler().fluids();
         var container = new SimpleContainer(inventory.getSlots());
 
         for (var i = 0; i < inventory.getInputSlots(); i++) {
@@ -123,12 +117,12 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
         maxEnergy = recipe.energy;
 
-        if (!inventory.canProcessInput(recipe)) {
+        if (!getCapabilityHandler().canProcessInput(recipe)) {
             consumedEnergy = 0;
             return;
         }
 
-        if (inventory.hasOutputSpaceForRecipe(recipe) && canConsumeEnergy()) {
+        if (getCapabilityHandler().hasOutputSpaceForRecipe(recipe) && canConsumeEnergy()) {
             if (machineState == MachineState.COMPLETE) {
                 
                 // consume recipe inputs
@@ -144,7 +138,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                     var ingredient = recipe.inputFluids.get(i);
                     var amount = Arrays.stream(ingredient.getFluids()).findFirst().orElse(FluidStack.EMPTY).getAmount();
 
-                    fluidInventory.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                    fluidInventory.drainInput(0, amount, IFluidHandler.FluidAction.EXECUTE);
                 }
                 
                 // insert recipe output into machine inventory
@@ -252,7 +246,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     
     @Nullable
     public IEnergyStorage getEnergyItemCapability() {
-        var handler = getItemStackHandler();
+        var handler = getCapabilityHandler().items();
         var energySlot = handler.getSlots() - 1;
         var energyStack = handler.getStackInSlot(energySlot);
         
@@ -288,15 +282,15 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         this.energyStorage.setEnergyStored(compound.getInt("energy"));
 
         var inventory = compound.getCompound("inventory");
-        var handler = getItemStackHandler();
+        var handler = getCapabilityHandler().items();
         if (handler != null) {
             handler.deserializeNBT(inventory);
         }
 
         var fluidInventory = compound.getCompound("fluidInventory");
-        var fluidHandler = getFluidHandler();
+        var fluidHandler = getCapabilityHandler().fluids();
         if (fluidHandler != null) {
-            ((FluidTank)fluidHandler).readFromNBT(fluidInventory);
+            fluidHandler.readFromNBT(fluidInventory);
         }
         
         maxEnergy = compound.getInt("maxEnergy");
@@ -311,18 +305,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         super.saveAdditional(compound);
         compound.putInt("energy", energyStorage.getEnergyStored());
 
-        var handler = getItemStackHandler();
-        if (handler != null) {
-            var inventory = ((INBTSerializable<CompoundTag>)handler).serializeNBT();
-            compound.put("inventory", inventory);
-        }
-
-        var fluidHandler = getFluidHandler();
-        if (fluidHandler != null) {
-            var fluidTag = new CompoundTag();
-            ((FluidTank)fluidHandler).writeToNBT(fluidTag);
-            compound.put("fluidInventory", fluidTag);
-        }
+        getCapabilityHandler().saveAdditional(compound);
         
         compound.putInt("maxEnergy", maxEnergy);
         compound.putInt("consumedEnergy", consumedEnergy);

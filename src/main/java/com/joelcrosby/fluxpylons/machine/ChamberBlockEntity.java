@@ -2,7 +2,7 @@ package com.joelcrosby.fluxpylons.machine;
 
 import com.joelcrosby.fluxpylons.FluxPylonsBlockEntities;
 import com.joelcrosby.fluxpylons.machine.common.MachineBlockEntity;
-import com.joelcrosby.fluxpylons.machine.common.MachineItemStackHandler;
+import com.joelcrosby.fluxpylons.machine.common.MachineCapabilityHandler;
 import com.joelcrosby.fluxpylons.recipe.common.BaseRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class ChamberBlockEntity extends MachineBlockEntity {
@@ -32,14 +31,7 @@ public class ChamberBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    @Nullable
-    public MachineItemStackHandler getItemStackHandler() {
-        return null;
-    }
-
-    @Override
-    @Nullable
-    public IFluidHandler getFluidHandler() {
+    public MachineCapabilityHandler getCapabilityHandler() {
         return null;
     }
 

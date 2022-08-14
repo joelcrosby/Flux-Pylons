@@ -71,34 +71,17 @@ public class MachineItemStackHandler extends ItemStackHandler {
 
     public boolean canProcessInput(BaseRecipe recipe)
     {
-        var canProcess = true;
-
-        // items
-        
         for (var i = 0; i < recipe.inputItems.size(); i++) {
             var output = recipe.inputItems.get(i);
             var amount = output.getAmount();
             var stack = getInputItemStack(i);
 
             if (stack.getCount() < amount) {
-                canProcess = false;
-            }
-        }
-
-        for (var i = 0; i < recipe.outputItems.size(); i++) {
-            var output = recipe.outputItems.get(i);
-            var amount = output.getCount();
-            var stack = getOutputItemStack(i);
-
-            var canInsert = stack.isEmpty() || stack.sameItem(output);
-            var stackHasSpace = stack.getCount() <= (stack.getMaxStackSize() - amount);
-            
-            if (!canInsert || !stackHasSpace) {
-                canProcess = false;
+                return false;
             }
         }
         
-        return canProcess;
+        return true;
     }
     
     @Nonnull
@@ -148,31 +131,30 @@ public class MachineItemStackHandler extends ItemStackHandler {
 
     public boolean hasSpaceInOutput(int amount)
     {
-        var hasSpace = true;
-        
         for (var stack : getOutputItemStacks()) {
             if (stack.getCount() > (stack.getMaxStackSize() - amount)) {
-                hasSpace = false;
+                return false;
             }    
         }
         
-        return hasSpace;
+        return true;
     }
 
     public boolean hasOutputSpaceForRecipe(BaseRecipe recipe)
     {
-        var hasSpace = true;
-        
         for (var i = 0; i < recipe.outputItems.size(); i++) {
             var output = recipe.outputItems.get(i);
             var amount = output.getCount();
             var stack = getOutputItemStack(i);
-            
-            if (stack.getCount() > (stack.getMaxStackSize() - amount)) {
-                hasSpace = false;
+
+            var canInsert = stack.isEmpty() || stack.sameItem(output);
+            var stackHasSpace = stack.getCount() <= (stack.getMaxStackSize() - amount);
+
+            if (!canInsert || !stackHasSpace) {
+                return false;
             }
         }
 
-        return hasSpace;
+        return true;
     }
 }

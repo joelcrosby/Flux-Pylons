@@ -64,11 +64,15 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
         var jsonObject = element.getAsJsonObject();
 
         var count = jsonObject.has("count") ? jsonObject.get("count").getAsInt() : 1;
-        var itemJson = jsonObject.get("item").getAsString();
         
-        var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemJson));
+        if (jsonObject.has("item")) {
+            var itemJson = jsonObject.get("item").getAsString();
+            var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemJson));
 
-        return new ItemStack(item, count);
+            return new ItemStack(item, count);
+        }
+
+        return ItemStack.EMPTY;
     }
 
     private FluidStack fluidStack(JsonElement element) {
@@ -126,6 +130,8 @@ public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEnt
         if (resultJson != null) {
             if (resultJson.isJsonObject()) {
                 if (resultJson.getAsJsonObject().has("fluid")) {
+                    outputFluids.add(fluidStack(resultJson));
+                } else {
                     outputItems.add(itemStack(resultJson));
                 }
             } else if (resultJson.isJsonArray()) {

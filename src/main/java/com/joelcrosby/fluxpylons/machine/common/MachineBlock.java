@@ -74,7 +74,7 @@ public abstract class MachineBlock extends BaseEntityBlock {
         var result = InteractionResult.sidedSuccess(level.isClientSide);
         
         var itemCap = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElse(null);
-        var machineCap = entity.getFluidHandler();
+        var machineCap = entity.getCapabilityHandler().fluids();
         
         var toDrain = machineCap.getTankCapacity(0) - machineCap.getFluidInTank(0).getAmount();
         var simulatedDrain = itemCap.drain(toDrain, IFluidHandler.FluidAction.SIMULATE);
@@ -110,8 +110,8 @@ public abstract class MachineBlock extends BaseEntityBlock {
             var entity = world.getBlockEntity(pos);
 
             if (entity instanceof MachineBlockEntity machine) {
-                var handler = machine.getItemStackHandler();
-                var container = new SimpleContainer(machine.getItemStackHandler().getSlots());
+                var handler = machine.getCapabilityHandler().items();
+                var container = new SimpleContainer(machine.getCapabilityHandler().items().getSlots());
                 
                 for (var i = 0; i < handler.getSlots(); i++) {
                     var stack = handler.getStackInSlot(i);
