@@ -103,10 +103,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
         var energy = 20;
         var recipe = getRecipe(level, container);
-
-        if (recipe == null) {
+        
+        if (recipe == null || !getCapabilityHandler().canProcessInput(recipe)) {
             consumedEnergy = 0;
-            
+
             if (state.getValue(BlockStateProperties.LIT) == Boolean.TRUE) {
                 blockstate = state.setValue(BlockStateProperties.LIT, Boolean.FALSE);
                 level.setBlock(pos, blockstate, 3);
@@ -116,12 +116,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         }
 
         maxEnergy = recipe.energy;
-
-        if (!getCapabilityHandler().canProcessInput(recipe)) {
-            consumedEnergy = 0;
-            return;
-        }
-
+        
         if (getCapabilityHandler().hasOutputSpaceForRecipe(recipe) && canConsumeEnergy()) {
             if (machineState == MachineState.COMPLETE) {
                 
