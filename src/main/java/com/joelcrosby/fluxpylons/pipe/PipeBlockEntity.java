@@ -20,8 +20,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 import javax.annotation.Nonnull;
 
@@ -70,7 +70,7 @@ public class PipeBlockEntity extends BlockEntity implements IPipeConnectable {
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
         if (cap == Common.pipeConnectableCapability)
             return this.lazyThis.cast();
-        if (cap == CapabilityEnergy.ENERGY) {
+        if (cap == ForgeCapabilities.ENERGY) {
             if (!level.isClientSide) {
                 var node = NetworkManager.get(level).getNode(this.worldPosition);
                 

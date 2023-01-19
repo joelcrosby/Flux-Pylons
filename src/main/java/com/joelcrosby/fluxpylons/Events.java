@@ -10,10 +10,10 @@ import net.minecraftforge.fml.common.Mod;
 public final class Events {
     
     @SubscribeEvent
-    public static void onLevelTick(TickEvent.WorldTickEvent e) {
-        if (!e.world.isClientSide && e.phase == TickEvent.Phase.END) {
-            NetworkManager.get(e.world).getNetworks().forEach(n -> n.update(e.world));
-            PylonNetworkManager.get(e.world).getNetworks().forEach(n -> n.update(e.world));
+    public static void onLevelTick(TickEvent.LevelTickEvent e) {
+        if (!e.level.isClientSide && e.phase == TickEvent.Phase.END) {
+            NetworkManager.get(e.level).getNetworks().forEach(n -> n.update(e.level));
+            PylonNetworkManager.get(e.level).getNetworks().forEach(n -> n.update(e.level));
         }
     }
 }

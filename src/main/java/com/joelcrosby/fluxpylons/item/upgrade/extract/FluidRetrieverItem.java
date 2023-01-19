@@ -10,7 +10,7 @@ import com.joelcrosby.fluxpylons.pipe.network.graph.GraphDestinationType;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNodeType;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,10 +19,11 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 
 public class FluidRetrieverItem extends BaseFilterItem {
@@ -54,9 +55,9 @@ public class FluidRetrieverItem extends BaseFilterItem {
     }
 
     public void openGui(Player player, ItemStack stack) {
-        var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
+        var containerName = Component.translatable("container." + FluxPylons.ID + "." + ForgeRegistries.ITEMS.getKey(this).getPath());
 
-        NetworkHooks.openGui((ServerPlayer) player,
+        NetworkHooks.openScreen((ServerPlayer) player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
                         new FluidFilterContainerMenu(windowId, player, stack), containerName),
                 (buffer -> buffer.writeItem(stack))
@@ -77,7 +78,7 @@ public class FluidRetrieverItem extends BaseFilterItem {
         var handlerDir = interactionDir == null ? dir.getOpposite() : interactionDir;
         
         var fluidHandler = source
-                .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, handlerDir)
+                .getCapability(ForgeCapabilities.FLUID_HANDLER, handlerDir)
                 .orElse(null);
 
         if (fluidHandler == null) return;
@@ -100,7 +101,7 @@ public class FluidRetrieverItem extends BaseFilterItem {
 
             var incomingDirection = destination.incomingDirection().getOpposite();
             var destinationHandler = destinationEntity
-                    .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, incomingDirection)
+                    .getCapability(ForgeCapabilities.FLUID_HANDLER, incomingDirection)
                     .orElse(null);
 
             if (destinationHandler == null) continue;

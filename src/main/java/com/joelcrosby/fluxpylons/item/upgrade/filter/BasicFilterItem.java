@@ -5,7 +5,7 @@ import com.joelcrosby.fluxpylons.FluxPylonsContainerMenus;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterContainerMenu;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.common.ItemFilterStackHandler;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class BasicFilterItem extends BaseFilterItem {
     @Override
@@ -35,9 +36,9 @@ public class BasicFilterItem extends BaseFilterItem {
     }
 
     public void openGui(Player player, ItemStack stack) {
-        var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
+        var containerName = Component.translatable("container." + FluxPylons.ID + "." + ForgeRegistries.ITEMS.getKey(this).getPath());
 
-        NetworkHooks.openGui((ServerPlayer) player,
+        NetworkHooks.openScreen((ServerPlayer) player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
                         new ItemFilterContainerMenu(windowId, player, stack), containerName),
                 (buffer -> buffer.writeItem(stack))

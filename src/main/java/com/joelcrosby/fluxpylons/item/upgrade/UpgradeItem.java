@@ -14,6 +14,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public abstract class UpgradeItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        Utility.addTooltip(this.getRegistryName().getPath(), tooltip);
+        Utility.addTooltip(ForgeRegistries.ITEMS.getKey(this).getPath(), tooltip);
     }
 
     @Override

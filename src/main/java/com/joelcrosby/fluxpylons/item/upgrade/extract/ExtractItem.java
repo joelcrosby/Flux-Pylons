@@ -10,7 +10,7 @@ import com.joelcrosby.fluxpylons.pipe.network.graph.GraphDestinationType;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNode;
 import com.joelcrosby.fluxpylons.pipe.network.graph.GraphNodeType;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,10 +19,11 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 
 public class ExtractItem extends BaseFilterItem {
@@ -54,9 +55,9 @@ public class ExtractItem extends BaseFilterItem {
     }
 
     public void openGui(Player player, ItemStack stack) {
-        var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + this.getRegistryName().getPath());
+        var containerName = Component.translatable("container." + FluxPylons.ID + "." + ForgeRegistries.ITEMS.getKey(this).getPath());
 
-        NetworkHooks.openGui((ServerPlayer) player,
+        NetworkHooks.openScreen((ServerPlayer) player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
                         new ItemFilterContainerMenu(windowId, player, stack), containerName),
                 (buffer -> buffer.writeItem(stack))
@@ -78,7 +79,7 @@ public class ExtractItem extends BaseFilterItem {
         var handlerDir = interactionDir == null ? dir.getOpposite() : interactionDir;
         
         var itemHandler = source
-                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, handlerDir)
+                .getCapability(ForgeCapabilities.ITEM_HANDLER, handlerDir)
                 .orElse(null);
 
         if (itemHandler == null) return;
@@ -121,7 +122,7 @@ public class ExtractItem extends BaseFilterItem {
 
                     var incomingDirection = destination.incomingDirection().getOpposite();
                     var destinationHandler = destinationEntity
-                            .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, incomingDirection)
+                            .getCapability(ForgeCapabilities.ITEM_HANDLER, incomingDirection)
                             .orElse(null);
 
                     if (destinationHandler == null) continue;

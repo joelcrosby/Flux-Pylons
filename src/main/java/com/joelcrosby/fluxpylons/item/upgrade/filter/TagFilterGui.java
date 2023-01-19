@@ -14,7 +14,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -255,7 +254,7 @@ public class TagFilterGui extends AbstractContainerScreen<TagFilterContainerMenu
                 fillGradient(matrix, this.x - 2, this.y - 1, this.x + (LIST_WIDTH - 2), this.y + LIST_ITEM_SCROLL_SIZE, 0x885B5B5B, 0x885B5B5B);
                 
                 if (Utility.inBounds(this.x - 2, this.y - 1, LIST_ITEM_SCROLL_SIZE, LIST_ITEM_SCROLL_SIZE, mouseX, mouseY)) {
-                    var tooltip = new TextComponent(this.tag);
+                    var tooltip = Component.translatable(this.tag);
                     TagFilterGui.this.renderTooltip(matrix, tooltip, (int) mouseX, (int) mouseY);
                 }
                 

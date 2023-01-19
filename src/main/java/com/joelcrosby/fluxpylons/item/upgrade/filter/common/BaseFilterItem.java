@@ -13,8 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -144,19 +142,19 @@ public abstract class BaseFilterItem extends UpgradeItem {
 
             var prefix = "item.fluxpylons.filter.tooltip.";
             
-            var isDenyComponent = new TranslatableComponent(prefix + (isDenyList ? "deny" : "allow")).setStyle(Style.EMPTY.applyFormat(isDenyList ? ChatFormatting.RED : ChatFormatting.DARK_GREEN));
-            var matchNbtComponent = new TranslatableComponent(prefix + (matchNbt ? "match-nbt" : "ignore-nbt")).setStyle(Style.EMPTY.applyFormat(matchNbt ? ChatFormatting.DARK_GREEN : ChatFormatting.RED));
+            var isDenyComponent = Component.translatable(prefix + (isDenyList ? "deny" : "allow")).setStyle(Style.EMPTY.applyFormat(isDenyList ? ChatFormatting.RED : ChatFormatting.DARK_GREEN));
+            var matchNbtComponent = Component.translatable(prefix + (matchNbt ? "match-nbt" : "ignore-nbt")).setStyle(Style.EMPTY.applyFormat(matchNbt ? ChatFormatting.DARK_GREEN : ChatFormatting.RED));
             
-            var divider = new TextComponent(" | ").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_GRAY));
+            var divider = Component.literal(" | ").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_GRAY));
             
-            tooltip.add(isDenyComponent.append(supportsNbtMatch() ? divider.append(matchNbtComponent) : TextComponent.EMPTY));
+            tooltip.add(isDenyComponent.append(supportsNbtMatch() ? divider.append(matchNbtComponent) : Component.empty()));
             
             if (stack.getItem() instanceof TagFilterItem) {
                 var tags = getTags(stack);
 
                 for (var tag : tags) {
-                    tooltip.add(new TextComponent(""));
-                    tooltip.add(new TranslatableComponent(tag).withStyle(ChatFormatting.DARK_AQUA));
+                    tooltip.add(Component.literal(""));
+                    tooltip.add(Component.translatable(tag).withStyle(ChatFormatting.DARK_AQUA));
                 }
             } else {
                 for (var i = 0; i < inventory.getSlots(); i++) {
@@ -165,19 +163,19 @@ public abstract class BaseFilterItem extends UpgradeItem {
                     if (stackInSlot.isEmpty()) continue;
 
                     if (i == 0) {
-                        tooltip.add(new TextComponent(""));
+                        tooltip.add(Component.literal(""));
                     }
                     
-                    tooltip.add(new TranslatableComponent(stackInSlot.getItem().getDescriptionId()).withStyle(ChatFormatting.GOLD));
+                    tooltip.add(Component.translatable(stackInSlot.getItem().getDescriptionId()).withStyle(ChatFormatting.GOLD));
                 }
             }
             
         } else {
-            tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".hold").withStyle(ChatFormatting.GRAY)
-                   .append(new TextComponent(" "))
-                   .append(new TranslatableComponent("info." + FluxPylons.ID + ".shift").withStyle(ChatFormatting.AQUA)
-                   .append(new TextComponent(" "))
-                   .append(new TranslatableComponent("info." + FluxPylons.ID + ".more_info").withStyle(ChatFormatting.GRAY)
+            tooltip.add(Component.translatable("info." + FluxPylons.ID + ".hold").withStyle(ChatFormatting.GRAY)
+                   .append(Component.literal(" "))
+                   .append(Component.translatable("info." + FluxPylons.ID + ".shift").withStyle(ChatFormatting.AQUA)
+                   .append(Component.literal(" "))
+                   .append(Component.translatable("info." + FluxPylons.ID + ".more_info").withStyle(ChatFormatting.GRAY)
            )));
         }
     }

@@ -12,8 +12,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -116,8 +114,8 @@ public class PipeUpgradeGui extends AbstractContainerScreen<PipeUpgradeContainer
         } 
         
         var components = itemStack.getTooltipLines(minecraft.player, TooltipFlag.Default.NORMAL);
-        components.add(new TextComponent(""));
-        components.add(new TranslatableComponent("item.fluxpylons.filter.tooltip.open-menu").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_GRAY)));
+        components.add(Component.translatable(""));
+        components.add(Component.translatable("item.fluxpylons.filter.tooltip.open-menu").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_GRAY)));
         
         renderTooltip(poseStack, components, Optional.empty(), mouseX, mouseY); 
     }

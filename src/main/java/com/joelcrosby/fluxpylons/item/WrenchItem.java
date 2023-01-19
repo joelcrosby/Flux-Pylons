@@ -180,7 +180,7 @@ public class WrenchItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        Utility.addTooltip(this.getRegistryName().getPath(), tooltip);
+        Utility.addTooltip(ForgeRegistries.BLOCKS.getKey(this).getPath(), tooltip);
     }
 
     @Override

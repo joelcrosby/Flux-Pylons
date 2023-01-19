@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
@@ -46,9 +45,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -358,17 +356,17 @@ public class PipeBlock extends BaseEntityBlock {
                 return connectable.getConnectionType(pos, direction);
             }
 
-            var itemHandler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, opposite).orElse(null);
+            var itemHandler = tile.getCapability(ForgeCapabilities.ITEM_HANDLER, opposite).orElse(null);
             if (itemHandler != null) {
                 return ConnectionType.END;
             }
 
-            var energyHandler = tile.getCapability(CapabilityEnergy.ENERGY, opposite).orElse(null);
+            var energyHandler = tile.getCapability(ForgeCapabilities.ENERGY, opposite).orElse(null);
             if (energyHandler != null) {
                 return ConnectionType.END;
             }
 
-            var fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite).orElse(null);
+            var fluidHandler = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, opposite).orElse(null);
             if (fluidHandler != null) {
                 return ConnectionType.END;
             }
@@ -410,15 +408,15 @@ public class PipeBlock extends BaseEntityBlock {
         var fluidText = I18n.get("terms." + FluxPylons.ID + ".fluids").concat(" ");
         var itemText = I18n.get("terms." + FluxPylons.ID + ".items").concat(" ");
         
-        var energyComponent = new TextComponent(energyText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE))
-                .append(new TextComponent(energyRateText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-        var fluidComponent = new TextComponent(fluidText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE))
-                .append(new TextComponent(fluidRateText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-        var itemComponent = new TextComponent(itemText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE))
-                .append(new TextComponent(itemRateText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+        var energyComponent = Component.translatable(energyText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE))
+                .append(Component.translatable(energyRateText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+        var fluidComponent = Component.translatable(fluidText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE))
+                .append(Component.translatable(fluidRateText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+        var itemComponent = Component.translatable(itemText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE))
+                .append(Component.translatable(itemRateText).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
         
         List<Component> components = Arrays.asList(energyComponent, fluidComponent, itemComponent);
         
-        Utility.addTooltip(this.getRegistryName().getPath(), components, tooltip);
+        Utility.addTooltip(ForgeRegistries.BLOCKS.getKey(this).getPath(), components, tooltip);
     }
 }

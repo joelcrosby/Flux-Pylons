@@ -11,8 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.WorldlyContainerHolder;
@@ -128,13 +126,13 @@ public class Utility {
         if (Screen.hasShiftDown()) {
             var content = I18n.get("info." + FluxPylons.ID + "." + name).split("\n");
             for (var s : content)
-                tooltip.add(new TextComponent(s).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
+                tooltip.add(Component.translatable(s).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
         } else {
-            tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".hold").withStyle(ChatFormatting.GRAY)
-                    .append(new TextComponent(" "))
-                    .append(new TranslatableComponent("info." + FluxPylons.ID + ".shift").withStyle(ChatFormatting.AQUA)
-                            .append(new TextComponent(" "))
-                            .append(new TranslatableComponent("info." + FluxPylons.ID + ".more_info").withStyle(ChatFormatting.GRAY)
+            tooltip.add(Component.translatable("info." + FluxPylons.ID + ".hold").withStyle(ChatFormatting.GRAY)
+                    .append(Component.translatable(" "))
+                    .append(Component.translatable("info." + FluxPylons.ID + ".shift").withStyle(ChatFormatting.AQUA)
+                            .append(Component.translatable(" "))
+                            .append(Component.translatable("info." + FluxPylons.ID + ".more_info").withStyle(ChatFormatting.GRAY)
                             )));
         }
     }
@@ -143,14 +141,14 @@ public class Utility {
         if (Screen.hasShiftDown()) {
             var content = I18n.get("info." + FluxPylons.ID + "." + name).split("\n");
             for (var s : content)
-                tooltip.add(new TextComponent(s).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
+                tooltip.add(Component.translatable(s).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
         } else {
             tooltip.addAll(textComponents);
-            tooltip.add(new TranslatableComponent("info." + FluxPylons.ID + ".hold").withStyle(ChatFormatting.GRAY)
-                    .append(new TextComponent(" "))
-                    .append(new TranslatableComponent("info." + FluxPylons.ID + ".shift").withStyle(ChatFormatting.AQUA)
-                            .append(new TextComponent(" "))
-                            .append(new TranslatableComponent("info." + FluxPylons.ID + ".more_info").withStyle(ChatFormatting.GRAY)
+            tooltip.add(Component.translatable("info." + FluxPylons.ID + ".hold").withStyle(ChatFormatting.GRAY)
+                    .append(Component.translatable(" "))
+                    .append(Component.translatable("info." + FluxPylons.ID + ".shift").withStyle(ChatFormatting.AQUA)
+                            .append(Component.translatable(" "))
+                            .append(Component.translatable("info." + FluxPylons.ID + ".more_info").withStyle(ChatFormatting.GRAY)
             )));
         }
     }
@@ -165,7 +163,7 @@ public class Utility {
         var stringTankCapacity = formatter.format(tankCapacity);
 
         if (!fluidStack.isEmpty()) {
-            tooltip.add(new TranslatableComponent(name));
+            tooltip.add(Component.translatable(name));
         }
         
         tooltip.add(Component.nullToEmpty(stringAmount + " mB / " + stringTankCapacity + " mB"));

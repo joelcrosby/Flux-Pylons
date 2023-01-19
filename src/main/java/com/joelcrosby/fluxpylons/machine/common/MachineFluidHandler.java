@@ -2,7 +2,6 @@ package com.joelcrosby.fluxpylons.machine.common;
 
 import com.joelcrosby.fluxpylons.recipe.common.BaseRecipe;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -121,7 +120,7 @@ public class MachineFluidHandler implements IFluidHandler {
     
     @Override
     public int getTankCapacity(int tank) {
-        return FluidAttributes.BUCKET_VOLUME * 10;
+        return 1000 * 10;
     }
 
     @Override

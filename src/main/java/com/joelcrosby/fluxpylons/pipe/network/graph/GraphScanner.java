@@ -5,9 +5,7 @@ import com.joelcrosby.fluxpylons.pipe.network.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import java.util.*;
 
@@ -104,13 +102,13 @@ public class GraphScanner {
                 return;
             }
             
-            blockEntity.getCapability(CapabilityEnergy.ENERGY, facingDirection)
+            blockEntity.getCapability(ForgeCapabilities.ENERGY, facingDirection)
                 .ifPresent(handler -> destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.ENERGY)));
             
-            blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facingDirection)
+            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, facingDirection)
                 .ifPresent(handler -> destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.ITEMS)));
             
-            blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facingDirection)
+            blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, facingDirection)
                 .ifPresent(handler -> destinations.add(new GraphDestination(pos, dir, parentNode, GraphDestinationType.FLUIDS)));
         }
     }

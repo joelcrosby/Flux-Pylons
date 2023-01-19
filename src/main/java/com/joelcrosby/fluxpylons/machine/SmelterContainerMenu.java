@@ -7,7 +7,7 @@ import com.joelcrosby.fluxpylons.container.BaseOutputSlot;
 import com.joelcrosby.fluxpylons.machine.common.MachineContainerMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public class SmelterContainerMenu extends MachineContainerMenu<SmelterBlockEntity> {
 
@@ -22,7 +22,7 @@ public class SmelterContainerMenu extends MachineContainerMenu<SmelterBlockEntit
 
     @Override
     public void addOwnSlots() {
-        tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
+        tile.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
             addSlot(new BaseInputSlot(handler, 0, 30, 25));
             addSlot(new BaseInputSlot(handler, 1, 48, 25));
             addSlot(new BaseInputSlot(handler, 2, 66, 25));

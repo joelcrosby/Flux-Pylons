@@ -5,8 +5,8 @@ import com.joelcrosby.fluxpylons.pylon.network.graph.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.List;
@@ -131,7 +131,7 @@ public class PylonNetwork {
             }
 
             var side = destination.incomingDirection().getOpposite();
-            var energyHandler = blockEntity.getCapability(CapabilityEnergy.ENERGY, side).orElse(null);
+            var energyHandler = blockEntity.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
 
             if (energyHandler == null) {
                 continue;

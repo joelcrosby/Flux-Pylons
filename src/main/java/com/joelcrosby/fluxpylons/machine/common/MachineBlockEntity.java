@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
@@ -19,13 +18,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,26 +56,26 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     @Override
     public Component getDisplayName() {
         var name = BlockEntityType.getKey(type).getPath();
-        return new TranslatableComponent("container." + FluxPylons.ID + "." + name);
+        return Component.translatable("container." + FluxPylons.ID + "." + name);
     }
     
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (cap == CapabilityEnergy.ENERGY) {
+        if (cap == ForgeCapabilities.ENERGY) {
             return lazyStorage.cast();
         }
 
         var itemHandler = getCapabilityHandler().items();
         var fluidHandler = getCapabilityHandler().fluids();
         
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
             if (itemHandler != null) {
                 return LazyOptional.of(() -> itemHandler).cast();
             }
         }
 
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
             if (fluidHandler != null) {
                 return LazyOptional.of(() -> fluidHandler).cast();
             }
@@ -151,6 +148,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                     var output = inventory.getAvailableOutputStack(outputCount, stack);
                     
                     // Manipulating the Output slot
+                    
                     if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
                         if (output.getItem() == Items.AIR) { // Fix air > 1 jamming slots
                             output.setCount(1);
@@ -175,7 +173,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                 if (consumedEnergy >= recipe.energy) {
                     machineState = MachineState.COMPLETE;
                 }
-            } else { // Check if we should start processing
+            } else {
+                // Check if we should start processing
+                
                 if (inventory.hasOutputSpaceForRecipe(recipe)) {
                     machineState = MachineState.PROCESSING;
                     blockstate = state.setValue(BlockStateProperties.LIT, Boolean.TRUE);
@@ -187,10 +187,14 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                 level.setBlock(pos, blockstate, 3);
                 this.setChanged();
             }
-        } else { // This is if we reach the maximum in the slots; or no power
+        } else { 
+            // This is if we reach the maximum in the slots; or no power
+            
             if (!canConsumeEnergy()) { // if no power
                 machineState = MachineState.IDLE;
-            } else { // zero in other cases
+            } else { 
+                // zero in other cases
+                
                 machineState = MachineState.IDLE;
                 consumedEnergy = 0;
             }
@@ -245,7 +249,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         var energySlot = handler.getSlots() - 1;
         var energyStack = handler.getStackInSlot(energySlot);
         
-        return energyStack.getCapability(CapabilityEnergy.ENERGY).orElse(null);
+        return energyStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
     }
     
     public boolean canConsumeEnergy() {

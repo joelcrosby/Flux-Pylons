@@ -28,9 +28,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -57,10 +58,10 @@ public abstract class MachineBlock extends BaseEntityBlock {
         }
 
         if (entity instanceof MachineBlockEntity machine) {
-            if (!player.isCrouching() && itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
+            if (!player.isCrouching() && itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()) {
                 return getFluidItemInteractionResult(level, player, hand, itemStack, machine);
             } else if (!level.isClientSide && player instanceof ServerPlayer serverPlayer ) {
-                NetworkHooks.openGui(serverPlayer, machine, machine.getBlockPos());
+                NetworkHooks.openScreen(serverPlayer, machine, machine.getBlockPos());
             }
             
             return InteractionResult.sidedSuccess(level.isClientSide);
@@ -73,7 +74,7 @@ public abstract class MachineBlock extends BaseEntityBlock {
     private static InteractionResult getFluidItemInteractionResult(Level level, Player player, InteractionHand hand, ItemStack itemStack, MachineBlockEntity entity) {
         var result = InteractionResult.sidedSuccess(level.isClientSide);
         
-        var itemCap = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElse(null);
+        var itemCap = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).orElse(null);
         var machineCap = entity.getCapabilityHandler().fluids();
         
         var toDrain = machineCap.getTankCapacity(0) - machineCap.getFluidInTank(0).getAmount();
@@ -150,6 +151,6 @@ public abstract class MachineBlock extends BaseEntityBlock {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        Utility.addTooltip(this.getRegistryName().getPath(), tooltip);
+        Utility.addTooltip(ForgeRegistries.BLOCKS.getKey(this).getPath(), tooltip);
     }
 }

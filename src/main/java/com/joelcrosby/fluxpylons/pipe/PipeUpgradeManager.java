@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleMenuProvider;
@@ -76,9 +76,9 @@ public class PipeUpgradeManager {
     }
     
     public void OpenContainerMenu(ServerPlayer player) {
-        var containerName = new TranslatableComponent("container." + FluxPylons.ID + "." + node.getNodeType().getEntityType().getId());
+        var containerName = Component.translatable("container." + FluxPylons.ID + "." + node.getNodeType().getEntityType().getId());
         
-        NetworkHooks.openGui(player,
+        NetworkHooks.openScreen(player,
                 new SimpleMenuProvider((windowId, playerInventory, playerEntity) ->
                         new PipeUpgradeContainerMenu(windowId, player, pipeUpgradeContainer.getItems(), node.getPos(), dir, this.pipeIoMode), containerName),
                 buffer -> {
