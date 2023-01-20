@@ -8,14 +8,10 @@ buildscript {
     }
 }
 
-plugins {
-    id 'java'
-    id 'eclipse'
-    id 'maven-publish'
-}
-
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 version = '0.1'
 group = mod_packagename
@@ -111,8 +107,9 @@ dependencies {
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")
 
     implementation fg.deobf("com.teamcofh:cofh_core:${thermal_mc_version}-${cofh_core_version}")
-    implementation fg.deobf("com.teamcofh:thermal_foundation:${thermal_mc_version}-${thermal_foundation_version}")
-    implementation fg.deobf("com.teamcofh:thermal_expansion:${thermal_mc_version}-${thermal_expansion_version}")
+//    implementation fg.deobf("com.teamcofh:thermal:${thermal_mc_version}-${thermal_version}")
+//    implementation fg.deobf("com.teamcofh:thermal_foundation:${thermal_mc_version}-${thermal_foundation_version}")
+//    implementation fg.deobf("com.teamcofh:thermal_expansion:${thermal_mc_version}-${thermal_expansion_version}")
 
     implementation fg.deobf("curse.maven:the-one-probe-245211:${theoneprobe_id}")
     implementation fg.deobf("curse.maven:jade-324717:${jade_id}")
@@ -121,7 +118,16 @@ dependencies {
 processResources {
     inputs.property 'version', project.version
     filesMatching('**/META-INF/mods.toml') {
-        expand 'file': [ jarVersion: project.version ]
+        expand 'file': [ jarVersion: project.version ], 
+               'mod_id': mod_id, 
+               'mod_version': mod_version, 
+               'mod_vendor': mod_vendor, 
+               'mod_name': mod_name, 
+               'mod_forge_version': mod_forge_version, 
+               'mod_loader_version': mod_loader_version, 
+               'mod_minecraft_version': mod_minecraft_version, 
+               'mod_mekanism_version_range': mod_mekanism_version_range, 
+               'jei_version_range': jei_version_range
     }
 }
 

@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class WasherRecipe extends BaseRecipe {
     public static final BaseRecipeSerializer<WasherRecipe> SERIALIZER = new BaseRecipeSerializer<>(WasherRecipe::new);
-    public static final RecipeType<WasherRecipe> RECIPE_TYPE = FluxPylonsRecipes.FluxPylonsRecipeTypes.WASHING;
+    public static final RecipeType<WasherRecipe> RECIPE_TYPE = FluxPylonsRecipes.FluxPylonsRecipeTypes.WASHING.get();
 
     public WasherRecipe(RecipeData data) {
         super(data);

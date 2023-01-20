@@ -28,6 +28,6 @@ public class WasherBlock extends MachineBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide ? null : createTicker(level, type, FluxPylonsBlockEntities.WASHER);
+        return level.isClientSide ? null : createTicker(level, type, FluxPylonsBlockEntities.WASHER.get());
     }
 }

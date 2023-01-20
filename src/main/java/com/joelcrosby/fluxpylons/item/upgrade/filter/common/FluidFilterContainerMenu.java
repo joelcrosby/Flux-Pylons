@@ -16,7 +16,7 @@ public class FluidFilterContainerMenu extends BaseFilterContainerMenu {
     }
 
     public FluidFilterContainerMenu(int windowId, Player player, ItemStack filterItem) {
-        super(FluxPylonsContainerMenus.UPGRADE_FLUID_FILTER_CONTAINER_MENU, windowId, player, filterItem);
+        super(FluxPylonsContainerMenus.UPGRADE_FLUID_FILTER_CONTAINER_MENU.get(), windowId, player, filterItem);
     }
 
     @Override

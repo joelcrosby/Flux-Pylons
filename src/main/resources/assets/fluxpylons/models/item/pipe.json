@@ -1,3 +1,4 @@
 {
-  "parent": "fluxpylons:block/pipe_center"
+  "parent": "fluxpylons:block/pipe_center",
+  "render_type": "cutout"
 }

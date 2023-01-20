@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class ToggleButton extends BasicButton {
@@ -48,7 +48,7 @@ public class ToggleButton extends BasicButton {
     @Override
     public void onRenderToolTip(PoseStack stack, int x, int y) {
         if (isHovered) {
-            screen.renderTooltip(stack, new TranslatableComponent(tooltips[texturePosition]), x, y);
+            screen.renderTooltip(stack, Component.translatable(tooltips[texturePosition]), x, y);
         }
     }
     

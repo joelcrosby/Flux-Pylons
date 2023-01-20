@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -48,7 +49,7 @@ public class TankRenderer {
         var posY = (int) (y + height - renderAmount);
 
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-        var color = stack.getFluid().getAttributes().getColor();
+        var color = IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor();
         float r = ((color >> 16) & 0xFF) / 255f;
         float g = ((color >> 8) & 0xFF) / 255f;
         float b = (color & 0xFF) / 255f;

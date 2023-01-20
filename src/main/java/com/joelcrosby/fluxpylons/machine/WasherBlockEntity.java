@@ -15,6 +15,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 public class WasherBlockEntity extends MachineBlockEntity {
@@ -24,7 +25,7 @@ public class WasherBlockEntity extends MachineBlockEntity {
         private final MachineFluidHandler fluidInventory = new MachineFluidHandler(1, 0) {
             @Override
             public boolean isFluidValid(int tank, FluidStack stack) {
-                var name = stack.getFluid().getRegistryName().getPath();
+                var name = ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getPath();
                 return name.equals("water");
             }
         };
@@ -43,7 +44,7 @@ public class WasherBlockEntity extends MachineBlockEntity {
     };
     
     public WasherBlockEntity(BlockPos pos, BlockState state) {
-        super(FluxPylonsBlockEntities.WASHER, pos, state);
+        super(FluxPylonsBlockEntities.WASHER.get(), pos, state);
     }
 
     @Override

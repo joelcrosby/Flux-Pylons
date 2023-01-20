@@ -5,34 +5,24 @@ import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidRetrieverItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.RetrieverItem;
+import com.joelcrosby.fluxpylons.item.upgrade.filter.BasicFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.FluidFilterItem;
 import com.joelcrosby.fluxpylons.item.upgrade.filter.TagFilterItem;
-import com.joelcrosby.fluxpylons.item.upgrade.filter.common.BaseFilterItem;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class FluxPylonsItems
 {
-    @ObjectHolder(FluxPylons.ID + ":wrench")
-    public static final WrenchItem WRENCH = null;
-    
-    @ObjectHolder(FluxPylons.ID + ":upgrade_filter")
-    public static final BaseFilterItem UPGRADE_FILTER = null;
-    
-    @ObjectHolder(FluxPylons.ID + ":upgrade_fluid_filter")
-    public static final FluidFilterItem UPGRADE_FLUID_FILTER = null;
-    
-    @ObjectHolder(FluxPylons.ID + ":upgrade_tag_filter")
-    public static final TagFilterItem UPGRADE_TAG_FILTER = null;
-    
-    @ObjectHolder(FluxPylons.ID + ":upgrade_extract")
-    public static final ExtractItem UPGRADE_EXTRACT = null;
-    
-    @ObjectHolder(FluxPylons.ID + ":upgrade_fluid_extract")
-    public static final FluidExtractItem UPGRADE_FLUID_EXTRACT = null;
-    
-    @ObjectHolder(FluxPylons.ID + ":upgrade_retriever")
-    public static final RetrieverItem UPGRADE_RETRIEVER = null;
+    public static final DeferredRegister<Item> ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, FluxPylons.ID);
 
-    @ObjectHolder(FluxPylons.ID + ":upgrade_fluid_retriever")
-    public static final FluidRetrieverItem UPGRADE_FLUID_RETRIEVER = null;
+    public static final RegistryObject<WrenchItem> WRENCH = ITEM_REGISTRY.register("wrench", WrenchItem::new);
+    public static final RegistryObject<BasicFilterItem> UPGRADE_FILTER = ITEM_REGISTRY.register("upgrade_filter", BasicFilterItem::new);
+    public static final RegistryObject<FluidFilterItem> UPGRADE_FLUID_FILTER = ITEM_REGISTRY.register("upgrade_fluid_filter", FluidFilterItem::new);
+    public static final RegistryObject<TagFilterItem> UPGRADE_TAG_FILTER = ITEM_REGISTRY.register("upgrade_tag_filter", TagFilterItem::new);
+    public static final RegistryObject<ExtractItem> UPGRADE_EXTRACT = ITEM_REGISTRY.register("upgrade_extract", ExtractItem::new);
+    public static final RegistryObject<FluidExtractItem> UPGRADE_FLUID_EXTRACT = ITEM_REGISTRY.register("upgrade_fluid_extract", FluidExtractItem::new);
+    public static final RegistryObject<RetrieverItem> UPGRADE_RETRIEVER = ITEM_REGISTRY.register("upgrade_retriever", RetrieverItem::new);
+    public static final RegistryObject<FluidRetrieverItem> UPGRADE_FLUID_RETRIEVER = ITEM_REGISTRY.register("upgrade_fluid_retriever", FluidRetrieverItem::new);
 }

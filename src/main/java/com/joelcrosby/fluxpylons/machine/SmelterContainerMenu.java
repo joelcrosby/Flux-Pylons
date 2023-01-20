@@ -12,7 +12,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 public class SmelterContainerMenu extends MachineContainerMenu<SmelterBlockEntity> {
 
     public SmelterContainerMenu(int id, Player player, BlockPos pos) {
-        super(SmelterBlockEntity.class, FluxPylonsContainerMenus.SMELTER_CONTAINER_MENU, id, player, pos);
+        super(SmelterBlockEntity.class, FluxPylonsContainerMenus.SMELTER_CONTAINER_MENU.get(), id, player, pos);
     }
 
     @Override

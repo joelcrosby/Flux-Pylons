@@ -22,6 +22,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -57,7 +58,7 @@ public class CrateBlock extends BaseEntityBlock {
         if (entity instanceof CrateBlockEntity) {
             level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.PLAYERS, 1, 1);
             
-            NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) entity, entity.getBlockPos());
+            NetworkHooks.openScreen((ServerPlayer) player, (MenuProvider) entity, entity.getBlockPos());
         } 
         
         return InteractionResult.SUCCESS;

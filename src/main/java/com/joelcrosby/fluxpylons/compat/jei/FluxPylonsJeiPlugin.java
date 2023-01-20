@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -48,17 +49,17 @@ public class FluxPylonsJeiPlugin implements IModPlugin {
         var hiddenRecipes = new ArrayList<CraftingRecipe>();
         
         var itemNames = List.of(
-            FluxPylonsItems.UPGRADE_EXTRACT,
-            FluxPylonsItems.UPGRADE_FLUID_EXTRACT,
-            FluxPylonsItems.UPGRADE_FILTER,
-            FluxPylonsItems.UPGRADE_FLUID_FILTER,
-            FluxPylonsItems.UPGRADE_TAG_FILTER,
-            FluxPylonsItems.UPGRADE_RETRIEVER,
-            FluxPylonsItems.UPGRADE_FLUID_RETRIEVER
+            FluxPylonsItems.UPGRADE_EXTRACT.get(),
+            FluxPylonsItems.UPGRADE_FLUID_EXTRACT.get(),
+            FluxPylonsItems.UPGRADE_FILTER.get(),
+            FluxPylonsItems.UPGRADE_FLUID_FILTER.get(),
+            FluxPylonsItems.UPGRADE_TAG_FILTER.get(),
+            FluxPylonsItems.UPGRADE_RETRIEVER.get(),
+            FluxPylonsItems.UPGRADE_FLUID_RETRIEVER.get()
         );
         
         for (var item : itemNames) {
-            var key = new ResourceLocation(item.getRegistryName().toString() + "_clear_nbt");
+            var key = new ResourceLocation(ForgeRegistries.ITEMS.getKey(item).toString() + "_clear_nbt");
             var manager = recipeManager.byKey(key);
             
             manager.ifPresent(recipe -> hiddenRecipes.add((CraftingRecipe) recipe));
@@ -77,8 +78,8 @@ public class FluxPylonsJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        registration.addRecipes(SmeltingCategory.RECIPE_TYPE, getRecipesOfType(FluxPylonsRecipes.FluxPylonsRecipeTypes.SMELTING));
-        registration.addRecipes(WashingCategory.RECIPE_TYPE, getRecipesOfType(FluxPylonsRecipes.FluxPylonsRecipeTypes.WASHING));
+        registration.addRecipes(SmeltingCategory.RECIPE_TYPE, getRecipesOfType(FluxPylonsRecipes.FluxPylonsRecipeTypes.SMELTING.get()));
+        registration.addRecipes(WashingCategory.RECIPE_TYPE, getRecipesOfType(FluxPylonsRecipes.FluxPylonsRecipeTypes.WASHING.get()));
     }
 
     @Override
@@ -89,8 +90,8 @@ public class FluxPylonsJeiPlugin implements IModPlugin {
     
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(FluxPylonsBlocks.SMELTER).copy(), SmeltingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(FluxPylonsBlocks.WASHER).copy(), WashingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(FluxPylonsBlocks.SMELTER.get()).copy(), SmeltingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(FluxPylonsBlocks.WASHER.get()).copy(), WashingCategory.RECIPE_TYPE);
     }
     
     private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {

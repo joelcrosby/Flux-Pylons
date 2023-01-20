@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -180,7 +181,7 @@ public class WrenchItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        Utility.addTooltip(ForgeRegistries.BLOCKS.getKey(this).getPath(), tooltip);
+        Utility.addTooltip(ForgeRegistries.ITEMS.getKey(this).getPath(), tooltip);
     }
 
     @Override

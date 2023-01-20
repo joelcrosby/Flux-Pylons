@@ -35,7 +35,7 @@ public class SmelterBlockEntity extends MachineBlockEntity {
     };
     
     public SmelterBlockEntity(BlockPos pos, BlockState state) {
-        super(FluxPylonsBlockEntities.SMELTER, pos, state);
+        super(FluxPylonsBlockEntities.SMELTER.get(), pos, state);
     }
 
     @Nullable

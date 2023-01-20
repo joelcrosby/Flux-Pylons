@@ -3,7 +3,7 @@ package com.joelcrosby.fluxpylons.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class BasicButton extends Button {
     private static final int sizeX = 16;
@@ -11,7 +11,7 @@ public class BasicButton extends Button {
 
     
     public BasicButton(int x, int y, OnPress onPress) {
-        super(x, y, sizeX, sizeY, TextComponent.EMPTY, onPress);
+        super(x, y, sizeX, sizeY, Component.empty(), onPress);
     }
 
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {

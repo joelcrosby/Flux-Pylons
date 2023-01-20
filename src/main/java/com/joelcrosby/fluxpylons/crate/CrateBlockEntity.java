@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,8 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -39,12 +38,12 @@ public class CrateBlockEntity extends BlockEntity implements Container, MenuProv
     private LazyOptional<IItemHandlerModifiable> handler;
 
     public CrateBlockEntity(BlockPos pos, BlockState state) {
-        super(FluxPylonsBlockEntities.CRATE, pos, state);
+        super(FluxPylonsBlockEntities.CRATE.get(), pos, state);
     }
 
     @Override
     public Component getDisplayName() {
-        return new TranslatableComponent("container." + FluxPylons.ID + ".crate");
+        return Component.translatable("container." + FluxPylons.ID + ".crate");
     }
 
     @Nullable
@@ -114,7 +113,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, MenuProv
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (!this.remove && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.remove && cap == ForgeCapabilities.ITEM_HANDLER) {
             if (this.handler == null)
                 this.handler = LazyOptional.of(this::createHandler);
             return this.handler.cast();

@@ -9,7 +9,6 @@ import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +27,7 @@ public class SmelterContainerHandler implements IGuiContainerHandler<SmelterGui>
             @Override
             public List<Component> getTooltipStrings() {
                 List<Component> tooltips = new ArrayList<>();
-                tooltips.add(new TextComponent("Show Recipes"));
+                tooltips.add(Component.literal("Show Recipes"));
                 tooltips.addAll(containerScreen.getTooltips());
                 return tooltips;
             }

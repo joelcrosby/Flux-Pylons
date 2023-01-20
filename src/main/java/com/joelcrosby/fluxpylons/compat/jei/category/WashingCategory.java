@@ -18,8 +18,6 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +39,7 @@ public class WashingCategory implements IRecipeCategory<WasherRecipe> {
 
     public WashingCategory(IGuiHelper guiHelper) {
         background = guiHelper.drawableBuilder(WasherGui.TEXTURE, 40, 16, 132, 53).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FluxPylonsBlocks.WASHER));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FluxPylonsBlocks.WASHER.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(WasherGui.TEXTURE, 176, 0, 22, 15).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
     }
@@ -54,7 +52,7 @@ public class WashingCategory implements IRecipeCategory<WasherRecipe> {
     
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("container." + FluxPylons.ID + "." + "washer");
+        return Component.translatable("container." + FluxPylons.ID + "." + "washer");
     }
 
     @Override
@@ -68,16 +66,6 @@ public class WashingCategory implements IRecipeCategory<WasherRecipe> {
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return FluxPylonsJeiPlugin.WASHING_UID;
-    }
-
-    @Override
-    public Class<? extends WasherRecipe> getRecipeClass() {
-        return WasherRecipe.class;
-    }
-
-    @Override
     public void draw(WasherRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack, 49, 18);
     }
@@ -85,17 +73,17 @@ public class WashingCategory implements IRecipeCategory<WasherRecipe> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, WasherRecipe recipe, IFocusGroup focusGroup) {
         var inputSlot = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 26, 19);
-        inputSlot.setSlotName(new TranslatableComponent("terms.fluxpylons.input_slot").getString());
+        inputSlot.setSlotName(Component.translatable("terms.fluxpylons.input_slot").getString());
         inputSlot.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.inputItems.get(0).getItems()).toList());
 
         var fluidSlot = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 2, 3);
-        fluidSlot.setSlotName(new TranslatableComponent("terms.fluxpylons.input_slot").getString());
+        fluidSlot.setSlotName(Component.translatable("terms.fluxpylons.input_slot").getString());
         fluidSlot.addIngredients(ForgeTypes.FLUID_STACK, Arrays.stream(recipe.inputFluids.get(0).getFluids()).toList());
         fluidSlot.setFluidRenderer(10_000, true, 16, 47);
 
         for (var i = 0; i < recipe.outputItems.size(); i++) {
             var handler = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 87 + i * 18, 19);
-            handler.setSlotName(new TranslatableComponent("terms.fluxpylons.output_slot").getString());
+            handler.setSlotName(Component.translatable("terms.fluxpylons.output_slot").getString());
             handler.addIngredients(VanillaTypes.ITEM_STACK, List.of(recipe.outputItems.get(i)));
         }
     }

@@ -17,7 +17,7 @@ public class TagFilterContainerMenu extends BaseFilterContainerMenu {
     }
     
     public TagFilterContainerMenu(int windowId, Player player, ItemStack filterItem) {
-        super(FluxPylonsContainerMenus.UPGRADE_TAG_FILTER_CONTAINER_MENU, windowId, player, filterItem);
+        super(FluxPylonsContainerMenus.UPGRADE_TAG_FILTER_CONTAINER_MENU.get(), windowId, player, filterItem);
     }
 
     @Override

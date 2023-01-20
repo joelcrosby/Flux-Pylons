@@ -12,7 +12,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 public class WasherContainerMenu extends MachineContainerMenu<WasherBlockEntity> {
 
     public WasherContainerMenu(int id, Player player, BlockPos pos) {
-        super(WasherBlockEntity.class, FluxPylonsContainerMenus.WASHER_CONTAINER_MENU, id, player, pos);
+        super(WasherBlockEntity.class, FluxPylonsContainerMenus.WASHER_CONTAINER_MENU.get(), id, player, pos);
     }
 
     @Override

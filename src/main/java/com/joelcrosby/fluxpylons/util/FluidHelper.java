@@ -2,7 +2,6 @@ package com.joelcrosby.fluxpylons.util;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -27,7 +26,7 @@ public class FluidHelper {
             return Pair.of(ItemStack.EMPTY, FluidStack.EMPTY);
         }
 
-        var result = handler.drain(FluidAttributes.BUCKET_VOLUME, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+        var result = handler.drain(1000, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
 
         return Pair.of(handler.getContainer(), result);
     }

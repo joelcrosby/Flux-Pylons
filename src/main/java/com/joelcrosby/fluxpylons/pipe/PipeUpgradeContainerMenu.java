@@ -23,7 +23,7 @@ public class PipeUpgradeContainerMenu extends BaseContainerMenu {
     }
 
     public PipeUpgradeContainerMenu(int id, Player player, ItemStackHandler itemStackHandler, BlockPos pos, Direction dir, PipeIoMode pipeIoMode) {
-        super(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU, id, player);
+        super(FluxPylonsContainerMenus.PIPE_UPGRADE_CONTAINER_MENU.get(), id, player);
         this.itemStackHandler = itemStackHandler;
         this.pipeIoMode = pipeIoMode;
         this.upgradeManager = player.level.isClientSide() ? null : NetworkManager.get(player.level).getNode(pos).getUpgradeManager(dir);

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ChamberBlockEntity extends MachineBlockEntity {
     public ChamberBlockEntity(BlockPos pos, BlockState state) {
-        super(FluxPylonsBlockEntities.CHAMBER, pos, state);
+        super(FluxPylonsBlockEntities.CHAMBER.get(), pos, state);
     }
 
     @Nullable

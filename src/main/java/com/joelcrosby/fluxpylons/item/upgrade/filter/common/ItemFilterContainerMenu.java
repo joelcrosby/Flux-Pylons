@@ -14,6 +14,6 @@ public class ItemFilterContainerMenu extends BaseFilterContainerMenu {
     }
 
     public ItemFilterContainerMenu(int windowId, Player player, ItemStack filterItem) {
-        super(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU, windowId, player, filterItem);
+        super(FluxPylonsContainerMenus.UPGRADE_FILTER_CONTAINER_MENU.get(), windowId, player, filterItem);
     }
 }

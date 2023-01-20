@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class SmelterRecipe extends BaseRecipe {
     public static final BaseRecipeSerializer<SmelterRecipe> SERIALIZER = new BaseRecipeSerializer<>(SmelterRecipe::new);
-    public static final RecipeType<SmelterRecipe> RECIPE_TYPE = FluxPylonsRecipes.FluxPylonsRecipeTypes.SMELTING;
+    public static final RecipeType<SmelterRecipe> RECIPE_TYPE = FluxPylonsRecipes.FluxPylonsRecipeTypes.SMELTING.get();
 
     public SmelterRecipe(RecipeData data) {
         super(data);

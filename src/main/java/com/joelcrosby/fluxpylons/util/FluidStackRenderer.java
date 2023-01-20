@@ -17,6 +17,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -59,11 +60,11 @@ public class FluidStackRenderer extends ItemRenderer {
         }
         
         var fluid = fluidStack.getFluid();
-        var fluidStill = fluid.getAttributes().getStillTexture();
-        var attributes = fluid.getAttributes();
+        var fluidStill = IClientFluidTypeExtensions.of(fluid).getStillTexture();
+        var attributes = IClientFluidTypeExtensions.of(fluid);
         var fluidStillSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
 
-        var fluidColor = attributes.getColor(fluidStack);
+        var fluidColor = attributes.getTintColor(fluidStack);
 
         var red = (float) (fluidColor >> 16 & 255) / 255.0F;
         var green = (float) (fluidColor >> 8 & 255) / 255.0F;
@@ -142,7 +143,7 @@ public class FluidStackRenderer extends ItemRenderer {
             return false;
         }
         
-        var fluidStill = fluid.getAttributes().getStillTexture();
+        var fluidStill = IClientFluidTypeExtensions.of(fluid).getStillTexture();
         
         TextureAtlasSprite fluidStillSprite = null;
         

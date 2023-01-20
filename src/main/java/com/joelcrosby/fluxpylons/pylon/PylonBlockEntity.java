@@ -34,7 +34,7 @@ public class PylonBlockEntity extends BlockEntity {
     protected final Set<BlockPos> connections = new CopyOnWriteArraySet<>();
     
     public PylonBlockEntity(BlockPos pos, BlockState state, PylonGraphNodeType nodeType) {
-        super(FluxPylonsBlockEntities.PYLON, pos, state);
+        super(FluxPylonsBlockEntities.PYLON.get(), pos, state);
         
         this.nodeType = nodeType;
     }

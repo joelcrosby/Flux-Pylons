@@ -10,12 +10,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public class BaseRecipeSerializer<T extends BaseRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
+public class BaseRecipeSerializer<T extends BaseRecipe> implements RecipeSerializer<T> {
 
     private final RecipeConstructor<T> recipeConstructor;
 

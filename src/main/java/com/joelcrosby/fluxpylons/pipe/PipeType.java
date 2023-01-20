@@ -17,8 +17,8 @@ public enum PipeType {
     
     public BlockEntityType<PipeBlockEntity> getEntityType() {
         return switch (this) {
-            case BASIC -> FluxPylonsBlockEntities.BASIC_PIPE;
-            case ADVANCED -> FluxPylonsBlockEntities.ADV_PIPE;
+            case BASIC -> FluxPylonsBlockEntities.BASIC_PIPE.get();
+            case ADVANCED -> FluxPylonsBlockEntities.ADV_PIPE.get();
         };
     }
 

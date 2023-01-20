@@ -13,7 +13,7 @@ public class CrateContainerMenu extends BaseContainerMenu {
     public final CrateBlockEntity tile;
     
     public CrateContainerMenu(int id, Player player, BlockPos pos) {
-        super(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU, id, player);
+        super(FluxPylonsContainerMenus.CRATE_CONTAINER_MENU.get(), id, player);
         
         this.tile = Utility.getBlockEntity(CrateBlockEntity.class, player.level, pos);
 
