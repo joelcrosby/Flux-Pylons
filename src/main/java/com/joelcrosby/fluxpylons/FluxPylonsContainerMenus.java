@@ -10,12 +10,10 @@ import com.joelcrosby.fluxpylons.pipe.PipeUpgradeContainerMenu;
 import com.joelcrosby.fluxpylons.pipe.PipeUpgradeItemStackHandler;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-@Mod(FluxPylons.ID)
 public class FluxPylonsContainerMenus {
     public static final DeferredRegister<MenuType<?>> CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.MENU_TYPES, FluxPylons.ID);
     

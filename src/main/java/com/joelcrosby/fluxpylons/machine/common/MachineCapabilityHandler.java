@@ -3,6 +3,7 @@ package com.joelcrosby.fluxpylons.machine.common;
 import com.joelcrosby.fluxpylons.recipe.common.BaseRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -10,10 +11,12 @@ public abstract class MachineCapabilityHandler {
 
     @Nullable
     public abstract MachineItemStackHandler items();
+    public abstract LazyOptional<MachineItemStackHandler> itemHandler();
 
     @Nullable
     public abstract MachineFluidHandler fluids();
-
+    public abstract LazyOptional<MachineFluidHandler> fluidHandler();
+    
     public boolean hasOutputSpaceForRecipe(BaseRecipe recipe)
     {
         var items = true;

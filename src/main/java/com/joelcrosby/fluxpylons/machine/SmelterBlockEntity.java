@@ -14,12 +14,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 public class SmelterBlockEntity extends MachineBlockEntity {
 
     private final MachineCapabilityHandler capabilityHandler = new MachineCapabilityHandler() {
         private final MachineItemStackHandler inventory = new MachineItemStackHandler(6, 2, true);
+        private final LazyOptional<MachineItemStackHandler> inventoryHandler = LazyOptional.of(() -> inventory);
 
         @Nullable
         @Override
@@ -27,9 +29,19 @@ public class SmelterBlockEntity extends MachineBlockEntity {
             return inventory;
         }
 
+        @Override
+        public LazyOptional<MachineItemStackHandler> itemHandler() {
+            return inventoryHandler;
+        }
+
         @Nullable
         @Override
         public MachineFluidHandler fluids() {
+            return null;
+        }
+
+        @Override
+        public LazyOptional<MachineFluidHandler> fluidHandler() {
             return null;
         }
     };

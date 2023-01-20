@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +23,8 @@ public class WasherBlockEntity extends MachineBlockEntity {
     
     private final MachineCapabilityHandler capabilityHandler = new MachineCapabilityHandler() {
         private final MachineItemStackHandler inventory = new MachineItemStackHandler(1, 2, true);
+        private final LazyOptional<MachineItemStackHandler> inventoryHandler = LazyOptional.of(() -> inventory);
+        
         private final MachineFluidHandler fluidInventory = new MachineFluidHandler(1, 0) {
             @Override
             public boolean isFluidValid(int tank, FluidStack stack) {
@@ -29,6 +32,7 @@ public class WasherBlockEntity extends MachineBlockEntity {
                 return name.equals("water");
             }
         };
+        private final LazyOptional<MachineFluidHandler> fluidInventoryHandler = LazyOptional.of(() -> fluidInventory);
         
         @Nullable
         @Override
@@ -36,10 +40,20 @@ public class WasherBlockEntity extends MachineBlockEntity {
             return inventory;
         }
 
+        @Override
+        public LazyOptional<MachineItemStackHandler> itemHandler() {
+            return inventoryHandler;
+        }
+
         @Nullable
         @Override
         public MachineFluidHandler fluids() {
             return fluidInventory;
+        }
+
+        @Override
+        public LazyOptional<MachineFluidHandler> fluidHandler() {
+            return fluidInventoryHandler;
         }
     };
     

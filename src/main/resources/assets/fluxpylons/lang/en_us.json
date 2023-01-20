@@ -5,7 +5,6 @@
   "block.fluxpylons.pipe": "Dynamic Conduit",
   "block.fluxpylons.adv_pipe": "Advanced Dynamic Conduit",
   "block.fluxpylons.pylon": "Flux Pylon",
-  "block.fluxpylons.chamber": "Chamber",
   "block.fluxpylons.smelter": "Smelter",
   "block.fluxpylons.washer": "Industrial Washer",
   
@@ -41,7 +40,6 @@
   "item.fluxpylons.filter.tooltip.interaction-side-east": "Interaction Side: East",
   
   "container.fluxpylons.crate": "Crate",
-  "container.fluxpylons.chamber": "Chamber",
   "container.fluxpylons.smelter": "Alloy Smelter",
   "container.fluxpylons.washer": "Industrial Washer",
   "container.fluxpylons.pylon": "Flux Pylon",

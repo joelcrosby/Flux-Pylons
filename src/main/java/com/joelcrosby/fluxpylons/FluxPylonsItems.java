@@ -1,5 +1,6 @@
 package com.joelcrosby.fluxpylons;
 
+import com.joelcrosby.fluxpylons.item.IngotItem;
 import com.joelcrosby.fluxpylons.item.WrenchItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.ExtractItem;
 import com.joelcrosby.fluxpylons.item.upgrade.extract.FluidExtractItem;
@@ -25,4 +26,5 @@ public class FluxPylonsItems
     public static final RegistryObject<FluidExtractItem> UPGRADE_FLUID_EXTRACT = ITEM_REGISTRY.register("upgrade_fluid_extract", FluidExtractItem::new);
     public static final RegistryObject<RetrieverItem> UPGRADE_RETRIEVER = ITEM_REGISTRY.register("upgrade_retriever", RetrieverItem::new);
     public static final RegistryObject<FluidRetrieverItem> UPGRADE_FLUID_RETRIEVER = ITEM_REGISTRY.register("upgrade_fluid_retriever", FluidRetrieverItem::new);
+    public static final RegistryObject<IngotItem> INGOT_CONDUCTIVE_IRON = ITEM_REGISTRY.register("ingot_conductive_alloy", IngotItem::new);
 }

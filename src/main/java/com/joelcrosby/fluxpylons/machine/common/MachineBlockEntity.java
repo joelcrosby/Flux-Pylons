@@ -58,7 +58,14 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         var name = BlockEntityType.getKey(type).getPath();
         return Component.translatable("container." + FluxPylons.ID + "." + name);
     }
-    
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        
+        lazyStorage.invalidate();
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
@@ -66,18 +73,18 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             return lazyStorage.cast();
         }
 
-        var itemHandler = getCapabilityHandler().items();
-        var fluidHandler = getCapabilityHandler().fluids();
+        var itemHandler = getCapabilityHandler().itemHandler();
+        var fluidHandler = getCapabilityHandler().fluidHandler();
         
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            if (itemHandler != null) {
-                return LazyOptional.of(() -> itemHandler).cast();
+            if (itemHandler != null && itemHandler.isPresent()) {
+                return itemHandler.cast();
             }
         }
 
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            if (fluidHandler != null) {
-                return LazyOptional.of(() -> fluidHandler).cast();
+            if (fluidHandler != null && fluidHandler.isPresent()) {
+                return fluidHandler.cast();
             }
         }
 
