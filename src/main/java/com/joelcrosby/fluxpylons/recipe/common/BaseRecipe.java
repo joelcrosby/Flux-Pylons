@@ -54,16 +54,21 @@ public abstract class BaseRecipe implements Recipe<Container> {
     @Override
     public boolean matches(Container inv, Level worldIn) {
         if (inv.isEmpty()) return false;
-        
-        for (var i = 0; i < inputItems.size(); i++) {
-            var inputItem = inputItems.get(i);
-            
-            if (!isValidItemStack(inputItem, inv.getItem(i))) {
-                return false;
+
+        var matchedItems = 0;
+        var invSize = inv.getContainerSize();
+
+        for (int j = 0; j < invSize; j++) {
+            var invItem = inv.getItem(j);
+
+            for (var inputItem : inputItems) {
+                if (isValidItemStack(inputItem, invItem)) {
+                    matchedItems++;
+                }
             }
         }
 
-        return true;
+        return inputItems.size() == matchedItems;
     }
 
     private boolean isValidItemStack(ItemStackIngredient ingredient, ItemStack toMatch) {
